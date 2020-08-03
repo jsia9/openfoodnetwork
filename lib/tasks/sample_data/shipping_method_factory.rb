@@ -39,7 +39,7 @@ class ShippingMethodFactory
       name: "Home delivery #{enterprise.name}",
       description: "yummy food delivered at your door",
       require_ship_address: true,
-      calculator_type: "Spree::Calculator::FlatRate"
+      calculator_type: "Calculator::FlatRate"
     )
     delivery.calculator.preferred_amount = 2
     delivery.calculator.save!
@@ -49,7 +49,7 @@ class ShippingMethodFactory
     params[:distributor_ids] = [enterprise.id]
     method = enterprise.shipping_methods.new(params)
     method.zones << zone
-    method.shipping_categories << Spree::ShippingCategory.find_or_create_by_name('Default')
+    method.shipping_categories << Spree::ShippingCategory.find_or_create_by(name: 'Default')
     method.save!
     method
   end

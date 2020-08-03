@@ -7,7 +7,7 @@ describe ProducerMailer, type: :mailer do
   before { setup_email }
 
   let!(:zone) { create(:zone_with_member) }
-  let!(:tax_rate) { create(:tax_rate, included_in_price: true, calculator: Spree::Calculator::DefaultTax.new, zone: zone, amount: 0.1) }
+  let!(:tax_rate) { create(:tax_rate, included_in_price: true, calculator: Calculator::DefaultTax.new, zone: zone, amount: 0.1) }
   let!(:tax_category) { create(:tax_category, tax_rates: [tax_rate]) }
   let(:s1) { create(:supplier_enterprise) }
   let(:s2) { create(:supplier_enterprise) }
@@ -116,8 +116,8 @@ describe ProducerMailer, type: :mailer do
 
   private
 
-  def body_lines_including(mail, s)
-    mail.body.to_s.lines.select { |line| line.include? s }
+  def body_lines_including(mail, str)
+    mail.body.to_s.lines.select { |line| line.include? str }
   end
 
   def body_as_html(mail)

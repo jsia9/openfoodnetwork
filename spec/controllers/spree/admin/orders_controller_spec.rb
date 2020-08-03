@@ -46,6 +46,14 @@ describe Spree::Admin::OrdersController, type: :controller do
     context "complete order" do
       let(:order) { create :completed_order_with_totals }
 
+      it "does not throw an error if no order object is given in params" do
+        params = { id: order }
+
+        spree_put :update, params
+
+        expect(response.status).to eq 302
+      end
+
       it "updates distribution charges and redirects to order details page" do
         expect_any_instance_of(Spree::Order).to receive(:update_distribution_charge!)
 
@@ -105,7 +113,7 @@ describe Spree::Admin::OrdersController, type: :controller do
 
       it "should deny me access to the index action" do
         spree_get :index
-        expect(response).to redirect_to spree.unauthorized_path
+        expect(response).to redirect_to unauthorized_path
       end
     end
 
@@ -132,7 +140,7 @@ describe Spree::Admin::OrdersController, type: :controller do
 
       it "should prevent me from sending order invoices" do
         spree_get :invoice, params
-        expect(response).to redirect_to spree.unauthorized_path
+        expect(response).to redirect_to unauthorized_path
       end
     end
 
@@ -142,7 +150,7 @@ describe Spree::Admin::OrdersController, type: :controller do
 
         it "should prevent me from sending order invoices" do
           spree_get :invoice, params
-          expect(response).to redirect_to spree.unauthorized_path
+          expect(response).to redirect_to unauthorized_path
         end
       end
 
@@ -190,7 +198,7 @@ describe Spree::Admin::OrdersController, type: :controller do
 
       it "should prevent me from sending order invoices" do
         spree_get :print, params
-        expect(response).to redirect_to spree.unauthorized_path
+        expect(response).to redirect_to unauthorized_path
       end
     end
 
@@ -199,7 +207,7 @@ describe Spree::Admin::OrdersController, type: :controller do
         before { allow(controller).to receive(:spree_current_user) { user } }
         it "should prevent me from sending order invoices" do
           spree_get :print, params
-          expect(response).to redirect_to spree.unauthorized_path
+          expect(response).to redirect_to unauthorized_path
         end
       end
 

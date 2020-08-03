@@ -6,7 +6,9 @@
   = @group.logo.url
 
 - content_for :injection_data do
+  = inject_available_countries
   = inject_group_enterprises
+  = inject_open_street_map_config
 
 #group-page.row.pad-top.footer-pad{"ng-controller" => "GroupPageCtrl"}
   .small-12.columns.pad-top
@@ -20,7 +22,7 @@
           - if @group.logo.present?
             %img.group-logo{"src" => @group.logo}
           - else
-            %img.group-logo{"src" => '/assets/noimage/group.png'}
+            %img.group-logo{"src" => '/noimage/group.png' }
           %h2.group-name= @group.name
           %p= @group.description
 

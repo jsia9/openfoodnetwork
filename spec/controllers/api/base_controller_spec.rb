@@ -14,7 +14,7 @@ describe Api::BaseController do
 
   context "signed in as a user using an authentication extension" do
     before do
-      allow(controller).to receive_messages try_spree_current_user:
+      allow(controller).to receive_messages spree_current_user:
                                               double(email: "ofn@example.com")
     end
 
@@ -35,7 +35,7 @@ describe Api::BaseController do
 
   context "cannot make a request to the API" do
     it "with an invalid API key" do
-      request.env["X-Spree-Token"] = "fake_key"
+      request.headers["X-Spree-Token"] = "fake_key"
       get :index, {}
       expect(json_response).to eq( "error" => "Invalid API key (fake_key) specified." )
       expect(response.status).to eq(401)

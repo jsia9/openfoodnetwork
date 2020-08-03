@@ -1,4 +1,4 @@
-require 'spree/core/controller_helpers/respond_with_decorator'
+require 'spree/core/controller_helpers/respond_with'
 require 'open_food_network/tag_rule_applicator'
 
 class BaseController < ApplicationController
@@ -14,8 +14,8 @@ class BaseController < ApplicationController
 
   helper 'spree/base'
 
-  before_filter :set_locale
-  before_filter :check_order_cycle_expiry
+  before_action :set_locale
+  before_action :check_order_cycle_expiry
 
   private
 

@@ -47,7 +47,7 @@ describe OrderFactory do
     end
 
     it "retains address, delivery, and payment attributes until completion of the order" do
-      AdvanceOrderService.new(order).call
+      OrderWorkflow.new(order).complete
 
       order.reload
 
@@ -149,7 +149,7 @@ describe OrderFactory do
     end
 
     def variant1_line_item
-      order.line_items.find_by_variant_id(variant1.id)
+      order.line_items.find_by(variant_id: variant1.id)
     end
   end
 end

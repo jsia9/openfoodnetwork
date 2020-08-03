@@ -13,6 +13,8 @@ ca:
         email: Correu electrònic de la consumidora
       spree/payment:
         amount: Import
+        state: Estat
+        source: Source
       spree/product:
         primary_taxon: "Categoria del producte"
         supplier: "Proveïdora"
@@ -23,6 +25,8 @@ ca:
         base: "Targeta de crèdit"
       order_cycle:
         orders_close_at: Data de tancament
+      variant_override:
+        count_on_hand: "Disponibles"
     errors:
       models:
         spree/user:
@@ -41,7 +45,7 @@ ca:
               after_orders_open_at: s'ha de fer amb el termini obert
         variant_override:
           count_on_hand:
-            using_producer_stock_settings_but_count_on_hand_set: "ha d'estar en blanc perquè s'utilitza la configuració de l'inventari de la productora"
+            using_producer_stock_settings_but_count_on_hand_set: "ha d'estar en blanc perquè s'utilitza la configuració d'estoc de la productora"
             on_demand_but_count_on_hand_set: "ha d'estar en blanc si és sota demanda"
             limited_stock_but_no_count_on_hand: "cal especificar-se perquè força existències limitades"
   activemodel:
@@ -179,8 +183,8 @@ ca:
         title: Altres errors (%{count} comandes)
         explainer: El processament automàtic d'aquestes comandes va fallar per un motiu desconegut. Això no hauria de passar, si us plau, contacteu amb nosaltres si esteu veient això.
   home: "OFN"
-  title: Open Food Network
-  welcome_to: 'Benvingut a '
+  title: "Open Food Network"
+  welcome_to: "Benvingut a "
   site_meta_description: "Comencem des de baix. Amb agricultors i productors disposats a explicar les seves històries amb orgull i sinceritat. Amb distribuïdors connectant persones i productes de manera justa i honesta. Amb compradors que creuen que millors decisions de compra setmanal poden ..."
   search_by_name: Cercar per nom o barri ...
   producers_join: Els productors australians son ara benvinguts a unir-se a Open Food Network.
@@ -268,6 +272,7 @@ ca:
   backordered: "Reabastit"
   on hand: "Disponibles"
   ship: "Enviament"
+  shipping_category: "Categoria d'enviament"
   actions:
     create_and_add_another: "Crea i afegeix-ne una altra"
     create: "Crear"
@@ -368,8 +373,10 @@ ca:
         title: "Configuració de Matomo"
         matomo_url: "URL de Matomo"
         matomo_site_id: "Identificador de Matomo"
-        info_html: "Matomo és un analitzador de webs i mòbils. Podeu allotjar Matomo de manera local o utilitzar un servei al núvol. Vegeu <a href='http://matomo.org' target='_blank'> matomo.org </a> per obtenir més informació."
+        matomo_tag_manager_url: "URL de Matomo Tag Manager"
+        info_html: "Matomo és una aplicació d'analytics web i mòbil. Podeu allotjar Matomo en local o bé utilitzar un servei allotjat al núvol. Consulteu <a href='http://matomo.org' target='_blank'>matomo.org</a> per obtenir més informació."
         config_instructions_html: "Aquí podeu configurar la integració Matomo OFN. L'URL de Matomo que us apareix a continuació ha d'indicar la instància de Matomo en la qual s'enviarà la informació de seguiment de l'usuari; si es deixa buit, el seguiment de l'usuari de Matomo estarà desactivat. El camp d'identificació del lloc no és obligatori, però és útil si fa un seguiment de més d'un lloc web en una sola instància de Matomo; es pot trobar a la consola d'instància de Matomo."
+        config_instructions_tag_manager_html: "En configurar l'URL de Matomo Tag Manager s'activa Matomo Tag Manager. Aquesta eina us permet configurar esdeveniments d’analítica. L’URL de Matomo Tag Manager es copia de la secció Instal·lar codi de Matomo Tag Manager. Assegureu-vos de seleccionar el contenidor i l’entorn adequats ja que aquestes opcions canvien l’URL."
     customers:
       index:
         new_customer: "Nova consumidora"
@@ -403,6 +410,7 @@ ca:
         footer_and_external_links: Peu de pàgina i enllaços externs
         your_content: El vostre contingut
         user_guide: Guia de l'usuari
+        map: Mapa
     enterprise_fees:
       index:
         title: "Comissions de l'organització"
@@ -474,6 +482,7 @@ ca:
         line_number: "Línia %{number}:"
         encoding_error: "Comproveu la configuració de l'idioma del vostre fitxer d'origen i assegureu-vos que es desa amb la codificació UTF-8"
         unexpected_error: "La importació de productes ha detectat un error inesperat mentre obria el fitxer: %{error_message}"
+        malformed_csv: "La importació de producte ha trobat un CSV mal format: %{error_message}"
       index:
         notice: "Avís"
         beta_notice: "Aquesta funcionalitat continua en fase beta: podeu experimentar alguns errors mentre l'utilitzeu. No dubteu en contactar amb nosaltres."
@@ -892,7 +901,7 @@ ca:
         incoming: "2. Productes entrants"
         outgoing: "3. Productes sortints"
       exchange_form:
-        pickup_time_tip: Quan les comandes d'aquest cicle de comandes estiguin preparades per a les consumidores
+        pickup_time_tip: Quan les comandes d'aquest cicle de comandes estiguin llestes per a les consumidores
         pickup_instructions_placeholder: "Instruccions de recollida"
         pickup_instructions_tip: Aquestes instruccions es mostraran a les consumidores després d'haver completat una comanda
         pickup_time_placeholder: "Preparat per (és a dir, data / hora)"
@@ -942,7 +951,7 @@ ca:
         distributors: distribuïdores
         variants: variants
       simple_form:
-        ready_for: Preparat per
+        ready_for: Llest per
         ready_for_placeholder: Data / hora
         customer_instructions: Instruccions de la consumidora
         customer_instructions_placeholder: Notes de recollida o de lliurament
@@ -1103,7 +1112,7 @@ ca:
       pause_failure_msg: "Ho sentim, la pausa ha fallat!"
       confirm_unpause_msg: "Si teniu un cicle de comanda obert a la programació d'aquesta subscripció, es crearà una comanda per a aquesta consumidora. Esteu segur que voleu anul·lar aquesta subscripció?"
       unpause_failure_msg: "Ho sentim, la represa ha fallat!"
-      confirm_cancel_open_orders_msg: "Actualment hi ha algunes comandes obertes per a aquesta subscripció. Ja s'ha notificat a les consumidores que les comandes serà atesa. Voleu cancel·lar aquestes comandes o conservar-les?"
+      confirm_cancel_open_orders_msg: "Actualment hi ha algunes comandes obertes per a aquesta subscripció. Ja s'ha notificat a les consumidores que la comanda seran ateses. Voleu cancel·lar aquestes comandes o conservar-les?"
       resume_canceled_orders_msg: "Algunes comandes d'aquesta subscripció es poden reprendre ara mateix. Podeu reprendre-les des del menú desplegable de comandes."
       yes_cancel_them: Cancel·lar-les
       no_keep_them: Conservar-les
@@ -1144,13 +1153,18 @@ ca:
     menu:
       cart:
         cart: "Cistella"
+      cart_sidebar:
+        checkout: "Realitza la comanda"
+        edit_cart: "Edita la cistella"
+        items_in_cart_singular: "%{num} item a la teva cistella"
+        items_in_cart_plural: "%{num} item a la teva cistella"
+        close: "Tanca"
+        cart_empty: "La teva cistella és buida"
+        take_me_shopping: "Porta’m de compres!"
       signed_in:
         profile: "Perfil"
       mobile_menu:
         cart: "Cistella"
-      joyride:
-        checkout: "Validar ara"
-        already_ordered_products: "Ja està demanat en aquest cicle de comanda"
     register_call:
       selling_on_ofn: "Estàs interessat en formar part d'Open Food Network?"
       register: "Registra't aquí"
@@ -1381,7 +1395,7 @@ ca:
   stats_orders: "comandes de menjar"
   checkout_title: Realitza la comanda
   checkout_now: Validar ara
-  checkout_order_ready: Comanda preparada per
+  checkout_order_ready: Comanda llesta per
   checkout_hide: Amaga
   checkout_expand: Expandeix
   checkout_headline: "Estàs preparada per validar la compra?"
@@ -1393,7 +1407,7 @@ ca:
   checkout_default_ship_address: "Desa per defecte com a adreça d'enviament "
   checkout_method_free: Gratuït
   checkout_address_same: L'adreça d'enviament és igual que l'adreça de facturació?
-  checkout_ready_for: "Preparat per:"
+  checkout_ready_for: "Llest per:"
   checkout_instructions: "Alguns comentaris o instruccions especials?"
   checkout_payment: Pagament
   checkout_send: Realitza una comanda ara
@@ -1515,8 +1529,8 @@ ca:
   shopping_contact_social: "Segueix"
   shopping_groups_part_of: "forma part de:"
   shopping_producers_of_hub: "Productores de%{hub}:"
-  enterprises_next_closing: "Tancament de la comanda següent"
-  enterprises_ready_for: "Preparat per"
+  enterprises_next_closing: "La següent comanda tanca"
+  enterprises_ready_for: "Llest per"
   enterprises_choose: "Escull quan vols la teva comanda:"
   maps_open: "Obert"
   maps_closed: "Tancat"
@@ -1661,7 +1675,7 @@ ca:
   orders_fees: Comissions...
   orders_edit_title: Cistella de la compra
   orders_edit_headline: El teu cistell de la compra
-  orders_edit_time: Comanda preparada per
+  orders_edit_time: Comanda llesta per
   orders_edit_continue: Continuar comprant
   orders_edit_checkout: Realitza la compra
   orders_form_empty_cart: "Cistella buida"
@@ -1704,7 +1718,7 @@ ca:
   password: Contrasenya
   remember_me: Recorda'm
   are_you_sure: "Estàs segur?"
-  orders_open: Comandes obertes
+  orders_open: "Comandes obertes"
   closing: "Tancant"
   going_back_to_home_page: "Tornant a la pàgina d'inici"
   creating: Creant
@@ -1949,6 +1963,8 @@ ca:
   supplier: "Proveïdora"
   product_name: "Nom del producte"
   product_description: "Descripció del producte"
+  permalink: "Enllaç permanent"
+  shipping_categories: "Tipus d'enviament"
   units: "Mida d'unitat"
   coordinator: "Coordinador"
   distributor: "Distribuïdora"
@@ -2045,6 +2061,8 @@ ca:
   remove_tax: "Suprimeix comissions"
   first_name_begins_with: "El nom comença amb"
   last_name_begins_with: "El cognom comença amb"
+  shipping_method: "Mètode d'enviament"
+  new_order: "Nova comanda"
   enterprise_tos_link: "Enllaç a les condicions d'ús de l'organització"
   enterprise_tos_message: "Volem treballar amb persones que comparteixen els nostres objectius i valors. Com a tal, demanem a les noves organitzacions que acceptin la nostra"
   enterprise_tos_link_text: "Termes del servei."
@@ -2063,6 +2081,7 @@ ca:
   hub_sidebar_at_least: "Cal seleccionar almenys un grup "
   hub_sidebar_blue: "blau"
   hub_sidebar_red: "vermell"
+  order_cycles_closed_for_hub: "La botiga que has triat està temporalment tancada per a fer comandes. Sisplau, prova una mica més tard"
   report_customers_distributor: "Distribuïdora"
   report_customers_supplier: "Proveïdora"
   report_customers_cycle: "Cicle de Comanda"
@@ -2299,6 +2318,7 @@ ca:
   order_cycles_email_to_producers_notice: 'Els correus electrònics per enviar a les productores estan en cua.'
   order_cycles_no_permission_to_coordinate_error: "Cap de les vostres organitzacions té permís per coordinar un cicle de comanda"
   order_cycles_no_permission_to_create_error: "No teniu permís per crear un cicle de comandes coordinat per aquesta organització"
+  order_cycle_closed: "El cicle de comandes que has triat acaba de tancar. Sisplau prova en un altre moment."
   back_to_orders_list: "Torna a la llista de comandes"
   no_orders_found: "No s'han trobat comandes"
   order_information: "Informació de la comanda"
@@ -2554,7 +2574,7 @@ ca:
         'yes': "Sota demanda"
     variant_overrides:
       on_demand:
-        use_producer_settings: "Utilitzeu la configuració d'inventari de la productora"
+        use_producer_settings: "Utilitzeu la configuració d'estoc de la productora"
         'yes': "Sí"
         'no': "No"
       inventory_products: "Productes de l'inventari"
@@ -2743,6 +2763,7 @@ ca:
   customer_details: "Detalls de la consumidora"
   adjustments: "Ajustaments"
   payments: "Pagaments"
+  return_authorizations: "Autoritzacions de devolució"
   payment: "Pagament"
   payment_method: "Mètode de pagament"
   shipment: "Enviament"
@@ -2766,6 +2787,7 @@ ca:
   previous: "Anterior"
   last: "Últim"
   spree:
+    more: "Més"
     your_order_is_empty_add_product: "La comanda està buida, si us plau cerca i afegeix un producte a dalt"
     add_product: "Afegeix un producte"
     name_or_sku: "Nom o codi (introduïu com a mínim els primers 4 caràcters del nom del producte)"
@@ -2812,6 +2834,14 @@ ca:
     new_payment: "Nou pagament"
     capture: "Captura"
     void: "Buit"
+    login: "Inicia sessió"
+    password: "Contrasenya"
+    signature: "Signatura"
+    solution: "Solució"
+    landing_page: "Pàgina d'inici"
+    server: "Servidor"
+    test_mode: "Mode de prova"
+    logourl: "URL del logo"
     configurations: "Configuracions"
     general_settings: "Configuració general"
     site_name: "Nom del lloc"
@@ -2876,8 +2906,6 @@ ca:
     abbreviation: "Abreviatura"
     new_state: "Nou estat"
     payment_methods: "Mètodes de Pagament"
-    new_payment_method: "Nou mètode de pagament"
-    provider: "Proveïdor"
     taxonomies: "Taxonomies"
     new_taxonomy: "Nova taxonomia"
     back_to_taxonomies_list: "Torna a la llista de taxonomies"
@@ -2930,6 +2958,12 @@ ca:
     options: "Opcions"
     actions:
       update: "Actualitzar"
+    shared:
+      error_messages:
+        errors_prohibited_this_record_from_being_saved:
+          one: "Un error va prohibir guardar aquest registre:"
+          other: "%{count} errors han impedit guardar aquest registre:"
+        there_were_problems_with_the_following_fields: "Hi ha hagut problemes amb els camps següents"
     errors:
       messages:
         blank: "no es pot deixar en blanc"
@@ -3089,10 +3123,26 @@ ca:
           back_end: "Només pàgina administració (back office) "
           deactivation_warning: "Desactivar un mètode d'enviament pot fer que desaparegui de la teva llista. Pots ocultar-lo de la pàgina de validació de comanda configurant l'opció \"Mostrar\" a \"només a la pàgina d'administració\" (back end)."
       payment_methods:
+        index:
+          payment_methods: "Mètodes de Pagament"
+          new_payment_method: "Nou mètode de pagament"
+          name: "Nom"
+          products_distributor: "Distribuïdora"
+          provider: "Proveïdor"
+          environment: "Ambient"
+          display: "Mostra"
+          active: "Actiu"
+          both: "Ambdós"
+          front_end: "Visible només per al comprador"
+          back_end: "Només pàgina administració (back office) "
+          active_yes: "Sí"
+          active_no: "No"
+          no_payment_methods_found: "No s'han trobat mètodes de pagament"
         new:
           new_payment_method: "Nou mètode de pagament"
           back_to_payment_methods_list: "Tornar a la llista de mètodes de pagament"
         edit:
+          new: "Nou"
           editing_payment_method: "Edició del mètode de pagament"
           back_to_payment_methods_list: "Tornar a la llista de mètodes de pagament"
         stripe_connect:
@@ -3108,11 +3158,28 @@ ca:
           account_id: Identificador del compte
           business_name: Nom de l'empresa
           charges_enabled: Càrrecs habilitats
+        form:
+          name: "Nom"
+          description: "Descripció"
+          environment: "Ambient"
+          display: "Mostra"
+          active: "Actiu"
+          active_yes: "Sí"
+          active_no: "No"
+          both: "Ambdues, validació de comanda i administració"
+          front_end: "Visible només per al comprador"
+          back_end: "Només pàgina administració (back office) "
+          tags: "Etiquetes"
+          deactivation_warning: "Desactivar un mètode de pagament pot fer que el mètode de pagament desapareixi de la vostra llista. De forma alternativa, podeu amagar un mètode de pagament a la pàgina de compra configurant l'opció \"Mostrar\" a \"només a la pàgina d'administració\" (back end)."
+        providers:
+          provider: "Proveïdor"
       payments:
         source_forms:
           stripe:
             error_saving_payment: Error en desar el pagament
             submitting_payment: S'està lliurant el pagament...
+          paypal:
+            no_payment_via_admin_backend: Els pagaments amb Paypal no es poden capturar des de l'administració
       products:
         image_upload_error: "No s'ha reconegut la imatge del producte. Carregueu una imatge en format PNG o JPG."
         new:
@@ -3210,6 +3277,7 @@ ca:
           display_as_placeholder: 'per exemple. 2 kg'
           display_name_placeholder: 'per exemple. Tomàquets'
         autocomplete:
+          out_of_stock: "Fora d'existència"
           producer_name: "Productor"
           unit: "Unitat"
       shared:
@@ -3275,9 +3343,14 @@ ca:
       invalid: invàlid
     order_mailer:
       cancel_email:
-        customer_greeting: "Hola %{name}!"
-        instructions: "La teva comanda ha estat anul·lada. Conserva aquesta informació de cancel·lació per als teus registres."
-        order_summary_canceled: "Resum de comanda [CANCEL·LADA]"
+        customer_greeting: "Benvolgut/da,%{name}"
+        instructions_html: "La teva comanda<strong> %{distributor}</strong> ha estat CANCEL·LADA"
+        dont_cancel: "Si heu canviat d'opinió o no voleu cancel·lar aquesta comanda, poseu-vos en contacte amb %{email}"
+        order_summary_canceled_html: "<strong>Resum de comanda # %{number} [CANCELAT]</strong>"
+        details: "Aquí teniu els detalls del que vau demanar:"
+        unpaid_order: "La vostra comanda no s'havia pagat, per la qual cosa no s'ha realitzat cap reemborsament"
+        paid_order: "La vostra comanda s'havia pagat per la qual cosa %{distributor} ha reemborsat l'import complet"
+        credit_order: "La vostra comanda s'havia pagat i per tant, s'ha abonat l'import al vostre compte"
         subject: "Cancel·lació de la comanda"
       confirm_email:
         subject: "Confirmació de la comanda"

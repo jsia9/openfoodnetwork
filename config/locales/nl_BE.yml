@@ -13,6 +13,7 @@ nl_BE:
         email: Klanten e-mail
       spree/payment:
         amount: Bedrag
+        state: Staat
       spree/product:
         primary_taxon: "Product categorie"
         supplier: "Leverancier"
@@ -23,6 +24,8 @@ nl_BE:
         base: "Kredietkaart"
       order_cycle:
         orders_close_at: Sluitingsdatum
+      variant_override:
+        count_on_hand: "Bij de Hand"
     errors:
       models:
         spree/user:
@@ -170,8 +173,7 @@ nl_BE:
         title: Andere mislukking (%{count}orders)
         explainer: De automatische verwerking van deze bestellingen is om een onbekende reden mislukt. Dit mag niet gebeuren, neem contact met ons op als u dit ziet.
   home: "OFN"
-  title: Open Food Network
-  welcome_to: 'Welkom op '
+  title: "Open Food Network"
   site_meta_description: "Dit is wat we doen door een platform te creëren dat verbinding wil maken:\n● gepassioneerde boeren, die zich inzetten voor duurzame en regeneratieve landbouw,\n● handelaren van lokale producten, aanhangers van kortsluitingen, die in volledige transparantie handelen en een eerlijke vergoeding van de producenten garanderen,\n● kopers die de wereld willen veranderen door beter te eten,"
   search_by_name: Zoeken op naam of voorstad....
   producers_join: Belgische producenten zijn nu welkom om zich aan te sluiten bij het Open Food Network.
@@ -255,6 +257,7 @@ nl_BE:
   back_to_payments_list: "Terug naar Betalingslijst"
   on hand: "Bij de Hand"
   ship: "Verzenden"
+  shipping_category: "Verzendcategorie"
   actions:
     create_and_add_another: "Een ander maken en toevoegen"
     create: "Maak"
@@ -354,7 +357,6 @@ nl_BE:
         title: "Matomo instellingen"
         matomo_url: "Matomo URL"
         matomo_site_id: "Matomo Site ID"
-        info_html: "Matomo is een Web en Mobile Analytics. U kunt Matomo on-premises hosten of gebruik maken van een cloud-hosted service. Zie <a href='http://matomo.org' target='_blank'>matomo.org</a> voor meer informatie."
         config_instructions_html: "Hier kunt u de OFN Matomo integratie configureren. De Matomo URL hieronder zou moeten verwijzen naar de Matomo instantie waar de gebruiker tracking informatie naartoe wordt gestuurd; als deze leeg wordt gelaten, wordt Matomo gebruiker tracking uitgeschakeld. Het veld Site ID is niet verplicht, maar handig als je meer dan één website volgt op één Matomo instance; het is te vinden op de Matomo instance console. Vertaald met www.DeepL.com/Translator"
     customers:
       index:
@@ -389,6 +391,7 @@ nl_BE:
         footer_and_external_links: Voettekst en externe links
         your_content: Uw inhoud
         user_guide: Gebruikershandleiding
+        map: Kaart
     enterprise_fees:
       index:
         title: "Ondernemingsvergoedingen"
@@ -1100,13 +1103,13 @@ nl_BE:
     menu:
       cart:
         cart: "kar"
+      cart_sidebar:
+        checkout: "Kassa"
+        close: "Sluit"
       signed_in:
         profile: "Profiel"
       mobile_menu:
         cart: "kar"
-      joyride:
-        checkout: "Naar de kassa"
-        already_ordered_products: "Reeds besteld in de huidige bestelcyclus"
     register_call:
       selling_on_ofn: "Geïnteresseerd om deel uit te maken van het Open Food Network?"
       register: "Registreer hier"
@@ -1646,8 +1649,7 @@ nl_BE:
   password: Wachtwoord
   remember_me: Onthoud Me
   are_you_sure: "Ben je zeker?"
-  orders_open: Openstaande Bestellingen
-  closing: "Sluitend"
+  orders_open: "Openstaande Bestellingen"
   going_back_to_home_page: "Terugkerend naar de startpagina"
   creating: Aanmakend
   updating: Updatend
@@ -1889,6 +1891,7 @@ nl_BE:
   supplier: "Leverancier"
   product_name: "Naam produkt"
   product_description: "Beschrijving product"
+  shipping_categories: "Verzendingscategorieën"
   units: "Stukgrootte"
   coordinator: "Coördinator"
   distributor: "Distributeur"
@@ -1984,6 +1987,7 @@ nl_BE:
   remove_tax: "Verwijder belasting"
   first_name_begins_with: "Voornaam begint met"
   last_name_begins_with: "Familienaam begint met "
+  new_order: "Nieuwe bestelling"
   enterprise_tos_link: "Link Voorwaarden Onderneming"
   enterprise_tos_message: "We willen met mensen werken die onze normen en waarden en delen. Daarom vragen wij aan de nieuwe bedrijven akkoord te gaan met onze  "
   enterprise_tos_link_text: "Dienstvoorwaarden"
@@ -2623,6 +2627,7 @@ nl_BE:
   previous: "Voorgaande"
   last: "Laatst"
   spree:
+    more: "Meer"
     your_order_is_empty_add_product: "Je bestelling is leeg, gelieve hierboven  een product te zoeken en toe te voegen "
     add_product: "Voeg een product toe"
     name_or_sku: "Beschrijving of artikelnummer ( tenminste 4 letters van de productnaam invoeren )"
@@ -2667,6 +2672,8 @@ nl_BE:
     new_payment: "Nieuwe betaling"
     capture: "Capture"
     void: "leegte"
+    login: "Log in"
+    password: "Wachtwoord"
     configurations: "configuraties "
     general_settings: "Algemene instellingen"
     site_name: "Website Naam"
@@ -2731,8 +2738,6 @@ nl_BE:
     abbreviation: "Afkortingen "
     new_state: "Nieuw Provincie"
     payment_methods: "Betalingsmethode"
-    new_payment_method: "Nieuwe betalingswijze"
-    provider: "Leverancier"
     taxonomies: "Taxonomies "
     new_taxonomy: "Nieuwe taxonomie "
     back_to_taxonomies_list: "Terug naar de lijst Taxonomies"
@@ -2897,10 +2902,23 @@ nl_BE:
           categories: "Categorieën"
           zones: "Zones "
       payment_methods:
+        index:
+          payment_methods: "Betalingsmethode"
+          new_payment_method: "Nieuwe betalingswijze"
+          name: "Naam"
+          products_distributor: "Distributeur"
+          provider: "Leverancier"
+          environment: "Omgeving"
+          display: "Display"
+          active: "Aktief"
+          both: "Beide"
+          active_yes: "Ya"
+          active_no: "Néé"
         new:
           new_payment_method: "Nieuwe betalingswijze"
           back_to_payment_methods_list: "Terug naar de lijst van de betalingswijzes"
         edit:
+          new: "Nieuw"
           editing_payment_method: "Wijziging van de betalingswijze"
           back_to_payment_methods_list: "Terug naar de lijst van de betalingswijzes"
         stripe_connect:
@@ -2916,6 +2934,17 @@ nl_BE:
           account_id: Account ID
           business_name: Bedrijfsnaam
           charges_enabled: Kosten ingeschakeld
+        form:
+          name: "Naam"
+          description: "Beschrijving"
+          environment: "Omgeving"
+          display: "Display"
+          active: "Aktief"
+          active_yes: "Ya"
+          active_no: "Néé"
+          tags: "Tags"
+        providers:
+          provider: "Leverancier"
       payments:
         source_forms:
           stripe:
@@ -3005,6 +3034,7 @@ nl_BE:
           price: "Prijs"
           display_as: "Weergeven als"
         autocomplete:
+          out_of_stock: "Geen voorraad"
           producer_name: "Producent"
           unit: "Unit"
       shared:
@@ -3069,9 +3099,6 @@ nl_BE:
       invalid: fout
     order_mailer:
       cancel_email:
-        customer_greeting: "Hello%{name}!"
-        instructions: "Uw bestelling is GEANNULEERD. Bewaar deze annuleringsinformatie voor uw administratie."
-        order_summary_canceled: "Overzicht van de bestelling [KANNELD]"
         subject: "Annulering van de bestelling"
       confirm_email:
         subject: "Bestellingsinformatie"

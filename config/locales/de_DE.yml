@@ -13,6 +13,7 @@ de_DE:
         email: E-Mail des Kunden
       spree/payment:
         amount: Betrag
+        state: Status
       spree/product:
         primary_taxon: "Produktkategorie"
         supplier: "Anbieter"
@@ -23,6 +24,8 @@ de_DE:
         base: "Kreditkarte"
       order_cycle:
         orders_close_at: Schlussdatum
+      variant_override:
+        count_on_hand: "Verfügbar"
     errors:
       models:
         spree/user:
@@ -179,8 +182,7 @@ de_DE:
         title: Andere Fehler (%{count} Bestellungen)
         explainer: Die automatische Verarbeitung dieser Aufträge ist aus einem unbekannten Grund fehlgeschlagen. Dies sollte nicht geschehen, bitte kontaktieren Sie uns, wenn Sie dies sehen.
   home: "OFN"
-  title: Open Food Network
-  welcome_to: 'Willkommen bei'
+  title: "Open Food Network"
   site_meta_description: "Wir starten ganz grundsätzlich. Mit LandwirtInnen und GärtnerInnen, die stolz und ehrlich ihre Geschichte erzählen. Mit Lieferanten, die Menschen fair und vertrauenswürdig mit Produkten verbinden. Mit KonsumentInnen, die glauben, daß ihre wöchentlichen Einkaufsentscheidungen..."
   search_by_name: Suche nach Name oder Ort...
   producers_join: 'Wir laden Deutsche Produzenten ein, jetzt dem Open Food Network beizutreten. '
@@ -268,6 +270,7 @@ de_DE:
   backordered: "Nachbestellt"
   on hand: "Verfügbar"
   ship: "Liefern"
+  shipping_category: "Versandkategorie"
   actions:
     create_and_add_another: "Erstellen und weitere hinzufügen"
     create: "Neu"
@@ -367,7 +370,6 @@ de_DE:
         title: "Matomo-Einstellungen"
         matomo_url: "Matomo-URL"
         matomo_site_id: "Matomo-Site-ID"
-        info_html: "Matomo ist eine Web- und Mobile Analytics. Sie können Matomo entweder lokal hosten oder einen von der Cloud gehosteten Dienst verwenden. Weitere Informationen finden Sie unter <a href='http://matomo.org' target='_blank'> matomo.org </a>."
         config_instructions_html: "Hier können Sie die OFN Matomo Integration konfigurieren. Die unten angegebene Matomo-URL sollte auf die Matomo-Instanz verweisen, an die die Benutzerverfolgungsinformationen gesendet werden. Wenn es leer bleibt, wird das Matomo-Benutzer-Tracking deaktiviert. Das Feld Site-ID ist nicht obligatorisch, aber nützlich, wenn Sie mehr als eine Website in einer einzelnen Matomo-Instanz verfolgen. Es kann auf der Matomo-Instanzkonsole gefunden werden."
     customers:
       index:
@@ -402,6 +404,7 @@ de_DE:
         footer_and_external_links: Fußzeile und externe Links
         your_content: Ihr Inhalt
         user_guide: Benutzerhandbuch
+        map: Karte
     enterprise_fees:
       index:
         title: "Unternehmensgebühren"
@@ -1140,13 +1143,13 @@ de_DE:
     menu:
       cart:
         cart: "Wagen"
+      cart_sidebar:
+        checkout: "Kasse"
+        close: "Abschließen"
       signed_in:
         profile: "Profil"
       mobile_menu:
         cart: "Wagen"
-      joyride:
-        checkout: "Zur Kasse"
-        already_ordered_products: "Bereits in diesem Bestellzyklus bestellt"
     register_call:
       selling_on_ofn: "Sie möchten selbst im Open Food Network verkaufen?"
       register: "Hier anmelden"
@@ -1685,8 +1688,7 @@ de_DE:
   password: Passwort
   remember_me: Erinnere dich an mich
   are_you_sure: "Bist du sicher?"
-  orders_open: Bestellungen öffnen
-  closing: "Schließen"
+  orders_open: "Bestellungen öffnen"
   going_back_to_home_page: "Bring dich zurück auf die Homepage"
   creating: Erstellen
   updating: Aktualisierung
@@ -1929,6 +1931,7 @@ de_DE:
   supplier: "Anbieter"
   product_name: "Produktname"
   product_description: "Produktbeschreibung"
+  shipping_categories: "Versandkategorien"
   units: "Einheitsgröße"
   coordinator: "Koordinator"
   distributor: "Verteiler"
@@ -2739,6 +2742,7 @@ de_DE:
   previous: "Bisherige"
   last: "Zuletzt"
   spree:
+    more: "Mehr"
     your_order_is_empty_add_product: "Ihre Bestellung ist leer. Suchen Sie oben ein Produkt und fügen Sie es hinzu"
     add_product: "Produkt hinzufügen"
     name_or_sku: "Name oder SKU (geben Sie mindestens die ersten 4 Zeichen des Produktnamens ein)"
@@ -2785,6 +2789,8 @@ de_DE:
     new_payment: "Neue Zahlung"
     capture: "Erfassung"
     void: "Leere"
+    login: "Anmeldung"
+    password: "Passwort"
     configurations: "Konfigurationen"
     general_settings: "Allgemeine Einstellungen"
     site_name: "Site-Name"
@@ -2849,8 +2855,6 @@ de_DE:
     abbreviation: "Abkürzung"
     new_state: "Neuer Staat"
     payment_methods: "Zahlungsarten"
-    new_payment_method: "Neue Zahlungsart"
-    provider: "Anbieter"
     taxonomies: "Taxonomien"
     new_taxonomy: "Neue Taxonomie"
     back_to_taxonomies_list: "Zurück zur Taxonomieliste"
@@ -3057,6 +3061,13 @@ de_DE:
           categories: "Kategorien"
           zones: "Zonen"
       payment_methods:
+        index:
+          payment_methods: "Zahlungsarten"
+          name: "Name"
+          products_distributor: "Verteiler"
+          both: "Beide"
+          active_yes: "Ja"
+          active_no: "Nein"
         new:
           new_payment_method: "Neue Zahlungsart"
           back_to_payment_methods_list: "Zurück zur Liste der Zahlungsmethoden"
@@ -3076,6 +3087,12 @@ de_DE:
           account_id: Konto-ID
           business_name: Geschäftsname
           charges_enabled: Gebühren aktiviert
+        form:
+          name: "Name"
+          description: "Beschreibung"
+          active_yes: "Ja"
+          active_no: "Nein"
+          tags: "Stichwörter"
       payments:
         source_forms:
           stripe:
@@ -3236,9 +3253,6 @@ de_DE:
       invalid: ungültig
     order_mailer:
       cancel_email:
-        customer_greeting: "Hallo %{name}!"
-        instructions: "Ihre Bestellung wurde storniert. Bitte bewahren Sie diese Stornierungsinformationen für Ihre Unterlagen auf."
-        order_summary_canceled: "Bestellübersicht [STORNIERT]"
         subject: "Stornierung der Bestellung"
       confirm_email:
         subject: "Bestellbestätigung"

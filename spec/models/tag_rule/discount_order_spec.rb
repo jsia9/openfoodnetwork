@@ -31,7 +31,7 @@ describe TagRule::DiscountOrder, type: :model do
 
   pending "determining whether a the rule has already been applied to an order" do
     let!(:order) { create(:order) }
-    let!(:adjustment) { order.adjustments.create({ amount: 12.34, source: order, originator: tag_rule, label: 'discount' }, without_protection: true) }
+    let!(:adjustment) { order.adjustments.create({ amount: 12.34, source: order, originator: tag_rule, label: 'discount' }) }
 
     before do
       tag_rule.context = { subject: order }
@@ -73,7 +73,7 @@ describe TagRule::DiscountOrder, type: :model do
     end
 
     context "when shipping charges apply" do
-      let!(:shipping_method) { create(:shipping_method, calculator: Spree::Calculator::FlatRate.new( preferred_amount: 25.00 ) ) }
+      let!(:shipping_method) { create(:shipping_method, calculator: Calculator::FlatRate.new( preferred_amount: 25.00 ) ) }
       before do
         shipping_method.create_adjustment("Shipping", order, order, true)
       end

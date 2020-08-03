@@ -10,15 +10,9 @@ module Spree
     before_validation :set_login
     before_destroy :check_completed_orders
 
-    # Setup accessible (or protected) attributes for your model
-    attr_accessible :email, :password, :password_confirmation,
-                    :remember_me, :persistence_token, :login
-
-    users_table_name = User.table_name
     roles_table_name = Role.table_name
 
     scope :admin, lambda { includes(:spree_roles).where("#{roles_table_name}.name" => "admin") }
-    scope :registered, -> { where("#{users_table_name}.email NOT LIKE ?", "%@example.net") }
 
     has_many :enterprise_roles, dependent: :destroy
     has_many :enterprises, through: :enterprise_roles
@@ -34,30 +28,14 @@ module Spree
     accepts_nested_attributes_for :bill_address
     accepts_nested_attributes_for :ship_address
 
-    attr_accessible :enterprise_ids, :enterprise_roles_attributes, :enterprise_limit,
-                    :locale, :bill_address_attributes, :ship_address_attributes
     after_create :associate_customers
 
     validate :limit_owned_enterprises
 
     # We use the same options as Spree and add :confirmable
     devise :confirmable, reconfirmable: true
-    # TODO: Later versions of devise have a dedicated after_confirmation callback, so use that
-    after_update :welcome_after_confirm, if: lambda {
-      confirmation_token_changed? && confirmation_token.nil?
-    }
 
     class DestroyWithOrdersError < StandardError; end
-
-    # Creates an anonymous user. An anonymous user is basically an auto-generated +User+ account
-    # that is created for the customer behind the scenes and it's transparent to the customer.
-    # All +Orders+ must have a +User+ so this is necessary when adding to the "cart" (an order)
-    # and before the customer has a chance to provide an email or to register.
-    def self.anonymous!
-      token = User.generate_token(:persistence_token)
-      User.create(email: "#{token}@example.net",
-                  password: token, password_confirmation: token, persistence_token: token)
-    end
 
     def self.admin_created?
       User.admin.count > 0
@@ -67,21 +45,17 @@ module Spree
       has_spree_role?('admin')
     end
 
-    def anonymous?
-      email =~ /@example.net$/ ? true : false
-    end
-
-    def send_reset_password_instructions
-      generate_reset_password_token!
-      UserMailer.reset_password_instructions(id).deliver
-    end
     # handle_asynchronously will define send_reset_password_instructions_with_delay.
     # If handle_asynchronously is called twice, we get an infinite job loop.
     handle_asynchronously :send_reset_password_instructions unless method_defined? :send_reset_password_instructions_with_delay
 
+    def regenerate_reset_password_token
+      set_reset_password_token
+    end
+
     def known_users
       if admin?
-        Spree::User.scoped
+        Spree::User.where(nil)
       else
         Spree::User
           .includes(:enterprises)
@@ -92,7 +66,7 @@ module Spree
 
     def build_enterprise_roles
       Enterprise.all.find_each do |enterprise|
-        unless enterprise_roles.find_by_enterprise_id enterprise.id
+        unless enterprise_roles.find_by enterprise_id: enterprise.id
           enterprise_roles.build(enterprise: enterprise)
         end
       end
@@ -101,12 +75,12 @@ module Spree
     def customer_of(enterprise)
       return nil unless enterprise
 
-      customers.find_by_enterprise_id(enterprise)
+      customers.find_by(enterprise_id: enterprise)
     end
 
-    def welcome_after_confirm
-      # Send welcome email if we are confirming an user's email
-      # Note: this callback only runs on email confirmation
+    # This is a Devise Confirmable callback that runs on email confirmation
+    # It sends a welcome email after the user email is confirmed
+    def after_confirmation
       return unless confirmed? && unconfirmed_email.nil? && !unconfirmed_email_changed?
 
       send_signup_confirmation
@@ -171,14 +145,6 @@ module Spree
     # Generate a friendly string randomically to be used as token.
     def self.friendly_token
       SecureRandom.base64(15).tr('+/=', '-_ ').strip.delete("\n")
-    end
-
-    # Generate a token by looping and ensuring does not already exist.
-    def self.generate_token(column)
-      loop do
-        token = friendly_token
-        break token unless find(:first, conditions: { column => token })
-      end
     end
 
     def limit_owned_enterprises

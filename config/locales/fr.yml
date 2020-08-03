@@ -13,6 +13,8 @@ fr:
         email: Email acheteur
       spree/payment:
         amount: Montant
+        state: Statut
+        source: Source
       spree/product:
         primary_taxon: "Catégorie Produit"
         supplier: "Fournisseur"
@@ -23,6 +25,8 @@ fr:
         base: "Carte de crédit"
       order_cycle:
         orders_close_at: Date de fermeture
+      variant_override:
+        count_on_hand: "En stock"
     errors:
       models:
         spree/user:
@@ -179,8 +183,8 @@ fr:
         title: Autre échec (%{count} commandes)
         explainer: Le traitement automatique de ces commandes a échoué pour une raison inconnue. Cela n'aurait pas dû arriver, veuillez nous contacter si vous constatez quelque chose d'anormal.
   home: "OFF"
-  title: Open Food France
-  welcome_to: 'Bienvenue sur '
+  title: "Open Food France"
+  welcome_to: "Bienvenue sur"
   site_meta_description: "Tout commence dans le sol. Avec ces paysans, agriculteurs, producteurs, engagés pour une agriculture durable et régénératrice, et désireux de partager leur histoire et leur passion avec fierté. Avec ces distributeurs souhaitant reconnecter les individus à leurs aliments et aux gens qui les produisent, soutenir les prises de conscience, dans une démarche de transparence, d'honnêteté, en assurant une juste rémunération des producteurs.  Avec ces acheteurs qui croient que de meilleures décisions d'achats peuvent ..."
   search_by_name: Recherche par nom ou département...
   producers_join: Les producteurs et autres hubs basés en France sont invités à rejoindre Open Food France.
@@ -268,6 +272,7 @@ fr:
   backordered: "(à volonté)"
   on hand: "En stock"
   ship: "Expédier"
+  shipping_category: "Condition de transport"
   actions:
     create_and_add_another: "Créer et ajouter nouveau"
     create: "Créer"
@@ -368,8 +373,10 @@ fr:
         title: "Configuration Matomo"
         matomo_url: "URL de l'instance sur Matomo"
         matomo_site_id: "ID de l'instance sur Matomo"
-        info_html: "Matomo est un outil d'analyse de trafic web (ordinateur et téléphone). Vous pouvez installer vous-même Matomo ou utiliser une version hébergée. Voir <a href='http://matomo.org' target='_blank'>matomo.org</a> pour plus d'information."
+        matomo_tag_manager_url: "URL du Matomo Tag Manager"
+        info_html: "Matomo est un outil de suivi de traffic et de comportement des utilisateurs. Matomo est open source et validée par la CNIL française car non intrusif dans les données personnelles des utilisateurs. Pour plus d'infos : <a href='http://matomo.org' target='_blank'>matomo.org</a>."
         config_instructions_html: "Pour utiliser Matomo, vous devez configurer l'intégration avec Open Food France. L'URL de l'instance sur Matomo correspond à l'url du site internet visé par le suivi de la navigation utilisateur. Si le champ est vide, Matomo n'effectuera aucune analyse sur ce site. L'ID de l'instance sur Matomo n'est pas obligatoire, mais nécessaire si vous souhaitez analyser plusieurs sites web sur une seule instance Matomo. Cet ID peut être trouvé sur l'espace administrateur Matomo."
+        config_instructions_tag_manager_html: "Ajouter l'URL du Tag Manager rend actif Matomo Tag Manager. Cet outil vous permet de suivre des évènements en particulier. Pour trouver l'URL rendez-vous sur l' \"Install Code section\" du Tag Manager. Attention à bien copier le bon contener et le bon environnement, car ils font varier l'URL."
     customers:
       index:
         new_customer: "Nouvel acheteur"
@@ -403,6 +410,7 @@ fr:
         footer_and_external_links: Pied de page et Liens Externes
         your_content: Votre contenu
         user_guide: Guide utilisateur
+        map: Carte
     enterprise_fees:
       index:
         title: "Marges et Commissions"
@@ -474,6 +482,7 @@ fr:
         line_number: "Ligne %{number} :"
         encoding_error: "Veuillez vérifier le paramètre de langue de votre code source et vous assurer qu'il est encodé en UTF-8"
         unexpected_error: "L'import de fichier produits à rencontré une erreur inconnue à l'ouverture du fichier : %{error_message}"
+        malformed_csv: "L'outil d'import a rencontré un fichier CSV avec le ou les problèmes suivants : %{error_message}"
       index:
         notice: "Notice"
         beta_notice: "Cette fonctionnalité est en mode bêta : il est possible que vous rencontriez des erreurs en l'utilisant. N'hésitez pas à contacter le support utilisateurs."
@@ -1143,13 +1152,18 @@ fr:
     menu:
       cart:
         cart: "Panier"
+      cart_sidebar:
+        checkout: "Etape suivante"
+        edit_cart: "Modifier le panier"
+        items_in_cart_singular: "%{num} élément dans le panier"
+        items_in_cart_plural: "%{num} éléments dans le panier"
+        close: "Fermer"
+        cart_empty: "Le panier est vide"
+        take_me_shopping: "Continuer mes achats"
       signed_in:
         profile: "Profil"
       mobile_menu:
         cart: "Panier"
-      joyride:
-        checkout: "Poursuivre la commande"
-        already_ordered_products: "Déjà commandé dans ce cycle de vente"
     register_call:
       selling_on_ofn: "Vous souhaitez proposer vos produits sur Open Food France?"
       register: "Démarrez ici"
@@ -1177,8 +1191,8 @@ fr:
         signup: "inscrivez-vous"
         contact: "contacter"
         require_customer_login: "Seul les acheteurs autorisés peuvent accéder à cette boutique."
-        require_login_html: "Si vous êtes déjà autorisé à accéder à la boutique, %{login}ou %{signup}pour continuer."
-        require_login_2_html: "Vous souhaitez réaliser vos courses ici? Merci de %{contact}%{enterprise} afin d'avoir l'autorisation d'accès à la boutique."
+        require_login_html: "Si vous êtes déjà autorisé à accéder à la boutique, %{login} ou %{signup} pour continuer."
+        require_login_2_html: "Vous souhaitez réaliser vos courses ici ? Merci de %{contact} %{enterprise} afin d'avoir l'autorisation d'accès à la boutique."
         require_customer_html: "Si vous voulez demander à y accéder, veuillez %{contact} %{enterprise}."
       select_oc:
         select_oc_html: "Merci de <span class='highlighted'>sélectionner une option dans la liste déroulante</span>, afin de voir quel produits sont disponibles."
@@ -1388,7 +1402,7 @@ fr:
   checkout_details: "Vos informations"
   checkout_billing: "Informations de facturation"
   checkout_default_bill_address: "Sauvegarder comme adresse de facturation par défaut"
-  checkout_shipping: Informations de livraison
+  checkout_shipping: Informations de livraison ou de retrait
   checkout_default_ship_address: "Sauvegarder comme adresse de livraison par défaut"
   checkout_method_free: Pas de frais supplémentaires
   checkout_address_same: Adresse de livraison identique à l'adresse de facturation?
@@ -1641,7 +1655,7 @@ fr:
   sell_hubs_detail: "Créer un profil pour votre entreprise de distribution ou organisation sur OFFrance. A tout moment vous pourrez créer une boutique multi-fournisseurs."
   sell_groups_detail: "Créer un répertoire sur mesure (regroupant différents producteurs et hubs de distribution) pour votre région ou votre organisation."
   sell_user_guide: "En savoir plus en explorant le guide utilisateur."
-  sell_listing_price: "L'inscription sur OFFrance est gratuite. Ouvrir et gérer une boutique sur OFFrance ou créer un groupe sur OFFrance pour votre organisation ou réseau régional, n'est pas gratuit, mais le prix est libre: soit 2% du chiffre d'affaire (ou autre forme de contribution libre designée par votre hub), soit une contribution \"en compétences\" à Open Food France (développement de fonctionnalités, recherche de financement, support utilisateur, etc.), soit un mix des deux."
+  sell_listing_price: "L'inscription sur OFFrance est gratuite. Ouvrir et gérer une boutique sur OFFrance ou créer un groupe sur OFFrance pour votre organisation ou réseau régional, n'est pas gratuit. Il existe deux formules : soit la formule \"petit débrouillard\"  où vous pouvez opter pour un montant libre à nous reverser (mais vous ne pouvez pas disposer de support personnalisé), soit vous nous reversez 1% du volume de vente réalisé sur la plateforme pour bénéfier de notre accompagnement. Ce pourcentage peut être dégressif à partir d'un certain montant. Veuillez nous contacter pour en savoir plus !"
   sell_embed: "Nous pouvons aussi intégrer votre boutique OFFrance dans votre propre site web ou construire un site web d'alimentation locale sur mesure pour votre région."
   sell_ask_services: "Nous consulter sur les services des partenaires OFFrance."
   shops_title: Boutiques
@@ -1703,8 +1717,8 @@ fr:
   password: Mot de passe
   remember_me: Se souvenir de moi
   are_you_sure: "Confirmer?"
-  orders_open: Boutique ouverte
-  closing: "Fermeture "
+  orders_open: "Boutique ouverte"
+  closing: "Fermeture"
   going_back_to_home_page: "Retour à la page d'accueil"
   creating: Création
   updating: Mettre à jour
@@ -1948,6 +1962,8 @@ fr:
   supplier: "Fournisseur"
   product_name: "Nom du Produit"
   product_description: "Description du Produit"
+  permalink: "Permalien"
+  shipping_categories: "Conditions de transport"
   units: "Unité de mesure"
   coordinator: "Coordinateur"
   distributor: "Distributeur"
@@ -2044,6 +2060,8 @@ fr:
   remove_tax: "Retirer TVA"
   first_name_begins_with: "Prénom commence par"
   last_name_begins_with: "Nom de famille commence par"
+  shipping_method: "Méthode de livraison"
+  new_order: "Nouvelle commande"
   enterprise_tos_link: "Lien vers les Conditions Générales d'Utilisation"
   enterprise_tos_message: "Nous soutenons la mise en place d'un système alimentaire résilient et durable, et souhaitons œuvrer avec des entreprises qui partagent nos valeurs et notre vision. Ainsi, nous demandons aux entreprises s'enregistrant sur Open Food France de valider nos "
   enterprise_tos_link_text: "Conditions d'utilisation"
@@ -2062,6 +2080,7 @@ fr:
   hub_sidebar_at_least: "Sélectionnez un/des hubs"
   hub_sidebar_blue: "bleu"
   hub_sidebar_red: "rouge"
+  order_cycles_closed_for_hub: "La boutique sélectionnée a fermé temporairement ses commandes. Veuillez essayez à nouveau ultérieurement."
   report_customers_distributor: "Distributeur"
   report_customers_supplier: "Fournisseur"
   report_customers_cycle: "Cycle de vente"
@@ -2134,7 +2153,7 @@ fr:
   report_header_customer_code: Code acheteur
   report_header_product: Produit
   report_header_product_properties: Propriétés / labels Produits
-  report_header_quantity: Nb commandé
+  report_header_quantity: Quantité
   report_header_max_quantity: Quantité Max
   report_header_variant: Variante
   report_header_variant_value: Nb Unités Variante
@@ -2193,7 +2212,7 @@ fr:
   report_header_eft_price: "TEF / Transfert Electronique (%{currency})"
   report_header_paypal_price: "Paypal (%{currency})"
   report_header_sku: Référence Produit
-  report_header_amount: Quantité
+  report_header_amount: Montant
   report_header_balance: Solde
   report_header_total_cost: "Coût Total"
   report_header_total_ordered: Total Commandé
@@ -2300,6 +2319,7 @@ fr:
   order_cycles_email_to_producers_notice: 'Les emails à destination des producteurs ont été mis en file d''attente.'
   order_cycles_no_permission_to_coordinate_error: "Aucune de vos entreprises n'a les droits requis pour coordonner un cycle de vente"
   order_cycles_no_permission_to_create_error: "Vous n'avez pas les droits requis pour créer un cycle de vente coordonné par cette entreprise"
+  order_cycle_closed: "Le cycle de vente que vous avez sélectionné a fermé. "
   back_to_orders_list: "Retour à la liste des commandes"
   no_orders_found: "Aucune commande trouvée pour ces critères"
   order_information: "Info commande"
@@ -2767,6 +2787,7 @@ fr:
   customer_details: "Informations acheteur"
   adjustments: "Ajustements"
   payments: "Paiements"
+  return_authorizations: "Autorisations de retours"
   payment: "Paiement"
   payment_method: "Méthode de paiement"
   shipment: "Livraison"
@@ -2785,11 +2806,12 @@ fr:
   new: "Nouveau"
   start: "Début"
   end: "Fin"
-  stop: "Arrêter"
+  stop: "Fin"
   first: "Début"
   previous: "Précédent"
   last: "Fin"
   spree:
+    more: "Plus"
     your_order_is_empty_add_product: "Votre commande est vide, veuillez ajouter des produits"
     add_product: "Ajouter un produit"
     name_or_sku: "Nom ou Ref Produit (entrer au moins les 4 premiers caractères du nom du produit)"
@@ -2836,6 +2858,14 @@ fr:
     new_payment: "Nouveau paiement"
     capture: "Payée"
     void: "Annulé"
+    login: "Se connecter"
+    password: "Mot de passe"
+    signature: "Signature"
+    solution: "Solution"
+    landing_page: "Page d'accueil (landing page)"
+    server: "Serveur"
+    test_mode: "Mode test"
+    logourl: "URL du logo"
     configurations: "Configurations"
     general_settings: "Configurations générales"
     site_name: "Nom du site"
@@ -2900,8 +2930,6 @@ fr:
     abbreviation: "Code"
     new_state: "Nouveau département"
     payment_methods: "Méthodes de paiement"
-    new_payment_method: "Nouvelle méthode de paiement"
-    provider: "Fournisseur"
     taxonomies: "Taxonomies"
     new_taxonomy: "Nouvelle taxonomie"
     back_to_taxonomies_list: "Retour à la liste des taxonomies"
@@ -2954,6 +2982,12 @@ fr:
     options: "Options"
     actions:
       update: "Mettre à jour"
+    shared:
+      error_messages:
+        errors_prohibited_this_record_from_being_saved:
+          one: "1 erreur n'a pas permis de sauvegarder:"
+          other: "%{count} erreurs ne permettent pas de sauvegarder:"
+        there_were_problems_with_the_following_fields: "Ils a eu des soucis avec les champs suivants"
     errors:
       messages:
         blank: "Champ obligatoire"
@@ -3111,12 +3145,28 @@ fr:
           zones: "Zones"
           both: "Vu par l'acheteur sur la boutique"
           back_end: "Visible pour l'administration uniquement"
-          deactivation_warning: "Désactiver une méthode de livraison peut engendre sa disparition de la liste ici. Si vous souhaitez uniquement ne plus l'afficher pour l'acheteur, modifiez-là et utilisez l'option d'affichage \"visible pour l'administrateur uniquement\"."
+          deactivation_warning: "Désactiver une méthode de livraison peut engendrer sa disparition de la liste ici. Si vous souhaitez uniquement ne plus l'afficher pour l'acheteur, modifiez-là et utilisez l'option d'affichage \"visible pour l'administrateur uniquement\"."
       payment_methods:
+        index:
+          payment_methods: "Méthodes de paiement"
+          new_payment_method: "Nouvelle méthode de paiement"
+          name: "Nom"
+          products_distributor: "Distributeur"
+          provider: "Fournisseur"
+          environment: "Environnement"
+          display: "Afficher"
+          active: "Actif"
+          both: "Les deux"
+          front_end: "Visible par l'acheteur uniquement"
+          back_end: "Visible pour l'administration uniquement"
+          active_yes: "Oui"
+          active_no: "Non"
+          no_payment_methods_found: "Aucune méthode de paiement n'a été trouvée"
         new:
           new_payment_method: "Nouvelle méthode de paiement"
           back_to_payment_methods_list: "Retour à la liste des méthodes de paiement"
         edit:
+          new: "Nouveau"
           editing_payment_method: "Modification de la méthode de paiement"
           back_to_payment_methods_list: "Retour à la liste des méthodes de paiement"
         stripe_connect:
@@ -3132,11 +3182,28 @@ fr:
           account_id: Identifiant Compte
           business_name: Nom de l'entreprise
           charges_enabled: Frais activés
+        form:
+          name: "Nom"
+          description: "Description"
+          environment: "Environnement"
+          display: "Afficher"
+          active: "Actif"
+          active_yes: "Oui"
+          active_no: "Non"
+          both: "Visible par l'acheteur sur la boutique"
+          front_end: "Visible par l'acheteur uniquement"
+          back_end: "Visible pour l'administration uniquement"
+          tags: "Tags"
+          deactivation_warning: "Désactiver une méthode de paiement peut faire disparaitre cette méthode de votre liste. Si vous souhaitez uniquement la rendre invisible par l'acheteur, modifiez la méthode et utilisez l'affichage pour l'administrateur uniquement."
+        providers:
+          provider: "Fournisseur"
       payments:
         source_forms:
           stripe:
             error_saving_payment: Erreur à l'enregistrement du paiement
             submitting_payment: Envoi du paiement...
+          paypal:
+            no_payment_via_admin_backend: 'Il n''est pas encore possible de payer avec Paypal via l''administration. '
       products:
         image_upload_error: "L'image du produit n'a pas été reconnue. Veuillez importer une image au format PNG ou JPG."
         new:
@@ -3234,6 +3301,7 @@ fr:
           display_as_placeholder: 'ex. 2 kg'
           display_name_placeholder: 'ex. Tomates'
         autocomplete:
+          out_of_stock: "En rupture de stock"
           producer_name: "Producteur"
           unit: "Unité"
       shared:
@@ -3299,9 +3367,14 @@ fr:
       invalid: invalide
     order_mailer:
       cancel_email:
-        customer_greeting: "Bonjour %{name} !"
-        instructions: "Votre commande a été ANNULÉE. Vous trouverez ci-dessous les informations concernant cette commande. "
-        order_summary_canceled: "Résumé de la commande [ANNULEE]"
+        customer_greeting: "Bonjour %{name},"
+        instructions_html: "Votre commande avec <strong>%{distributor}</strong>a été annulée. Merci de conserver cet email."
+        dont_cancel: "Si vous avez changé d'avis ou l'annulation a été réalisée par erreur, merci de contacter %{email}"
+        order_summary_canceled_html: "<strong>[ANNULATION] Commande #%{number}</strong>"
+        details: "Voici le détail des produits commandés:"
+        unpaid_order: "Votre commande n'avait pas été réglée, aucun remboursement n'a donc été effectué"
+        paid_order: "Votre commande avait été réglée, ainsi %{distributor}a remboursé la totalité du montant"
+        credit_order: "Votre commande avait été payée, votre compte a donc été crédité"
         subject: "Annulation de Commande"
       confirm_email:
         subject: "Confirmation de commande"

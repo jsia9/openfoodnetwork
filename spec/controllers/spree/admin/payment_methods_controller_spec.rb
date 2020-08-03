@@ -2,14 +2,13 @@ require 'spec_helper'
 
 module Spree
   class GatewayWithPassword < PaymentMethod
-    attr_accessible :preferred_password
     preference :password, :string, default: "password"
   end
 
   describe Admin::PaymentMethodsController, type: :controller do
     describe "#create and #update" do
       let!(:enterprise) { create(:distributor_enterprise, owner: user) }
-      let(:payment_method) { GatewayWithPassword.create!(name: "Bogus", preferred_password: "haxme", distributor_ids: [enterprise.id], preferred_enterprise_id: enterprise.id) }
+      let(:payment_method) { GatewayWithPassword.create!(name: "Bogus", preferred_password: "haxme", distributor_ids: [enterprise.id]) }
       let!(:user) { create(:user) }
 
       before { allow(controller).to receive(:spree_current_user) { user } }
@@ -33,16 +32,30 @@ module Spree
 
       it "can create a payment method of a valid type" do
         expect {
-          spree_post :create, payment_method: { name: "Test Method", type: "Spree::Gateway::Bogus", distributor_ids: [enterprise.id], preferred_enterprise_id: enterprise.id }
+          spree_post :create, payment_method: { name: "Test Method", type: "Spree::Gateway::Bogus", distributor_ids: [enterprise.id] }
         }.to change(Spree::PaymentMethod, :count).by(1)
 
         expect(response).to be_redirect
         expect(response).to redirect_to spree.edit_admin_payment_method_path(assigns(:payment_method))
       end
 
+      it "can save Pin Payment payment method details" do
+        expect {
+          spree_post :create, payment_method: {
+            name: "Test Method", type: "Spree::Gateway::Pin", distributor_ids: [enterprise.id],
+            preferred_server: "test", preferred_api_key: "apikey123", preferred_test_mode: "1"
+          }
+        }.to change(Spree::PaymentMethod, :count).by(1)
+
+        payment_method = Spree::PaymentMethod.last
+        expect(payment_method.preferences[:server]).to eq "test"
+        expect(payment_method.preferences[:api_key]).to eq "apikey123"
+        expect(payment_method.preferences[:test_mode]).to eq true
+      end
+
       it "can not create a payment method of an invalid type" do
         expect {
-          spree_post :create, payment_method: { name: "Invalid Payment Method", type: "Spree::InvalidType", distributor_ids: [enterprise.id], preferred_enterprise_id: enterprise.id }
+          spree_post :create, payment_method: { name: "Invalid Payment Method", type: "Spree::InvalidType", distributor_ids: [enterprise.id] }
         }.to change(Spree::PaymentMethod, :count).by(0)
 
         expect(response).to be_redirect
@@ -70,7 +83,7 @@ module Spree
           end
 
           context "as a user that manages the existing stripe account holder" do
-            before { enterprise2.update_attributes!(owner_id: user.id) }
+            before { enterprise2.update!(owner_id: user.id) }
 
             it "allows the stripe account holder to be updated" do
               spree_put :update, params

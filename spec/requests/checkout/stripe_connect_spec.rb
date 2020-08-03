@@ -10,7 +10,7 @@ describe "checking out an order with a Stripe Connect payment method", type: :re
   let!(:shipping_method) do
     create(
       :shipping_method,
-      calculator: Spree::Calculator::FlatRate.new(preferred_amount: 0),
+      calculator: Calculator::FlatRate.new(preferred_amount: 0),
       distributors: [enterprise]
     )
   end
@@ -67,7 +67,7 @@ describe "checking out an order with a Stripe Connect payment method", type: :re
     allow(order_cycle_distributed_variants).to receive(:distributes_order_variants?) { true }
 
     allow(Stripe).to receive(:api_key) { "sk_test_12345" }
-    order.update_attributes(distributor_id: enterprise.id, order_cycle_id: order_cycle.id)
+    order.update(distributor_id: enterprise.id, order_cycle_id: order_cycle.id)
     order.reload.update_totals
     set_order order
   end

@@ -11,9 +11,9 @@ module Api
 
     attr_accessor :current_api_user
 
-    before_filter :set_content_type
-    before_filter :authenticate_user
-    after_filter  :set_jsonp_format
+    before_action :set_content_type
+    before_action :authenticate_user
+    after_action  :set_jsonp_format
 
     rescue_from Exception, with: :error_during_processing
     rescue_from CanCan::AccessDenied, with: :unauthorized
@@ -32,6 +32,12 @@ module Api
     use_renderers :json
     check_authorization
 
+    # Temporary measure to help debugging strong_parameters
+    rescue_from ActiveModel::ForbiddenAttributesError, with: :print_params
+    def print_params
+      raise ActiveModel::ForbiddenAttributesError, params.to_s
+    end
+
     def set_jsonp_format
       return unless params[:callback] && request.get?
 
@@ -47,7 +53,7 @@ module Api
 
     # Use logged in user (spree_current_user) for API authentication (current_api_user)
     def authenticate_user
-      return if @current_api_user = try_spree_current_user
+      return if @current_api_user = spree_current_user
 
       if api_key.blank?
         # An anonymous user
@@ -55,7 +61,7 @@ module Api
         return
       end
 
-      return if @current_api_user = Spree.user_class.find_by_spree_api_key(api_key.to_s)
+      return if @current_api_user = Spree.user_class.find_by(spree_api_key: api_key.to_s)
 
       invalid_api_key
     end

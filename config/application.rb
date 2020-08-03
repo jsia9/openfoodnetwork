@@ -39,7 +39,7 @@ module Openfoodnetwork
       Spree::Config['checkout_zone'] = ENV['CHECKOUT_ZONE']
       Spree::Config['currency'] = ENV['CURRENCY']
       if Spree::Country.table_exists?
-        country = Spree::Country.find_by_iso(ENV['DEFAULT_COUNTRY_CODE'])
+        country = Spree::Country.find_by(iso: ENV['DEFAULT_COUNTRY_CODE'])
         Spree::Config['default_country_id'] = country.id if country.present?
       else
         Spree::Config['default_country_id'] = 12  # Australia
@@ -49,41 +49,36 @@ module Openfoodnetwork
     # Register Spree calculators
     initializer 'spree.register.calculators' do |app|
       app.config.spree.calculators.shipping_methods = [
-        Spree::Calculator::FlatPercentItemTotal,
-        Spree::Calculator::FlatRate,
-        Spree::Calculator::FlexiRate,
-        Spree::Calculator::PerItem,
-        Spree::Calculator::PriceSack,
+        Calculator::FlatPercentItemTotal,
+        Calculator::FlatRate,
+        Calculator::FlexiRate,
+        Calculator::PerItem,
+        Calculator::PriceSack,
         Calculator::Weight
       ]
 
       app.config.spree.calculators.add_class('enterprise_fees')
       config.spree.calculators.enterprise_fees = [
         Calculator::FlatPercentPerItem,
-        Spree::Calculator::FlatRate,
-        Spree::Calculator::FlexiRate,
-        Spree::Calculator::PerItem,
-        Spree::Calculator::PriceSack,
+        Calculator::FlatRate,
+        Calculator::FlexiRate,
+        Calculator::PerItem,
+        Calculator::PriceSack,
         Calculator::Weight
       ]
+
       app.config.spree.calculators.add_class('payment_methods')
       config.spree.calculators.payment_methods = [
-        Spree::Calculator::FlatPercentItemTotal,
-        Spree::Calculator::FlatRate,
-        Spree::Calculator::FlexiRate,
-        Spree::Calculator::PerItem,
-        Spree::Calculator::PriceSack
+        Calculator::FlatPercentItemTotal,
+        Calculator::FlatRate,
+        Calculator::FlexiRate,
+        Calculator::PerItem,
+        Calculator::PriceSack
       ]
-    end
 
-    # Every splitter (except Base splitter) will split the order in multiple packages
-    #   Each package will generate a separate shipment in the order
-    #   Base splitter does not split the packages
-    #   So, because in OFN we have locked orders to have only one shipment,
-    #     we must use this splitter and no other
-    initializer "spree.register.stock_splitters" do |app|
-      app.config.spree.stock_splitters = [
-        Spree::Stock::Splitter::Base
+      app.config.spree.calculators.add_class('tax_rates')
+      config.spree.calculators.tax_rates = [
+        Calculator::DefaultTax
       ]
     end
 
@@ -106,7 +101,7 @@ module Openfoodnetwork
       #{config.root}/app/jobs
     )
 
-    config.paths["config/routes"] = %w(
+    config.paths["config/routes.rb"] = %w(
       config/routes/api.rb
       config/routes.rb
       config/routes/admin.rb
@@ -138,9 +133,6 @@ module Openfoodnetwork
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
-    # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
-
     # Enable the asset pipeline
     config.assets.enabled = true
 
@@ -163,6 +155,7 @@ module Openfoodnetwork
     config.assets.precompile += ['mail/all.css']
     config.assets.precompile += ['shared/*']
     config.assets.precompile += ['qz/*']
+    config.assets.precompile += ['*.jpg', '*.jpeg', '*.png', '*.gif' '*.svg']
 
     config.active_support.escape_html_entities_in_json = true
   end

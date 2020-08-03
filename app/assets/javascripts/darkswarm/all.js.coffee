@@ -1,13 +1,15 @@
 #= require jquery
 #= require jquery_ujs
 #= require jquery.ui.all
-#= require spin
 #
 #= require angular
 #= require angular-cookies
 #= require angular-sanitize
 #= require angular-animate
 #= require angular-resource
+#= require autocomplete.min.js
+#= require leaflet-1.6.0.js
+#= require leaflet-providers.js
 #= require lodash.underscore.js
 # bluebird.js is a dependency of angular-google-maps.js 2.0.0
 #= require bluebird.js
@@ -35,7 +37,11 @@
 #= require moment/nb.js
 #= require moment/pt-br.js
 #= require moment/pt.js
+#= require moment/ru.js
 #= require moment/sv.js
+#= require moment/ca.js
+#= require moment/ar.js
+#= require moment/tr.js
 #
 #= require modernizr
 #

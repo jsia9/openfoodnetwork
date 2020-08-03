@@ -9,12 +9,7 @@
   - if flash[:success]
     .flash.success= flash[:success]
 
-  #progress
-    .wrapper
-      #spinner
-      .progress-message
-        = Spree.t(:loading)
-        \...
+  = render partial: "spree/layouts/admin/progress_spinner"
 
   %header#header{"data-hook" => ""}
     .container
@@ -71,4 +66,4 @@
 %div{"data-hook" => "admin_footer_scripts"}
 
 %script
-  = raw "Spree.api_key = \"#{try_spree_current_user.try(:spree_api_key).to_s}\";"
+  = raw "Spree.api_key = \"#{spree_current_user.try(:spree_api_key).to_s}\";"
