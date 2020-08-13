@@ -1,4 +1,4 @@
-fr:
+fr-BF:
   language_name: "Français"
   activerecord:
     attributes:
@@ -358,7 +358,7 @@ fr:
         settings: "Paramètres"
         stripe_connect_enabled: Permettre aux boutiques d'accepter les paiements via Stripe Connect ?
         no_api_key_msg: Aucun compte Stripe n'existe pour cette entreprise.
-        configuration_explanation_html: Pour des instructions précises sur comment configurer Stripe Connect, veuillez <a href='https://github.com/openfoodfoundation/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance' target='_blank'>consulter ce guide</a>.
+        configuration_explanation_html: Pour des instructions précises sur comment configurer Stripe Connect, veuillez <a href='https://github.com/jamalsia/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance' target='_blank'>consulter ce guide</a>.
         status: Statut
         ok: Ok
         instance_secret_key: Clé Secrète de l'Instance
@@ -367,14 +367,14 @@ fr:
         charges_enabled: Frais activés
         charges_enabled_warning: "Attention : les Frais ne sont pas activés pour votre compte"
         auth_fail_error: La clé de l'API est invalide
-        empty_api_key_error_html: Aucune clé d'API Stripe n'a été fournie. Pour mettre en place votre clé d'API, veuillez suivre <a href="https://github.com/openfoodfoundation/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance" target="_blank">ces instructions</a>
+        empty_api_key_error_html: Aucune clé d'API Stripe n'a été fournie. Pour mettre en place votre clé d'API, veuillez suivre <a href="https://github.com/jamalsia/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance" target="_blank">ces instructions</a>
     matomo_settings:
       edit:
         title: "Configuration Matomo"
         matomo_url: "URL de l'instance sur Matomo"
         matomo_site_id: "ID de l'instance sur Matomo"
         matomo_tag_manager_url: "URL du Matomo Tag Manager"
-        info_html: "Matomo est un outil de suivi de traffic et de comportement des utilisateurs. Matomo est open source et validée par la CNIL française car non intrusif dans les données personnelles des utilisateurs. Pour plus d'infos : <a href='http://matomo.org' target='_blank'>matomo.org</a>."
+        info_html: "Matomo est un outil de suivi de traffic et de comportement des utilisateurs. Matomo est open source et validée par la CNIL burkinabè car non intrusif dans les données personnelles des utilisateurs. Pour plus d'infos : <a href='http://matomo.org' target='_blank'>matomo.org</a>."
         config_instructions_html: "Pour utiliser Matomo, vous devez configurer l'intégration avec Open Food du Faso. L'URL de l'instance sur Matomo correspond à l'url du site internet visé par le suivi de la navigation utilisateur. Si le champ est vide, Matomo n'effectuera aucune analyse sur ce site. L'ID de l'instance sur Matomo n'est pas obligatoire, mais nécessaire si vous souhaitez analyser plusieurs sites web sur une seule instance Matomo. Cet ID peut être trouvé sur l'espace administrateur Matomo."
         config_instructions_tag_manager_html: "Ajouter l'URL du Tag Manager rend actif Matomo Tag Manager. Cet outil vous permet de suivre des évènements en particulier. Pour trouver l'URL rendez-vous sur l' \"Install Code section\" du Tag Manager. Attention à bien copier le bon contener et le bon environnement, car ils font varier l'URL."
     customers:
