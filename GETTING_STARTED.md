@@ -1,6 +1,6 @@
 ### Getting Started
 
-This is a general guide to setting up an Open Food Network **development environment on your local machine**. If you want to setup OFN on a server, please have a look at the [ofn-install deployment guide](https://github.com/openfoodfoundation/ofn-install/wiki).
+This is a general guide to setting up an Open Food Network **development environment on your local machine**. If you want to setup OFN on a server, please have a look at the [ofn-install deployment guide](https://github.com/jamalsia/ofn-install/wiki).
 
 ### Requirements
 
@@ -30,7 +30,7 @@ Jump into your new local copy of the Open Food Network:
 
 And then add an `upstream` remote that points to the main repo:
 
-    git remote add upstream https://github.com/openfoodfoundation/openfoodnetwork
+    git remote add upstream https://github.com/jamalsia/openfoodnetwork
 
 Fetch the latest version of `master` from `upstream` (ie. the main repo):
 
