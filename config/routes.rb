@@ -22,8 +22,10 @@ Openfoodnetwork::Application.routes.draw do
   post "/user/registered_email", to: "spree/users#registered_email"
 
   # Redirects to global website
-  get "/connect", to: redirect("https://openfoodnetwork.org/#{ENV['DEFAULT_COUNTRY_CODE'].andand.downcase}/connect/")
-  get "/learn", to: redirect("https://openfoodnetwork.org/#{ENV['DEFAULT_COUNTRY_CODE'].andand.downcase}/learn/")
+  # get "/connect", to: redirect("https://openfoodnetwork.org/#{ENV['DEFAULT_COUNTRY_CODE'].andand.downcase}/connect/")
+  # get "/learn", to: redirect("https://openfoodnetwork.org/#{ENV['DEFAULT_COUNTRY_CODE'].andand.downcase}/learn/")
+  get "/connect", to: redirect("https://www.ikatrans.com")
+  get "/learn", to: redirect("https://www.ikatrans.com")
 
   get "/cart", :to => "spree/orders#edit", :as => :cart
   patch "/cart", :to => "spree/orders#update", :as => :update_cart
