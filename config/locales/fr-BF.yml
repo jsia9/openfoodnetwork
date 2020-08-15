@@ -22,7 +22,7 @@ fr-BF:
         variant_unit: "Unité"
         variant_unit_name: "Unité de la variante"
       spree/credit_card:
-        base: "Compte Orange Money"
+        base: "Carte Bancaire"
       order_cycle:
         orders_close_at: Date de fermeture
       variant_override:
