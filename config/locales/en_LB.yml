@@ -635,14 +635,14 @@ en_LB:
           invoice_text: Add customized text at the end of invoices
         contact:
           name: Name
-          name_placeholder: eg. Gustav Plum
+          name_placeholder: eg. Joseph Jenkins Roberts
           email_address: Public Email Address
-          email_address_placeholder: eg. inquiries@fresh-food.com
+          email_address_placeholder: eg. contact@ikatrans.com
           email_address_tip: "This email address will be displayed in your public profile"
           phone: Phone
           phone_placeholder: eg. 98 7654 3210
           website: Website
-          website_placeholder: eg. www.truffles.com
+          website_placeholder: eg. www.ikatrans.com
         enterprise_fees:
           name: Name
           fee_type: Fee Type
@@ -738,8 +738,8 @@ en_LB:
           open_date: "Open Date"
           close_date: "Close Date"
         social:
-          twitter_placeholder: "eg. @the_prof"
-          instagram_placeholder: "eg. the_prof"
+          twitter_placeholder: "eg. @ikatrans1"
+          instagram_placeholder: "eg. ikatrans1"
           facebook_placeholder: "eg. www.facebook.com/PageNameHere"
           linkedin_placeholder: "eg. www.linkedin.com/in/YourNameHere"
         stripe_connect:
@@ -773,7 +773,7 @@ en_LB:
           owner_tip: The primary user responsible for this enterprise.
           notifications: Notifications
           notifications_tip: Notifications about orders will be send to this email address.
-          notifications_placeholder: eg. gustav@truffles.com
+          notifications_placeholder: eg. jamal.sia@ikatrans.com
           notifications_note: 'Note: A new email address may need to be confirmed prior to use'
           managers: Managers
           managers_tip: The other users with permission to manage this enterprise.
@@ -1799,14 +1799,14 @@ en_LB:
         producer: "Woot! First we need to know a little bit about your farm:"
         enterprise_name_field: "Enterprise Name:"
         producer_name_field: "Farm Name:"
-        producer_name_field_placeholder: "e.g. Charlie's Awesome Farm"
+        producer_name_field_placeholder: "e.g. Charlie's Nimba Farm"
         producer_name_field_error: "Please choose a unique name for your enterprise"
         address1_field: "Address line 1:"
-        address1_field_placeholder: "e.g. 123 Cranberry Drive"
+        address1_field_placeholder: "e.g. 123 Somalia Drive"
         address1_field_error: "Please enter an address"
         address2_field: "Address line 2:"
         suburb_field: "Suburb:"
-        suburb_field_placeholder: "e.g. Northcote"
+        suburb_field_placeholder: "e.g. Monrovia"
         suburb_field_error: "Please enter a suburb"
         postcode_field: "Postcode:"
         postcode_field_placeholder: "e.g. 3070"
@@ -1953,16 +1953,16 @@ en_LB:
   admin_enterprise_groups_data_powertip_promo_image: "This image is displayed at the top of the Group profile"
   admin_enterprise_groups_contact: "Contact"
   admin_enterprise_groups_contact_phone_placeholder: "eg. 98 7654 3210"
-  admin_enterprise_groups_contact_address1_placeholder: "eg. 123 High Street"
+  admin_enterprise_groups_contact_address1_placeholder: "eg. 123 Broad Street"
   admin_enterprise_groups_contact_city: "Suburb"
-  admin_enterprise_groups_contact_city_placeholder: "eg. Northcote"
+  admin_enterprise_groups_contact_city_placeholder: "eg. Monrovia"
   admin_enterprise_groups_contact_zipcode: "Postcode"
   admin_enterprise_groups_contact_zipcode_placeholder: "eg. 3070"
   admin_enterprise_groups_contact_state_id: "State"
   admin_enterprise_groups_contact_country_id: "Country"
   admin_enterprise_groups_web: "Web Resources"
-  admin_enterprise_groups_web_twitter: "eg. @the_prof"
-  admin_enterprise_groups_web_website_placeholder: "eg. www.truffles.com"
+  admin_enterprise_groups_web_twitter: "eg. @ikatrans1"
+  admin_enterprise_groups_web_website_placeholder: "eg. www.ikatrans.com"
   admin_order_cycles: "Admin Order Cycles"
   open: "Open"
   close: "Close"
