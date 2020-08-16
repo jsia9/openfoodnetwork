@@ -632,12 +632,12 @@ fr-BF:
           invoice_text: Ajouter une mention spécifique en bas des factures
         contact:
           name: Nom
-          name_placeholder: 'ex: Bernard Michelet'
+          name_placeholder: 'ex: John Touré'
           email_address: Adresse email publique
           email_address_placeholder: 'ex: contact@fermewendpanga.com'
           email_address_tip: "Cette adresse email sera affichée sur votre profil public"
           phone: n° téléphone
-          phone_placeholder: 'ex: 06 13 24 35 46'
+          phone_placeholder: 'ex: 70 28 09 98'
           website: Site internet
           website_placeholder: 'ex: www.fermewendpanga.com'
         enterprise_fees:
