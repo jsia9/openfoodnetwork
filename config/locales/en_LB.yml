@@ -674,7 +674,7 @@ en_LB:
           create_one_button: Create One Now
         primary_details:
           name: Name
-          name_placeholder: eg. Professor Plum's Biodynamic Truffles
+          name_placeholder: eg. Red Chicken Rice
           groups: Groups
           groups_tip: Select any groups or regions that you are a member of. This will help customers find your enterprise.
           groups_placeholder: Start typing to search available groups...
