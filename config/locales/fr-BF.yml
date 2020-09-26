@@ -374,7 +374,7 @@ fr-BF:
         matomo_url: "URL de l'instance sur Matomo"
         matomo_site_id: "ID de l'instance sur Matomo"
         matomo_tag_manager_url: "URL du Matomo Tag Manager"
-        info_html: "Matomo est un outil de suivi de traffic et de comportement des utilisateurs. Matomo est open source et validée par la CNIL burkinabè car non intrusif dans les données personnelles des utilisateurs. Pour plus d'infos : <a href='http://matomo.org' target='_blank'>matomo.org</a>."
+        info_html: "Matomo est un outil de suivi de traffic et de comportement des utilisateurs. Matomo est open source et non intrusif dans les données personnelles des utilisateurs. Pour plus d'infos : <a href='http://matomo.org' target='_blank'>matomo.org</a>."
         config_instructions_html: "Pour utiliser Matomo, vous devez configurer l'intégration avec Maho Food. L'URL de l'instance sur Matomo correspond à l'url du site internet visé par le suivi de la navigation utilisateur. Si le champ est vide, Matomo n'effectuera aucune analyse sur ce site. L'ID de l'instance sur Matomo n'est pas obligatoire, mais nécessaire si vous souhaitez analyser plusieurs sites web sur une seule instance Matomo. Cet ID peut être trouvé sur l'espace administrateur Matomo."
         config_instructions_tag_manager_html: "Ajouter l'URL du Tag Manager rend actif Matomo Tag Manager. Cet outil vous permet de suivre des évènements en particulier. Pour trouver l'URL rendez-vous sur l' \"Install Code section\" du Tag Manager. Attention à bien copier le bon contener et le bon environnement, car ils font varier l'URL."
     customers:
@@ -1599,10 +1599,10 @@ fr-BF:
   groups_contact_facebook: Nous suivre sur Facebook
   groups_signup_title: S'inscrire en tant que groupe
   groups_signup_headline: Inscription groupe
-  groups_signup_intro: "Nous sommes une plate-forme très efficace pour le marketing collaboratif, une excellente manière pour vos membres et parties prenantes d'atteindre de nouveaux marchés. Nous sommes à but non lucratif, abordable et simple."
+  groups_signup_intro: "Nous sommes une plate-forme très efficace pour le marketing collaboratif, une excellente manière pour vos membres et parties prenantes d'atteindre de nouveaux marchés. Nous sommes à intègre, abordable et simple."
   groups_signup_email: Nous écrire
-  groups_signup_motivation1: Nous transformons les systèmes alimentaires pour remettre de l'équité dans les échanges.
-  groups_signup_motivation2: C'est pourquoi nous sortons du lit chaque matin. Nous sommes une organisation à but non lucratif, basée sur un code source ouvert. Nous opérons en toute transparence.
+  groups_signup_motivation1: Nous transformons les systèmes alimentaires pour remettre de la confiance dans les échanges.
+  groups_signup_motivation2: C'est pourquoi nous sortons du lit chaque matin. Nous sommes une entreprise, basée sur un code source ouvert. Nous opérons en toute transparence.
   groups_signup_motivation3: Vous avez de belles idées, et nous voulons vous aider. Nous partageons nos connaissances, réseaux et ressources. Nous savons que l'isolement ne crée pas le changement, alors coopérons.
   groups_signup_motivation4: Nous venons à votre rencontrer.
   groups_signup_motivation5: Vous êtes un réseau de circuits de distribution alternatifs, de producteurs, de distributeurs, une administration liée à l'industrie alimentaire ou une autorité locale?
@@ -1613,7 +1613,7 @@ fr-BF:
   groups_signup_pricing: Compte groupe
   groups_signup_studies: Etudes de cas
   groups_signup_contact: Vous voulez discuter?
-  groups_signup_contact_text: "Prenez contact et découvrez ce qu'Maho Food peut faire pour vous:"
+  groups_signup_contact_text: "Prenez contact et découvrez ce que Maho Food peut faire pour vous:"
   groups_signup_detail: "Plus de précisions."
   login_invalid: "Email ou mot de passe erroné"
   producers_about: A propos
@@ -1663,7 +1663,7 @@ fr-BF:
   shops_text: Les aliments poussent selon des cycles naturels, les fermiers récoltent en cycles. Alors ici, nous achetons aussi en cycles. Si un cycle de vente est terminé, attendez le suivant ou demandez des infos au hub !
   shops_signup_title: S'inscrire en tant que hub
   shops_signup_headline: Des hubs divers et variés
-  shops_signup_motivation: Quel que soit votre modèle, vous pouvez vous appuyer sur Maho Food. Si vous voulez le faire évoluer, nous sommes là pour vous aider. Nous agissons selon des principes de non-lucrativité, d'indépendance, et de transparence. Et nous faisons tout notre possible pour répondre à vos besoins et vous accompagner en toute circonstance.
+  shops_signup_motivation: Quel que soit votre modèle, vous pouvez vous appuyer sur Maho Food. Si vous voulez le faire évoluer, nous sommes là pour vous aider. Nous agissons selon des principes de confiance, d'indépendance, et de transparence. Et nous faisons tout notre possible pour répondre à vos besoins et vous accompagner en toute circonstance.
   shops_signup_action: Rejoindre le réseau
   shops_signup_pricing: Comptes entreprises
   shops_signup_stories: Histoires de hubs.
@@ -1802,8 +1802,8 @@ fr-BF:
         postcode_field: "Code postal :"
         postcode_field_placeholder: "ex : 01"
         postcode_field_error: "Veuillez saisir le code postal"
-        state_field: "Département :"
-        state_field_error: "Veuillez saisir un Département"
+        state_field: "Province :"
+        state_field_error: "Veuillez saisir une Province"
         country_field: "Pays :"
         country_field_error: "Veuillez saisir une Pays"
       contact:
@@ -1836,9 +1836,9 @@ fr-BF:
         enterprise_long_desc_placeholder: "Vous pouvez ici raconter l'histoire de votre organisation - votre projet, les valeurs que vous défendez. Nous vous conseillons de ne pas dépasser 600 caractères ou 150 mots."
         enterprise_long_desc_length: "%{num} caractères / inférieur à 600 recommandé"
         enterprise_abn: "SIRET"
-        enterprise_abn_placeholder: "ex: 404 833 048 00022"
+        enterprise_abn_placeholder: "ex: 404 833 048 00022 ou 0 si vous n'en avez pas"
         enterprise_acn: "n° TVA intracommunautaire"
-        enterprise_acn_placeholder: "ex: 404 833 048"
+        enterprise_acn_placeholder: "ex: 404 833 048 ou 0 si vous n'en avez pas"
         enterprise_tax_required: "Merci de choisir."
       images:
         title: "Images"
@@ -2065,7 +2065,7 @@ fr-BF:
   enterprise_tos_link: "Lien vers les Conditions Générales d'Utilisation"
   enterprise_tos_message: "Nous soutenons la mise en place d'un système alimentaire résilient et durable, et souhaitons œuvrer avec des entreprises qui partagent nos valeurs et notre vision. Ainsi, nous demandons aux entreprises s'enregistrant sur Maho Food de valider nos "
   enterprise_tos_link_text: "Conditions d'utilisation"
-  enterprise_tos_agree: "J'adhère aux valeurs d'Maho Food et valide les Conditions Générales d'Utilisation."
+  enterprise_tos_agree: "J'adhère aux valeurs de Maho Food et valide les Conditions Générales d'Utilisation."
   tax_settings: "Paramètres TVA"
   products_require_tax_category: "vous devez choisir la TVA applicable"
   admin_shared_address_1: "Adresse"
