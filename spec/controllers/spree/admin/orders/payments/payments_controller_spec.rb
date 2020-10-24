@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'spree/core/gateway_error'
 
 describe Spree::Admin::PaymentsController, type: :controller do
   let!(:shop) { create(:enterprise) }
@@ -45,7 +46,7 @@ describe Spree::Admin::PaymentsController, type: :controller do
       end
 
       context "with Stripe payment where payment.process! errors out" do
-        let!(:payment_method) { create(:stripe_payment_method, distributors: [shop]) }
+        let!(:payment_method) { create(:stripe_connect_payment_method, distributors: [shop]) }
         before do
           allow_any_instance_of(Spree::Payment).
             to receive(:process!).

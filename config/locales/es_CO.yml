@@ -23,6 +23,7 @@ es_CO:
         variant_unit_name: "Nombre de la unidad de la variante"
       spree/credit_card:
         base: "Tarjeta de crédito"
+        number: "Número"
       order_cycle:
         orders_close_at: Fecha de cierre
       variant_override:
@@ -188,7 +189,7 @@ es_CO:
   title: "Open Food Network"
   welcome_to: "Bienvenido a"
   site_meta_description: "Nosotros empezamos desde abajo. Con granjeros y productores listos para contar sus historias con orgullo y autenticidad. Con distribuidores listos para conectar gente con productos de forma justa y honesta. Con compradores que creen que mejores decisiones de compras semanales pueden..."
-  search_by_name: Buscar por nombre o cantón...
+  search_by_name: Buscar por nombre o municipio...
   producers_join: Los productores colombianos ahora son bienvenidos a unirse a Open Food Network.
   charges_sales_tax: ¿Cargos de IVA?
   print_invoice: "Imprimir factura"
@@ -1530,7 +1531,7 @@ es_CO:
   shopping_oc_last_closed: "El último ciclo cerró hace %{distance_of_time}"
   shopping_oc_next_open: "El próximo ciclo abrirá en %{distance_of_time}"
   shopping_oc_select: "Seleccionar"
-  shopping_tabs_home: "Inicio"
+  shopping_tabs_home: "Bienvenidos"
   shopping_tabs_shop: "Tienda"
   shopping_tabs_about: "Acerca de"
   shopping_tabs_contact: "Contacto"
@@ -2974,11 +2975,13 @@ es_CO:
     inventory_error_flash_for_insufficient_quantity: "Un artículo de su carrito ya no está disponible."
     inventory: Inventario
     zipcode: Código postal
-    weight: Peso (en kg)
     error_user_destroy_with_orders: "Los usuarios con pedidos completados no pueden ser eliminados"
     cannot_create_payment_without_payment_methods: "No se puede crear un pago para una orden sin un método de pago definido."
     please_define_payment_methods: "Por favor definir métodos de pago primero."
     options: "Opciones"
+    successfully_created: '%{resource} se ha creado exitosamente!'
+    successfully_updated: '%{resource} ha sido actualizado exitosamente!'
+    payment_processing_failed: "No se pudo procesar el pago, por favor verifique los detalles que introdujo"
     actions:
       update: "Actualizar"
     shared:

@@ -20,6 +20,7 @@ require 'rspec/rails'
 require 'capybara'
 require 'database_cleaner'
 require 'rspec/retry'
+require 'coverage_helper'
 require 'paper_trail/frameworks/rspec'
 
 require 'webdrivers'
@@ -128,6 +129,15 @@ RSpec.configure do |config|
     ActionController::Base.perform_caching = example.metadata[:caching]
     example.run
     ActionController::Base.perform_caching = caching
+  end
+
+  # Show javascript errors in test output with `js_debug: true`
+  config.after(:each, :js_debug) do
+    errors = page.driver.browser.manage.logs.get(:browser)
+    if errors.present?
+      message = errors.map(&:message).join("\n")
+      puts message
+    end
   end
 
   config.before(:all) { restart_driver }

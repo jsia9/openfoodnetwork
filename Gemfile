@@ -3,7 +3,7 @@ ruby "2.3.7"
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'i18n', '~> 0.6.11'
-gem 'i18n-js', '~> 3.7.1'
+gem 'i18n-js', '~> 3.8.0'
 gem 'rails', '~> 4.0.13'
 gem 'rails-i18n', '~> 4.0'
 gem 'rails_safe_tasks', '~> 1.0'
@@ -117,7 +117,6 @@ gem 'uglifier', '>= 1.0.3'
 
 gem 'angular-rails-templates', '~> 0.3.0'
 gem 'foundation-icons-sass-rails'
-gem 'momentjs-rails'
 
 gem 'foundation-rails', '= 5.5.2.1'
 
@@ -156,6 +155,7 @@ end
 
 group :test do
   gem 'simplecov', require: false
+  gem 'test-prof'
   gem 'webmock'
   # See spec/spec_helper.rb for instructions
   # gem 'perftools.rb'
