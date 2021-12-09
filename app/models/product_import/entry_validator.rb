@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class handles a number of custom validation processes that take place during product import,
 # as a spreadsheet entry is checked to see if it is a valid product, variant, or inventory item.
 # It also handles error messages and user feedback for the validation process.
@@ -422,7 +424,7 @@ module ProductImport
     end
 
     def import_into_inventory?
-      @import_settings[:settings].andand['import_into'] == 'inventories'
+      @import_settings.dig(:settings, 'import_into') == 'inventories'
     end
 
     def validate_inventory_item(entry, variant_override)

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Admin
-  class ProxyOrdersController < ResourceController
+  class ProxyOrdersController < Admin::ResourceController
     respond_to :json
 
     def edit

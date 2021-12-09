@@ -2,6 +2,8 @@ pl:
   language_name: "Polski"
   activerecord:
     attributes:
+      spree/user:
+        reset_password_token: Token resetowania hasła
       enterprise_fee:
         fee_type: Typ opłaty
       spree/order:
@@ -114,6 +116,7 @@ pl:
   models:
     order_cycle:
       cloned_order_cycle_name: "Kopia %{order_cycle}"
+  sku: "SKU"
   validators:
     date_time_string_validator:
       not_string_error: "musi być ciągiem znaków"
@@ -121,10 +124,6 @@ pl:
     integer_array_validator:
       not_array_error: "musi być tablicą"
       invalid_element_error: "musi zawierać tylko prawidłowe liczby całkowite"
-  datetime_picker_ui:
-    current_text: Teraz
-    close_text: Gotowe
-    time_text: Godzina
   enterprise_mailer:
     confirmation_instructions:
       subject: "Potwierdź adres e-mail dla %{enterprise}"
@@ -263,7 +262,6 @@ pl:
   error: Błąd
   processing_payment: "Przetwarzanie płatności ..."
   no_pending_payments: "Brak oczekujących płatności"
-  invalid_payment_state: "Nieprawidłowy stan płatności"
   filter_results: Filtruj wyniki
   quantity: Ilość
   pick_up: Odbiór
@@ -290,6 +288,7 @@ pl:
     edit: "Edytuj"
     update: "Aktualizuj"
     delete: "Usuń"
+    add: "Dodaj"
   admin:
     begins_at: Początek o
     begins_on: Początek się w dniu
@@ -393,20 +392,20 @@ pl:
         duplicate_code: "Ten kod jest już używany."
         bill_address: "Adres rozliczeniowy"
         ship_address: "Adres dostawy"
-        update_address_success: 'Adres został zaktualizowany pomyślnie.'
-        update_address_error: 'Przepraszamy! Wprowadź wszystkie wymagane pola!'
-        edit_bill_address: 'Edytuj adres rozliczeniowy'
-        edit_ship_address: 'Edytuj adres dostawy'
-        required_fileds: 'Wymagane pola są oznaczone gwiazdką'
-        select_country: 'Wybierz kraj'
-        select_state: 'Wybierz rejon'
-        edit: 'Edytuj'
-        update_address: 'Zaktualizuj adres'
-        confirm_delete: 'Na pewno chcesz usunąć?'
+        update_address_success: "Adres został zaktualizowany pomyślnie."
+        update_address_error: "Przepraszamy! Wprowadź wszystkie wymagane pola!"
+        edit_bill_address: "Edytuj adres rozliczeniowy"
+        edit_ship_address: "Edytuj adres dostawy"
+        required_fileds: "Wymagane pola są oznaczone gwiazdką"
+        select_country: "Wybierz kraj"
+        select_state: "Wybierz rejon"
+        edit: "Edytuj"
+        update_address: "Zaktualizuj adres"
+        confirm_delete: "Na pewno chcesz usunąć?"
         search_by_email: "Szukaj według adresu e-mail / kodu ..."
-        guest_label: 'Kasa dla gości'
+        guest_label: "Kasa dla gości"
       destroy:
-        has_associated_orders: 'Usunięcie nie powiodło się: klient ma zamówienia w swoim sklepie'
+        has_associated_orders: "Usunięcie nie powiodło się: klient ma zamówienia w swoim sklepie"
     contents:
       edit:
         title: Zawartość
@@ -615,6 +614,7 @@ pl:
         max_fulfilled_units: "Maksymalna liczba dostarczonych jednostek"
         order_error: "Przed aktualizacją zamówień należy naprawić niektóre błędy. Wszystkie pola z czerwonymi ramkami zawierają błędy."
         variants_without_unit_value: "OSTRZEŻENIE: Niektóre warianty nie mają określonej jednostki"
+        all: "Wszystko"
       select_variant: "Wybierz wariant"
     enterprise:
       select_outgoing_oc_products_from: Wybierz wychodzące produkty OC z
@@ -751,6 +751,8 @@ pl:
           shopfront_category_ordering: "Zamawianie kategorii sklepu"
           open_date: "Data otwarcia"
           close_date: "Data zamknięcia"
+          shopfront_sort_by_category_placeholder: "Kategoria"
+          shopfront_sort_by_producer_placeholder: "Producent"
         social:
           twitter_placeholder: "np. @profesor"
           instagram_placeholder: "np. @profesor"
@@ -871,7 +873,6 @@ pl:
         cancel: "Anuluj"
         back_to_list: "Powrót do listy"
       edit:
-        advanced_settings: "Zaawansowane ustawienia"
         save: "Zapisz"
         save_and_next: "Zapisz i Dalej"
         next: "Kolejny"
@@ -1039,11 +1040,21 @@ pl:
       xero_invoices:
         name: Faktury Xero
         description: Faktury do importu do Xero
-      packing:
-        name: Raporty pakowania
       enterprise_fee_summary:
         name: "Podsumowanie opłat dla podmiotów"
         description: "Podsumowanie pobranych opłat dla podmiotów"
+      summary_row:
+        total: "RAZEM"
+      table:
+        headings:
+          hub: "Hub"
+          customer_code: "Kod"
+          supplier: "Dostawca"
+          product: "Produkt"
+          variant: "Wariant"
+          quantity: "Ilość"
+      packing:
+        name: "Raporty pakowania"
     subscriptions:
       index:
         title: "Subskrypcje"
@@ -1128,6 +1139,7 @@ pl:
       yes_cancel_them: Anuluj je
       no_keep_them: Zachować je
       yes_i_am_sure: Tak, jestem pewny
+      number: "Numer zamówienia"
       order_update_issues_msg: Niektórych zamówień nie udało się zaktualizować automatycznie, najprawdopodobniej dlatego, że zostały edytowane ręcznie. Zapoznaj się z poniższymi problemami i w razie potrzeby wprowadź ewentualne poprawki do poszczególnych zamówień.
       no_results:
         no_subscriptions: Brak subskrypcji ...
@@ -1156,9 +1168,6 @@ pl:
     already_ordered:
       cart: "Koszyk"
       message_html: "Masz już zamówienie na ten cykl zamówień. Sprawdź %{cart}, aby zobaczyć przedmioty, które zamówiłeś wcześniej. Możesz również anulować pozycje, o ile cykl zamówienia jest otwarty."
-    terms_and_conditions:
-      message_html: "Składając to zamówienie, wyrażasz zgodę na %{terms_and_conditions_link}."
-      link_text: "Warunki usługi"
     failed: "Płatność nie powiodła się. Daj nam znać, abyśmy mogli zrealizować Twoje zamówienie."
   shops:
     hubs:
@@ -1166,6 +1175,9 @@ pl:
       hide_closed_shops: "Ukryj zamknięte sklepy"
       show_on_map: "Pokaż wszystko na mapie"
   shared:
+    mailers:
+      powered_by:
+        open_food_network: "Open Food Network"
     menu:
       cart:
         cart: "Koszyk"
@@ -1194,7 +1206,6 @@ pl:
       footer_join_body: "Utwórz listę, sklep lub katalog grupy w Open Food Network."
       footer_join_cta: "Powiedz mi więcej!"
       footer_legal_call: "Przeczytaj nasze"
-      footer_legal_tos: "Regulamin"
       footer_legal_visit: "Znajdź nas na"
       footer_legal_text_html: "Open Food Network to bezpłatna platforma oprogramowania typu open source. Nasze treści są objęte licencją %{content_license}, a nasz kod - %{code_license}."
       footer_data_text_with_privacy_policy_html: "Dbamy o Twoje dane. Zobacz nasze %{privacy_policy} i %{cookies_policy}"
@@ -1304,8 +1315,6 @@ pl:
   label_producers: "Producenci"
   label_groups: "Grupy"
   label_about: "O nas"
-  label_connect: "Połącz się"
-  label_learn: "Dowiedz się"
   label_blog: "Blog"
   label_support: "Wsparcie"
   label_shopping: "Zakupy"
@@ -1393,10 +1402,6 @@ pl:
   brandstory_part4: "Działa wszędzie. Zmienia wszystko."
   brandstory_part5_strong: "Nazywamy to Open Food Network."
   brandstory_part6: "Wszyscy kochamy jeść. Teraz możemy również pokochać nasz system dostaw żywności."
-  learn_body: "Przeglądaj modele, historie i zasoby, które pomogą Ci rozwinąć Twój biznes lub organizację fair food. Znajdź szkolenia, wydarzenia i inne możliwości uczenia się od rówieśników."
-  learn_cta: "Zainspirować się"
-  connect_body: "Przeszukaj nasze pełne katalogi producentów, hubów, kooperatyw i grup, aby znaleźć uczciwych sprzedawców żywności w Twojej okolicy. Umieść swoją firmę lub organizację w OFN, aby kupujący mogli Cię znaleźć. Dołącz do społeczności, aby uzyskać porady i wspólnie rozwiązywać problemy."
-  connect_cta: "Idź eksplorować"
   system_headline: "Zakupy - tak to działa."
   system_step1: "1. Szukaj"
   system_step1_text: "Przeszukaj nasze różnorodne, niezależne sklepy z sezonową, lokalną żywnością. Szukaj według okolicy i kategorii żywności lub czy wolisz dostawę czy odbiór."
@@ -1435,6 +1440,14 @@ pl:
   checkout_total_price: Razem
   checkout_back_to_cart: "Powrót do koszyka"
   cost_currency: "Waluta kosztu"
+  split_checkout:
+    step1:
+      your_details:
+        email:
+          label: E-mail
+      address:
+        state_id:
+          label: Status
   order_paid: OPŁACONY
   order_not_paid: NIEZAPŁACONE
   order_total: Całkowite zamówienie
@@ -1529,7 +1542,6 @@ pl:
     set_a_password: "Zostaniesz poproszony o ustawienie hasła, zanim będziesz mógł administrować podmiotem."
     mistakenly_sent: "Nie wiesz, dlaczego otrzymałeś ten e-mail? Aby uzyskać więcej informacji, skontaktuj się z %{owner_email}."
   producer_mail_greeting: "Drogi"
-  producer_mail_text_before: "Mamy teraz wszystkie zamówienia konsumentów na następny zrzut żywności."
   producer_mail_order_text: "Oto podsumowanie zamówień na Twoje produkty:"
   producer_mail_delivery_instructions: "Instrukcje odbioru / dostawy towaru:"
   producer_mail_signoff: "Dziękuję i pozdrawiam"
@@ -1541,7 +1553,9 @@ pl:
   shopping_tabs_home: "Dom"
   shopping_tabs_shop: "Sklep"
   shopping_tabs_about: "O nas"
+  shopping_tabs_producers: "Producenci"
   shopping_tabs_contact: "Kontakt"
+  shopping_tabs_groups: "Grupy"
   shopping_contact_address: "Adres"
   shopping_contact_web: "Kontakt"
   shopping_contact_social: "Obserwuj"
@@ -1552,6 +1566,7 @@ pl:
   enterprises_choose: "Wybierz, kiedy chcesz zamówić:"
   maps_open: "otwarty"
   maps_closed: "Zamknięte"
+  map_title: "Mapa"
   hubs_buy: "Kupuj:"
   hubs_shopping_here: "Tutaj robisz zakupy"
   hubs_orders_closed: "Zamówienia zamknięte"
@@ -1568,11 +1583,6 @@ pl:
   hubs_intro: Kupuj w swojej okolicy
   hubs_distance: Najbliżej
   hubs_distance_filter: "Pokaż mi sklepy w pobliżu %{location}"
-  shop_changeable_orders_alert_html:
-    one: Twoje zamówienie z <a href='%{path}' target='_blank'>%{shop} / %{order}</a> jest otwarte do sprawdzenia. Możesz wprowadzać zmiany do %{oc_close}.
-    few: Masz <a href='%{path}' target='_blank'>zamówienia %{count} z %{shop}, które jest</a> obecnie otwarte do sprawdzenia. Możesz wprowadzać zmiany do %{oc_close}.
-    many: Masz <a href='%{path}' target='_blank'>zamówienia %{count} z %{shop}, które jest</a> obecnie otwarte do sprawdzenia. Możesz wprowadzać zmiany do %{oc_close}.
-    other: Masz <a href='%{path}' target='_blank'>zamówienia %{count} z %{shop}, które jest</a> obecnie otwarte do sprawdzenia. Możesz wprowadzać zmiany do %{oc_close}.
   orders_changeable_orders_alert_html: To zamówienie zostało potwierdzone, ale możesz wprowadzać zmiany do <strong>%{oc_close}</strong> .
   products_clear: Wyczyść
   products_showing: "Seans:"
@@ -1691,39 +1701,39 @@ pl:
   shops_signup_help: Jesteśmy gotowi do pomocy.
   shops_signup_help_text: Potrzebujesz lepszego zwrotu. Potrzebujesz nowych kupujących i partnerów logistycznych. Potrzebujesz swojej historii opowiedzianej w sprzedaży hurtowej, detalicznej i na stole kuchennym.
   shops_signup_detail: Oto szczegóły.
-  orders: Zamówienia
-  orders_fees: Opłaty ...
-  orders_edit_title: Koszyk
-  orders_edit_headline: Twój Koszyk
-  orders_edit_time: Termin odbioru
-  orders_edit_continue: Kontynuuj zakupy
-  orders_edit_checkout: Zamów
+  orders: "Zamówienia"
+  orders_fees: "Opłaty ..."
+  orders_edit_title: "Koszyk"
+  orders_edit_headline: "Twój Koszyk"
+  orders_edit_time: "Termin odbioru"
+  orders_edit_continue: "Kontynuuj zakupy"
+  orders_edit_checkout: "Zamów"
   orders_form_empty_cart: "Pusty koszyk"
-  orders_form_subtotal: Podaj sumę częściową
-  orders_form_admin: Administracja i obsługa
-  orders_form_total: Razem
-  orders_oc_expired_headline: Ten cykl zamówień został zamknięty
+  orders_form_update_cart: "Aktualizuj"
+  orders_form_subtotal: "Podaj sumę częściową"
+  orders_form_admin: "Administracja i obsługa"
+  orders_form_total: "Razem"
+  orders_oc_expired_headline: "Ten cykl zamówień został zamknięty"
   orders_oc_expired_text: "Przepraszamy, zamówienia dla tego cyklu zamówień zostały zakończone %{time} temu! Skontaktuj się bezpośrednio z hubem, aby sprawdzić, czy może przyjmować spóźnione zamówienia."
   orders_oc_expired_text_others_html: "Przepraszamy, zamówienia dla tego cyklu zamówień zostały zakończone %{time} temu! Skontaktuj się bezpośrednio z hubem, aby sprawdzić, czy może przyjąć spóźnione zamówienia <strong>%{link}</strong> ."
   orders_oc_expired_text_link: "lub zobacz inne cykle zamówień dostępne w tym hubie"
   orders_oc_expired_email: "E-mail:"
   orders_oc_expired_phone: "Telefon:"
-  orders_show_title: Potwierdzenie zamówienia
-  orders_show_time: Zamówienie gotowe w dniu
+  orders_show_title: "Potwierdzenie zamówienia"
+  orders_show_time: "Zamówienie gotowe w dniu"
   orders_show_order_number: "Zamówienie nr %{number}"
-  orders_show_cancelled: Anulowane
-  orders_show_confirmed: Potwierdzone
+  orders_show_cancelled: "Anulowane"
+  orders_show_confirmed: "Potwierdzone"
   orders_your_order_has_been_cancelled: "Twoje zamówienie zostało anulowane"
   orders_could_not_cancel: "Przepraszamy, nie można anulować zamówienia"
   orders_cannot_remove_the_final_item: "Nie można usunąć ostatniej pozycji z zamówienia. Zamiast tego anuluj zamówienie."
   orders_bought_items_notice:
-    one: "Dodatkowa pozycja jest już potwierdzona dla tego cyklu zamówienia"
-    few: "%{count} dodatkowe pozycje już potwierdzone dla tego cyklu zamówienia"
-    many: "%{count} dodatkowe pozycje już potwierdzone dla tego cyklu zamówienia"
+    few: "%{count} dodatkowe pozycje już potwierdzone dla tego cyklu zamówień"
+    many: "%{count} dodatkowe pozycje już potwierdzone dla tego cyklu zamówień"
     other: "%{count} dodatkowe pozycje już potwierdzone dla tego cyklu zamówień"
-  orders_bought_edit_button: Edytuj potwierdzone pozycje
+  orders_bought_edit_button: "Edytuj potwierdzone pozycje"
   orders_bought_already_confirmed: "* już potwierdzony"
-  orders_confirm_cancel: Czy na pewno chcesz anulować to zamówienie?
+  orders_confirm_cancel: "Czy na pewno chcesz anulować to zamówienie?"
   order_processed_successfully: "Twoje zamówienie zostało pomyślnie przetworzone"
   products_cart_distributor_choice: "Dystrybutor na Twoje zamówienie:"
   products_cart_distributor_change: "Twój dystrybutor dla tego zamówienia zostanie zmieniony na %{name}, jeśli dodasz ten produkt do koszyka."
@@ -1809,7 +1819,6 @@ pl:
       details:
         title: "Informacje"
         headline: "Zacznijmy"
-        enterprise: "Najpierw musisz trochę powiedzieć o swoim podmiocie:"
         producer: "Woot! Najpierw musimy dowiedzieć się trochę o Twojej farmie:"
         enterprise_name_field: "Nazwa podmiotu:"
         producer_name_field: "Nazwa gospodarstwa:"
@@ -1924,7 +1933,6 @@ pl:
   shop_for_products_html: "<span class=\"turquoise\">%{enterprise}</span> - te produkty kupisz w następujących miejscach: "
   change_shop: "Zmień sklep na:"
   shop_at: "Kup teraz na:"
-  price_breakdown: "Pełne zestawienie cen"
   admin_fee: "opłata administracyjna"
   sales_fee: "Opłata za sprzedaż"
   packing_fee: "Opłata za pakowanie"
@@ -1996,6 +2004,8 @@ pl:
   delivery_method: Sposób dostawy
   fee_type: "Typ opłaty"
   tax_category: "Kategoria podatku"
+  description: "Opis"
+  tags: "Tagi"
   calculator: "Kalkulator"
   calculator_values: "Wartości kalkulatora"
   calculator_settings_warning: "Jeśli zmieniasz typ kalkulatora, musisz najpierw zapisać ustawienia, zanim będziesz mógł edytować ustawienia kalkulatora"
@@ -2086,7 +2096,6 @@ pl:
   new_order: "Nowe zamówienie"
   enterprise_tos_link: "Link do warunków korzystania z usługi dla podmiotów"
   enterprise_tos_message: "Chcemy pracować z ludźmi, którzy podzielają nasze cele i wartości. W związku z tym prosimy nowe podmioty o wyrażenie zgody na nasze"
-  enterprise_tos_link_text: "Warunki usługi."
   enterprise_tos_agree: "Akceptuję powyższe Warunki korzystania z usługi"
   tax_settings: "Ustawienia podatkowe"
   products_require_tax_category: "produkty wymagają kategorii podatkowej"
@@ -2375,7 +2384,7 @@ pl:
     admin:
       enterprise_limit_reached: "Osiągnąłeś standardowy limit podmiotów na konto. Napisz do %{contact_email}, jeśli chcesz go zwiększyć."
       modals:
-        got_it: Rozumiem
+        got_it: "Rozumiem"
         close: "Zamknij"
         invite: "Zapraszam"
         invite_title: "Zaproś niezarejestrowanego użytkownika"
@@ -2600,6 +2609,9 @@ pl:
           w Twoim koszyku. Oto, co się zmieniło:
       now_out_of_stock: jest teraz niedostępny.
       only_n_remainging: "teraz pozostało tylko %{num}."
+    shopfront:
+      variant:
+        add_to_cart: "Dodaj"
     variants:
       on_demand:
         'yes': "Na żądanie"
@@ -2838,6 +2850,8 @@ pl:
               tax_category_name: "Kategoria podatku"
               total_amount: "$$ SUMA"
         invalid_filter_parameters: "Filtry wybrane dla tego raportu są nieprawidłowe."
+      report:
+        none: "Nic"
   order: "Zamówienie"
   distribution: "Dystrybucja"
   order_details: "Szczegóły zamówienia"
@@ -2870,14 +2884,18 @@ pl:
   previous: "Poprzedni"
   last: "Ostatni"
   spree:
+    all: "Wszystko"
+    category: "Kategoria"
     more: "Więcej"
+    no_pending_payments: "Brak oczekujących płatności"
+    none: "Nic"
     your_order_is_empty_add_product: "Twoje zamówienie jest puste, wyszukaj i dodaj produkt powyżej"
     add_product: "Dodaj produkt"
     name_or_sku: "Nazwa lub SKU (wprowadź co najmniej 4 pierwsze znaki nazwy produktu)"
-    resend: Wysłać ponownie
-    back_to_orders_list: Powrót do listy zamówień
-    return_authorizations: Autoryzacje zwrotu
-    cannot_create_returns: Nie można utworzyć zwrotów, ponieważ to zamówienie nie zawiera wysłanych jednostek.
+    resend: "Wysłać ponownie"
+    back_to_orders_list: "Powrót do listy zamówień"
+    return_authorizations: "Autoryzacje zwrotu"
+    cannot_create_returns: "Nie można utworzyć zwrotów, ponieważ to zamówienie nie zawiera wysłanych jednostek."
     select_stock: "Wybierz akcje"
     location: "Lokalizacja"
     count_on_hand: "Licz na rękę"
@@ -2914,6 +2932,7 @@ pl:
     adjustments: "Korekty"
     continue: "Kontyntynuj"
     fill_in_customer_info: "Podaj informacje o kliencie"
+    credit_card: "Karta kredytowa"
     new_payment: "Nowa płatność"
     capture: "Zdobyć"
     void: "Unieważnić"
@@ -2933,7 +2952,6 @@ pl:
     default_meta_description: "Domyślny opis meta"
     default_meta_keywords: "Domyślne słowa kluczowe meta"
     security_settings: "Ustawienia bezpieczeństwa"
-    allow_ssl_in_development_and_test: "Zezwalaj na używanie protokołu SSL w trybach development i test"
     allow_ssl_in_production: "Zezwalaj na używanie SSL w trybie production"
     allow_ssl_in_staging: "Zezwalaj na używanie protokołu SSL w trybie staging"
     currency_decimal_mark: "Znak dziesiętny waluty"
@@ -2952,21 +2970,13 @@ pl:
     smtp_send_copy_to_this_addresses: "Wysyła kopię wszystkich wychodzących wiadomości na ten adres. W przypadku wielu adresów, oddziel je przecinkami."
     intercept_email_address: "Przechwyć adres e-mail"
     intercept_email_instructions: "Zastąp adresata wiadomości e-mail i zastąp tym adresem."
-    image_settings: "Ustawienia obrazu"
-    image_settings_warning: "Jeśli zaktualizujesz style spinaczy, będziesz musiał ponownie wygenerować miniatury. Użyj rake paperclip:refresh:thumbnails CLASS=Spree::Image , aby to zrobić."
-    attachment_default_style: Styl załączników
-    attachment_default_url: "Załączniki Domyślny adres URL"
-    attachment_path: "Ścieżka załączników"
-    attachment_styles: "Style spinaczy"
-    attachment_url: "URL załączników"
-    add_new_style: "Dodaj nowy styl"
-    image_settings_updated: "Ustawienia obrazu zostały pomyślnie zaktualizowane."
     tax_categories: "Kategorie podatków"
     listing_tax_categories: "Lista kategorii podatkowych"
     back_to_tax_categories_list: "Powrót do listy kategorii podatkowych"
     tax rate: "Wysokość podatków"
     new_tax_rate: "Nowa stawka podatku"
     tax_category: "Kategoria podatku"
+    tax_rates: "Stawki podatków"
     rate: "Oceniać"
     tax_rate_amount_explanation: "Stawki podatku są kwotami dziesiętnymi, aby ułatwić obliczenia (tj. Jeśli stawka podatku wynosi 5%, wprowadź 0,05)"
     included_in_price: "Wliczony w cenę"
@@ -2993,6 +3003,9 @@ pl:
     new_taxonomy: "Nowa taksonomia"
     back_to_taxonomies_list: "Powrót do listy taksonomii"
     shipping_methods: "Metody dostaw"
+    shipping_method: "Metoda dostawy"
+    payment: "Płatność"
+    status: "Status"
     shipping_categories: "Kategorie dostaw"
     new_shipping_category: "Nowa kategoria dostaw"
     back_to_shipping_categories: "Powrót do kategorii dostaw"
@@ -3038,15 +3051,13 @@ pl:
     cannot_create_payment_without_payment_methods: "Nie możesz utworzyć płatności za zamówienie bez zdefiniowanych metod płatności."
     please_define_payment_methods: "Najpierw określ niektóre metody płatności."
     options: "Opcje"
+    payment_method: "Metoda płatności"
+    sku: "SKU"
     actions:
       update: "Aktualizuj"
+      cancel: "Anuluj"
     shared:
       error_messages:
-        errors_prohibited_this_record_from_being_saved:
-          one: "1 błąd uniemożliwił zapisanie tego rekordu:"
-          few: "Błędy %{count} uniemożliwiły zapisanie tego rekordu:"
-          many: "Błędy %{count} uniemożliwiły zapisanie tego rekordu:"
-          other: "Błędy %{count} uniemożliwiły zapisanie tego rekordu:"
         there_were_problems_with_the_following_fields: "Wystąpiły problemy z następującymi polami"
       payments_list:
         date_time: "Data / godzina"
@@ -3062,6 +3073,8 @@ pl:
           header:
             store: Sklep
     admin:
+      subscriptions:
+        number: "Numer zamówienia"
       tab:
         dashboard: "Kokpit"
         orders: "Zamówienia"
@@ -3084,7 +3097,6 @@ pl:
         index:
           inherits_properties_checkbox_hint: "Odziedziczyć właściwości z %{supplier}? (chyba że zastąpiono powyżej)"
           add_product_properties: "Dodaj właściwości produktu"
-          select_from_prototype: "Wybierz opcję Z prototypu"
       properties:
         index:
           properties: "Właściwości"
@@ -3207,6 +3219,7 @@ pl:
           back_to_shipping_methods_list: "Powrót do listy metod dostaw"
         form:
           categories: "Kategorie"
+          tax_category: "Kategoria podatku"
           zones: "Strefy"
           both: "Zarówno Checkout, jak i Back office"
           back_end: "Tylko na zapleczu"
@@ -3350,7 +3363,6 @@ pl:
           price: "Cena"
           options: "Opcje"
           no_results: "Brak wyników"
-          to_add_variants_you_must_first_define: "Aby dodać warianty, musisz najpierw zdefiniować"
           option_types: "Typy opcji"
           option_values: "Wartości opcji"
           and: "i"
@@ -3360,7 +3372,6 @@ pl:
         new:
           new_variant: "New Variant"
         form:
-          cost_price: "Cena kosztów własnych"
           sku: "SKU"
           price: "Cena"
           display_as: "Wyświetl jako"
@@ -3403,8 +3414,8 @@ pl:
           or_enter_new_card: "Lub wprowadź szczegóły nowej karty:"
           remember_this_card: Pamiętasz tę kartę?
     date_picker:
-      format: '% Y-% m-%d'
-      js_format: 'rr-mm-dd'
+      now: "Teraz"
+      close: "Zamknij"
     orders:
       error_flash_for_unavailable_items: "Produkt w Twoim koszyku stał się niedostępny. Zaktualizuj wybrane ilości."
       edit:
@@ -3461,7 +3472,6 @@ pl:
     shipment_mailer:
       shipped_email:
         dear_customer: "Drogi Kliencie,"
-        instructions: "Twoje zamówienie zostało wysłane"
         shipment_summary: "Podsumowanie przesyłki"
         subject: "Powiadomienie o wysyłce"
         thanks: "Dziękuję za Twoje zaangażowanie."
@@ -3493,6 +3503,8 @@ pl:
       ended: zakończone
       paused: wstrzymany
       canceled: anulowane
+    paypal:
+      refund_amount: "Kwota"
     users:
       form:
         account_settings: Ustawienia konta
@@ -3531,11 +3543,9 @@ pl:
         delete?: Kasować?
       cards:
         authorised_shops: Autoryzowane sklepy
-        authorised_shops_popover: To jest lista sklepów, które mogą obciążać Twoją domyślną kartę kredytową za wszelkie posiadane przez Ciebie subskrypcje (tj. Powtarzające się zamówienia). Dane Twojej karty będą bezpieczne i nie będą udostępniane właścicielom sklepów. Zawsze otrzymasz powiadomienie, gdy zostanie naliczona opłata.
         saved_cards_popover: To jest lista kart, które zdecydowałeś się zapisać do późniejszego wykorzystania. Twoja „domyślna” zostanie wybrana automatycznie podczas realizacji zamówienia i może zostać obciążona przez wszystkie sklepy, którym zezwolisz (patrz po prawej).
       authorised_shops:
         shop_name: "Nazwa sklepu"
-        allow_charges?: "Zezwolić na opłaty?"
     localized_number:
       invalid_format: ma nieprawidłowy format. Proszę wpisać numer.
     api:

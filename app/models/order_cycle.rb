@@ -1,6 +1,12 @@
+# frozen_string_literal: true
+
 require 'open_food_network/scope_variant_to_hub'
 
-class OrderCycle < ActiveRecord::Base
+class OrderCycle < ApplicationRecord
+  searchable_attributes :orders_open_at, :orders_close_at, :coordinator_id
+  searchable_scopes :active, :inactive, :active_or_complete, :upcoming, :closed, :not_closed,
+                    :dated, :undated, :soonest_opening, :soonest_closing, :most_recently_closed
+
   belongs_to :coordinator, class_name: 'Enterprise'
 
   has_many :coordinator_fee_refs, class_name: 'CoordinatorFee'
@@ -13,11 +19,11 @@ class OrderCycle < ActiveRecord::Base
   has_many :cached_incoming_exchanges, -> { where incoming: true }, class_name: "Exchange"
   has_many :cached_outgoing_exchanges, -> { where incoming: false }, class_name: "Exchange"
 
-  has_many :suppliers, -> { uniq }, source: :sender, through: :cached_incoming_exchanges
-  has_many :distributors, -> { uniq }, source: :receiver, through: :cached_outgoing_exchanges
+  has_many :suppliers, -> { distinct }, source: :sender, through: :cached_incoming_exchanges
+  has_many :distributors, -> { distinct }, source: :receiver, through: :cached_outgoing_exchanges
 
-  has_many :schedules, through: :order_cycle_schedules
   has_many :order_cycle_schedules
+  has_many :schedules, through: :order_cycle_schedules
   has_paper_trail meta: { custom_data: proc { |order_cycle| order_cycle.schedule_ids.to_s } }
 
   attr_accessor :incoming_exchanges, :outgoing_exchanges
@@ -225,15 +231,15 @@ class OrderCycle < ActiveRecord::Base
   end
 
   def receival_instructions_for(supplier)
-    exchange_for_supplier(supplier).andand.receival_instructions
+    exchange_for_supplier(supplier)&.receival_instructions
   end
 
   def pickup_time_for(distributor)
-    exchange_for_distributor(distributor).andand.pickup_time || distributor.next_collection_at
+    exchange_for_distributor(distributor)&.pickup_time || distributor.next_collection_at
   end
 
   def pickup_instructions_for(distributor)
-    exchange_for_distributor(distributor).andand.pickup_instructions
+    exchange_for_distributor(distributor)&.pickup_instructions
   end
 
   def exchanges_carrying(variant, distributor)
@@ -257,7 +263,7 @@ class OrderCycle < ActiveRecord::Base
                                          distributor_id: distributor,
                                          order_cycle_id: self)
     scoper = OpenFoodNetwork::ScopeVariantToHub.new(distributor)
-    items = Spree::LineItem.joins(:order).merge(orders)
+    items = Spree::LineItem.includes(:variant).joins(:order).merge(orders).to_a
     items.each { |li| scoper.scope(li.variant) }
   end
 

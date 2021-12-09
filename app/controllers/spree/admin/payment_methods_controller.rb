@@ -1,30 +1,28 @@
+# frozen_string_literal: true
+
 module Spree
   module Admin
-    class PaymentMethodsController < ResourceController
+    class PaymentMethodsController < ::Admin::ResourceController
       skip_before_action :load_resource, only: [:create, :show_provider_preferences]
       before_action :load_data
       before_action :validate_payment_method_provider, only: [:create]
       before_action :load_hubs, only: [:new, :edit, :update]
-      create.before :load_hubs
+      before_action :validate_calculator_preferred_value, only: [:update]
 
       respond_to :html
 
       def create
         force_environment
 
-        @payment_method = params[:payment_method].
-          delete(:type).
-          constantize.
-          new(payment_method_params)
+        @payment_method = payment_method_class.constantize.new(base_params)
         @object = @payment_method
 
-        invoke_callbacks(:create, :before)
+        load_hubs
+
         if @payment_method.save
-          invoke_callbacks(:create, :after)
           flash[:success] = Spree.t(:successfully_created, resource: Spree.t(:payment_method))
           redirect_to spree.edit_admin_payment_method_path(@payment_method)
         else
-          invoke_callbacks(:create, :fails)
           respond_with(@payment_method)
         end
       end
@@ -33,25 +31,24 @@ module Spree
         restrict_stripe_account_change
         force_environment
 
-        invoke_callbacks(:update, :before)
-        payment_method_type = params[:payment_method].delete(:type)
-        if @payment_method['type'].to_s != payment_method_type
-          @payment_method.update_column(:type, payment_method_type)
+        if @payment_method.type.to_s != payment_method_class
+          @payment_method.update_columns(
+            type: payment_method_class,
+            updated_at: Time.zone.now
+          )
           @payment_method = PaymentMethod.find(params[:id])
         end
 
-        if @payment_method.update(params_for_update)
-          invoke_callbacks(:update, :after)
+        if @payment_method.update(update_params)
           flash[:success] = Spree.t(:successfully_updated, resource: Spree.t(:payment_method))
           redirect_to spree.edit_admin_payment_method_path(@payment_method)
         else
-          invoke_callbacks(:update, :fails)
           respond_with(@payment_method)
         end
       end
 
       # Only show payment methods that user has access to and sort by distributor name
-      # ! Redundant code copied from Spree::Admin::ResourceController with modifications marked
+      # ! Redundant code copied from Admin::ResourceController with modifications marked
       def collection
         return parent.public_send(controller_name) if parent_data.present?
 
@@ -81,7 +78,10 @@ module Spree
           authorize! :show_provider_preferences, @payment_method
           payment_method_type = params[:provider_type]
           if @payment_method['type'].to_s != payment_method_type
-            @payment_method.update_column(:type, payment_method_type)
+            @payment_method.update_columns(
+              type: payment_method_type,
+              updated_at: Time.zone.now
+            )
             @payment_method = PaymentMethod.find(params[:pm_id])
           end
         else
@@ -92,23 +92,16 @@ module Spree
 
       private
 
-      def payment_method_params
-        params.require(:payment_method).permit(
-          :name, :description, :type, :active,
-          :environment, :display_on, :tag_list,
-          :preferred_enterprise_id, :preferred_server, :preferred_login, :preferred_password,
-          :calculator_type, :preferred_api_key,
-          :preferred_signature, :preferred_solution, :preferred_landing_page, :preferred_logourl,
-          :preferred_test_mode, distributor_ids: []
-        )
+      def payment_method_class
+        @payment_method_class ||= base_params.delete(:type)
       end
 
       def force_environment
-        params[:payment_method][:environment] = Rails.env unless spree_current_user.admin?
+        base_params[:environment] = Rails.env unless spree_current_user.admin?
       end
 
       def load_data
-        @providers = if spree_current_user.admin? || Rails.env.test?
+        @providers = if Rails.env.dev? || Rails.env.test?
                        Gateway.providers.sort_by(&:name)
                      else
                        Gateway.providers.reject{ |p| p.name.include? "Bogus" }.sort_by(&:name)
@@ -127,7 +120,7 @@ module Spree
 
       def load_hubs
         # rubocop:disable Style/TernaryParentheses
-        @hubs = Enterprise.managed_by(spree_current_user).is_distributor.sort_by! do |d|
+        @hubs = Enterprise.managed_by(spree_current_user).is_distributor.to_a.sort_by! do |d|
           [(@payment_method.has_distributor? d) ? 0 : 1, d.name]
         end
         # rubocop:enable Style/TernaryParentheses
@@ -143,12 +136,12 @@ module Spree
       def restrict_stripe_account_change
         return unless @payment_method
         return unless stripe_payment_method?
-        return unless @payment_method.preferred_enterprise_id.andand > 0
+        return unless @payment_method.preferred_enterprise_id&.positive?
 
         @stripe_account_holder = Enterprise.find(@payment_method.preferred_enterprise_id)
         return if spree_current_user.enterprises.include? @stripe_account_holder
 
-        params[:payment_method][:preferred_enterprise_id] = @stripe_account_holder.id
+        update_params[:preferred_enterprise_id] = @stripe_account_holder.id
       end
 
       def stripe_payment_method?
@@ -160,19 +153,54 @@ module Spree
         provider.name.ends_with?("StripeConnect", "StripeSCA")
       end
 
+      def base_params
+        @base_params ||= PermittedAttributes::PaymentMethod.new(params[:payment_method]).
+          call.to_h.with_indifferent_access
+      end
+
+      def gateway_params
+        raw_params[ActiveModel::Naming.param_key(@payment_method)] || {}
+      end
+
       # Merge payment method params with gateway params like :gateway_stripe_connect
       # Also, remove password if present and blank
-      def params_for_update
-        gateway_params = params[ActiveModel::Naming.param_key(@payment_method)] || {}
-        params_for_update = payment_method_params.merge(gateway_params)
+      def update_params
+        @update_params ||= begin
+          params_for_update = base_params.merge(gateway_params)
 
-        params_for_update.each do |key, _value|
-          if key.include?("password") && params_for_update[key].blank?
-            params_for_update.delete(key)
+          params_for_update.each do |key, value|
+            if key.include?("password") && value.blank?
+              params_for_update.delete(key)
+            end
           end
+
+          params_for_update
+        end
+      end
+
+      def validate_calculator_preferred_value
+        return if calculator_preferred_values.all? do |value|
+          preferred_value_from_params = gateway_params.dig(:calculator_attributes, value)
+          preferred_value_from_params.nil? || Float(preferred_value_from_params,
+                                                    exception: false)
         end
 
-        params_for_update
+        flash[:error] = I18n.t(:calculator_preferred_value_error)
+        redirect_to spree.edit_admin_payment_method_path(@payment_method)
+      end
+
+      def calculator_preferred_values
+        [
+          :preferred_amount,
+          :preferred_flat_percent,
+          :preferred_flat_percent,
+          :preferred_first_item,
+          :preferred_additional_item,
+          :preferred_max_items,
+          :preferred_normal_amount,
+          :preferred_discount_amount,
+          :preferred_minimal_amount
+        ]
       end
     end
   end

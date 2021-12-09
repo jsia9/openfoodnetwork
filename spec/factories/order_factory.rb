@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :order, class: Spree::Order do
     transient do
@@ -6,13 +8,14 @@ FactoryBot.define do
 
     user
     bill_address
-    completed_at nil
-    email { user.email }
+    completed_at { nil }
+    email { user&.email || customer.email }
 
     factory :order_with_totals do
       after(:create) do |order|
         create(:line_item, order: order)
         order.line_items.reload # to ensure order.line_items is accessible after
+        order.updater.update_totals_and_states
       end
     end
 
@@ -20,8 +23,8 @@ FactoryBot.define do
       bill_address
       ship_address
 
-      ignore do
-        line_items_count 5
+      transient do
+        line_items_count { 5 }
       end
 
       after(:create) do |order, evaluator|
@@ -30,11 +33,11 @@ FactoryBot.define do
 
         create_list(:line_item, evaluator.line_items_count, order: order)
         order.line_items.reload
-        order.update!
+        order.update_order!
       end
 
       factory :completed_order_with_totals do
-        state 'complete'
+        state { 'complete' }
         completed_at { Time.zone.now }
 
         distributor { create(:distributor_enterprise) }
@@ -42,8 +45,8 @@ FactoryBot.define do
         after(:create, &:refresh_shipment_rates)
 
         factory :order_ready_to_ship do
-          payment_state 'paid'
-          shipment_state 'ready'
+          payment_state { 'paid' }
+          shipment_state { 'ready' }
           after(:create) do |order|
             create(:payment, amount: order.total, order: order, state: 'completed')
             order.shipments.each do |shipment|
@@ -88,17 +91,19 @@ FactoryBot.define do
       after(:create) do |order, evaluator|
         create(:payment, state: "checkout", order: order, amount: order.total,
                          payment_method: evaluator.payment_method)
-        order.update_distribution_charge!
+        order.recreate_all_fees!
         order.ship_address = evaluator.ship_address
-        while !order.completed? do break unless a = order.next! end
+        break unless a = order.next! while !order.delivery?
         order.select_shipping_method(evaluator.shipping_method.id)
+
+        break unless a = order.next! while !order.completed?
       end
     end
   end
 
   factory :order_with_totals_and_distribution, parent: :order_with_distributor do
     transient do
-      shipping_fee 3
+      shipping_fee { 3 }
     end
 
     order_cycle { create(:simple_order_cycle) }
@@ -110,6 +115,28 @@ FactoryBot.define do
                                        product: product)
       order.reload
     end
+
+    trait :completed do
+      transient do
+        completed_at { Time.zone.now }
+        state { "complete" }
+        payment_method { create(:payment_method, distributors: [distributor]) }
+        ship_address { create(:address) }
+      end
+
+      after(:create) do |order, evaluator|
+        # Ensure order is valid and passes through necessary checkout steps
+        create(:payment, state: "checkout", order: order, amount: order.total,
+                         payment_method: evaluator.payment_method)
+        order.ship_address = evaluator.ship_address
+        break unless order.next! while !order.completed?
+
+        order.update_columns(
+          completed_at: evaluator.completed_at,
+          state: evaluator.state
+        )
+      end
+    end
   end
 
   factory :order_with_distributor, parent: :order do
@@ -118,9 +145,9 @@ FactoryBot.define do
 
   factory :order_with_taxes, parent: :completed_order_with_totals do
     transient do
-      product_price 0
-      tax_rate_amount 0
-      tax_rate_name ""
+      product_price { 0 }
+      tax_rate_amount { 0 }
+      tax_rate_name { "" }
       zone { create(:zone_with_member) }
     end
 
@@ -147,7 +174,8 @@ FactoryBot.define do
     end
 
     after(:create) do |order, evaluator|
-      create(:payment, amount: order.total + evaluator.credit_amount, order: order, state: "completed")
+      create(:payment, amount: order.total + evaluator.credit_amount, order: order,
+                       state: "completed")
       order.reload
     end
   end
@@ -161,15 +189,17 @@ FactoryBot.define do
     end
 
     after(:create) do |order, evaluator|
-      create(:payment, amount: order.total - evaluator.unpaid_amount, order: order, state: "completed")
+      create(:payment, amount: order.total - evaluator.unpaid_amount, order: order,
+                       state: "completed")
       order.reload
     end
   end
 
   factory :completed_order_with_fees, parent: :order_with_distributor do
     transient do
-      payment_fee 5
-      shipping_fee 3
+      payment_fee { 5 }
+      shipping_fee { 3 }
+      shipping_tax_category { nil }
     end
 
     ship_address { create(:address) }
@@ -188,10 +218,12 @@ FactoryBot.define do
                        state: 'checkout')
 
       create(:shipping_method_with, :shipping_fee, shipping_fee: evaluator.shipping_fee,
-                                                   distributors: [order.distributor])
+                                                   distributors: [order.distributor],
+                                                   tax_category: evaluator.shipping_tax_category)
 
       order.reload
-      while !order.completed? do break unless order.next! end
+      break unless order.next! while !order.completed?
+      order.reload
     end
   end
 end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
   class RefererParser
     def self.path(referer)
-      parse_uri(referer).andand.path if referer
+      parse_uri(referer)&.path if referer
     end
 
     def self.parse_uri(string)

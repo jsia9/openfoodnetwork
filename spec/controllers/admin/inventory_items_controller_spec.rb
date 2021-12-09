@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Admin::InventoryItemsController, type: :controller do
@@ -7,8 +9,13 @@ describe Admin::InventoryItemsController, type: :controller do
 
       let(:enterprise) { create(:distributor_enterprise) }
       let(:variant) { create(:variant) }
-      let(:inventory_item) { create(:inventory_item, enterprise: enterprise, variant: variant, visible: true) }
-      let(:params) { { format: format, inventory_item: { enterprise_id: enterprise.id, variant_id: variant.id, visible: false } } }
+      let(:inventory_item) {
+        create(:inventory_item, enterprise: enterprise, variant: variant, visible: true)
+      }
+      let(:params) {
+        { format: format,
+          inventory_item: { enterprise_id: enterprise.id, variant_id: variant.id, visible: false } }
+      }
 
       context "where I don't manage the inventory item enterprise" do
         before do
@@ -37,7 +44,8 @@ describe Admin::InventoryItemsController, type: :controller do
 
         context "and the producer has granted VO permission" do
           before do
-            create(:enterprise_relationship, parent: variant.product.supplier, child: enterprise, permissions_list: [:create_variant_overrides])
+            create(:enterprise_relationship, parent: variant.product.supplier, child: enterprise,
+                                             permissions_list: [:create_variant_overrides])
           end
 
           context "with acceptable data" do
@@ -52,7 +60,11 @@ describe Admin::InventoryItemsController, type: :controller do
 
           context "with unacceptable data" do
             render_views
-            let!(:bad_params) { { format: format, inventory_item: { enterprise_id: enterprise.id, variant_id: variant.id, visible: nil } } }
+            let!(:bad_params) {
+              { format: format,
+                inventory_item: { enterprise_id: enterprise.id, variant_id: variant.id,
+                                  visible: nil } }
+            }
 
             it "returns an error message" do
               expect{ spree_post :create, bad_params }.to change{ InventoryItem.count }.by(0)
@@ -70,7 +82,9 @@ describe Admin::InventoryItemsController, type: :controller do
 
       let(:enterprise) { create(:distributor_enterprise) }
       let(:variant) { create(:variant) }
-      let(:inventory_item) { create(:inventory_item, enterprise: enterprise, variant: variant, visible: true) }
+      let(:inventory_item) {
+        create(:inventory_item, enterprise: enterprise, variant: variant, visible: true)
+      }
       let(:params) { { format: format, id: inventory_item.id, inventory_item: { visible: false } } }
 
       context "where I don't manage the inventory item enterprise" do
@@ -100,7 +114,8 @@ describe Admin::InventoryItemsController, type: :controller do
 
         context "and the producer has granted VO permission" do
           before do
-            create(:enterprise_relationship, parent: variant.product.supplier, child: enterprise, permissions_list: [:create_variant_overrides])
+            create(:enterprise_relationship, parent: variant.product.supplier, child: enterprise,
+                                             permissions_list: [:create_variant_overrides])
           end
 
           context "with acceptable data" do
@@ -113,7 +128,9 @@ describe Admin::InventoryItemsController, type: :controller do
 
           context "with unacceptable data" do
             render_views
-            let!(:bad_params) { { format: format, id: inventory_item.id, inventory_item: { visible: nil } } }
+            let!(:bad_params) {
+              { format: format, id: inventory_item.id, inventory_item: { visible: nil } }
+            }
 
             it "returns an error message" do
               expect{ spree_put :update, bad_params }.to change{ InventoryItem.count }.by(0)

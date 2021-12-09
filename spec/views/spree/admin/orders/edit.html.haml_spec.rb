@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe "spree/admin/orders/edit.html.haml" do
   helper Spree::BaseHelper # required to make pretty_time work
+  helper Spree::Admin::NavigationHelper
+  helper Admin::InjectionHelper
+  helper Admin::OrdersHelper
 
   around do |example|
     original_config = Spree::Config[:enable_invoices?]
@@ -29,9 +34,9 @@ describe "spree/admin/orders/edit.html.haml" do
     it "displays order shipping costs, transaction fee and order total" do
       render
 
-      expect(rendered).to have_content("Shipping: UPS Ground $6.00")
-      expect(rendered).to have_content("Transaction fee: $10.00")
-      expect(rendered).to have_content("Order Total $36.00")
+      expect(rendered).to have_content("Shipping Method\nUPS Ground $6.00")
+      expect(rendered).to have_content("Transaction fee:\n\n$10.00")
+      expect(rendered).to have_content("Order Total\n$36.00")
     end
   end
 end

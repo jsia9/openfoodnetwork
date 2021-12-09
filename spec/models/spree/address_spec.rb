@@ -7,18 +7,18 @@ describe Spree::Address do
     it "creates a copy of the address with the exception of the id, updated_at and created_at attributes" do
       state = build_stubbed(:state)
       original = build_stubbed(:address,
-                        address1: 'address1',
-                        address2: 'address2',
-                        alternative_phone: 'alternative_phone',
-                        city: 'city',
-                        country: state.country,
-                        firstname: 'firstname',
-                        lastname: 'lastname',
-                        company: 'company',
-                        phone: 'phone',
-                        state_id: state.id,
-                        state_name: state.name,
-                        zipcode: 'zip_code')
+                               address1: 'address1',
+                               address2: 'address2',
+                               alternative_phone: 'alternative_phone',
+                               city: 'city',
+                               country: state.country,
+                               firstname: 'firstname',
+                               lastname: 'lastname',
+                               company: 'unused',
+                               phone: 'phone',
+                               state_id: state.id,
+                               state_name: state.name,
+                               zipcode: 'zip_code')
 
       cloned = original.clone
 
@@ -113,23 +113,13 @@ describe Spree::Address do
     it "requires phone" do
       address.phone = ""
       address.valid?
-      expect(address.errors["phone"]).to eq ["can't be blank"]
+      expect(address.errors[:phone].first).to eq "can't be blank"
     end
 
     it "requires zipcode" do
       address.zipcode = ""
       address.valid?
       expect(address.errors[:zipcode].first).to eq "can't be blank"
-    end
-
-    context "phone not required" do
-      before { allow(address).to receive(:require_phone?) { false } }
-
-      it "shows no errors when phone is blank" do
-        address.phone = ""
-        address.valid?
-        expect(address.errors[:phone]).to be_empty
-      end
     end
 
     context "zipcode not required" do
@@ -144,23 +134,21 @@ describe Spree::Address do
   end
 
   context ".default" do
-    before do
-      @default_country_id = Spree::Config[:default_country_id]
-      new_country = create(:country)
-      Spree::Config[:default_country_id] = new_country.id
-    end
-
-    after do
-      Spree::Config[:default_country_id] = @default_country_id
-    end
-    it "sets up a new record with Spree::Config[:default_country_id]" do
-      expect(Spree::Address.default.country).to eq Spree::Country.find(Spree::Config[:default_country_id])
+    it "sets up a new record the default country" do
+      expect(Spree::Address.default.country).to eq DefaultCountry.country
     end
 
     # Regression test for #1142
-    it "uses the first available country if :default_country_id is set to an invalid value" do
-      Spree::Config[:default_country_id] = "0"
-      expect(Spree::Address.default.country).to eq Spree::Country.first
+
+    context "The default country code is set to an invalid value" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("DEFAULT_COUNTRY_CODE").and_return("notacountry")
+      end
+
+      it "uses the first available country" do
+        expect(Spree::Address.default.country).to eq Spree::Country.first
+      end
     end
   end
 
@@ -198,10 +186,5 @@ describe Spree::Address do
       let(:address) { build(:address, state: state) }
       specify { expect(address.state_text).to eq 'virginia' }
     end
-  end
-
-  context "defines require_phone? helper method" do
-    let(:address) { build(:address) }
-    specify { expect(address.instance_eval{ require_phone? }).to be_truthy }
   end
 end

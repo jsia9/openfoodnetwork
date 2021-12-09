@@ -5,15 +5,37 @@
     "type": "git",
     "url": "https://github.com/openfoodfoundation/openfoodnetwork"
   },
+  "scripts": {
+    "storybook": "start-storybook"
+  },
+  "jest": {
+    "testRegex": [
+      "spec/javascripts/.*_test\\.js"
+    ]
+  },
   "devDependencies": {
+    "@storybook/addon-controls": "^6.4.1",
+    "@storybook/addon-docs": "^6.4.8",
+    "@storybook/server": "^6.4.8",
     "jasmine-core": "~2.4.1",
-    "karma": "~0.13.22",
-    "karma-chrome-launcher": "~2.2.0",
-    "karma-coffee-preprocessor": "~0.3.0",
-    "karma-jasmine": "~0.3.8"
+    "jest": "^27.4.3",
+    "karma": "~6.3.9",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coffee-preprocessor": "~1.0.1",
+    "karma-jasmine": "~0.3.8",
+    "webpack-dev-server": "~3"
   },
   "license": "AGPL-3.0",
   "dependencies": {
-    "moment": "^2.28.0"
+    "@hotwired/turbo": "^7.1.0",
+    "@rails/webpacker": "5.4.3",
+    "cable_ready": "^5.0.0-pre2",
+    "flatpickr": "^4.6.9",
+    "moment": "^2.29.1",
+    "mrujs": "^0.7.2",
+    "shortcut-buttons-flatpickr": "^0.3.1",
+    "stimulus": "^2.0.0",
+    "webpack": "~4",
+    "webpack-cli": "~3"
   }
 }

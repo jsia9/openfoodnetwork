@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Spree
   module Admin
-    class TaxCategoriesController < ResourceController
+    class TaxCategoriesController < ::Admin::ResourceController
       def destroy
         if @object.destroy
           flash[:success] = flash_message_for(@object, :successfully_removed)

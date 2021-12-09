@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UIComponentHelper
   def browse_as_medium
     Capybara.current_session.current_window
@@ -76,7 +78,7 @@ module UIComponentHelper
 
   def wait_for_ajax
     counter = 0
-    while page.execute_script("return $.active").to_i > 0
+    while page.execute_script("return $.active").to_i.positive?
       counter += 1
       sleep(0.1)
       raise "AJAX request took longer than 5 seconds." if counter >= 50
@@ -106,5 +108,11 @@ module UIComponentHelper
   def follow_active_table_node(name)
     expand_active_table_node(name)
     page.find(".active_table_node a", text: name.to_s).click
+  end
+
+  def fill_in_using_keyboard
+    page.find('#email').send_keys(user.email, :tab, user.password, :tab, :space)
+    expect(page.find('#remember_me')).to be_checked
+    page.find('#remember_me').send_keys(:tab, :enter)
   end
 end

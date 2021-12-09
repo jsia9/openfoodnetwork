@@ -4,12 +4,16 @@ require 'open_food_network/scope_variant_to_hub'
 require 'variant_units/variant_and_line_item_naming'
 
 module Spree
-  class LineItem < ActiveRecord::Base
+  class LineItem < ApplicationRecord
     include VariantUnits::VariantAndLineItemNaming
-    include LineItemBasedAdjustmentHandling
+    include LineItemStockChanges
+
+    searchable_attributes :price, :quantity, :order_id, :variant_id, :tax_category_id
+    searchable_associations :order, :variant, :tax_category, :option_values
+    searchable_scopes :with_tax, :without_tax
 
     belongs_to :order, class_name: "Spree::Order", inverse_of: :line_items
-    belongs_to :variant, class_name: "Spree::Variant"
+    belongs_to :variant, -> { with_deleted }, class_name: "Spree::Variant"
     belongs_to :tax_category, class_name: "Spree::TaxCategory"
 
     has_one :product, through: :variant
@@ -41,8 +45,7 @@ module Spree
 
     delegate :product, :unit_description, :display_name, to: :variant
 
-    attr_accessor :skip_stock_check # Allows manual skipping of Stock::AvailabilityValidator
-    attr_accessor :target_shipment
+    attr_accessor :skip_stock_check, :target_shipment # Allows manual skipping of Stock::AvailabilityValidator
 
     # -- Scopes
     scope :managed_by, lambda { |user|
@@ -65,10 +68,10 @@ module Spree
     # Find line items that are from order sorted by variant name and unit value
     scope :sorted_by_name_and_unit_value, -> {
       joins(variant: :product).
-        reorder("
+        reorder(Arel.sql("
           lower(spree_products.name) asc,
             lower(spree_variants.display_name) asc,
-            spree_variants.unit_value asc")
+            spree_variants.unit_value asc"))
     }
 
     scope :from_order_cycle, lambda { |order_cycle|
@@ -105,7 +108,6 @@ module Spree
       return unless variant
 
       self.price = variant.price if price.nil?
-      self.cost_price = variant.cost_price if cost_price.nil?
       self.currency = variant.currency if currency.nil?
     end
 
@@ -154,18 +156,6 @@ module Spree
       @preferred_shipment = shipment
     end
 
-    # Remove product default_scope `deleted_at: nil`
-    def product
-      variant.product
-    end
-
-    # This ensures that LineItems always have access to soft-deleted variants.
-    # In some situations, unscoped super will be nil. In these cases,
-    #   we fetch the variant using variant_id. See issue #4946 for more details.
-    def variant
-      Spree::Variant.unscoped { super } || Spree::Variant.unscoped.find(variant_id)
-    end
-
     def cap_quantity_at_stock!
       scoper.scope(variant)
       return if variant.on_demand
@@ -174,15 +164,15 @@ module Spree
     end
 
     def has_tax?
-      adjustments.included_tax.any?
+      adjustments.tax.any?
     end
 
     def included_tax
-      adjustments.included_tax.sum(&:included_tax)
+      adjustments.tax.inclusive.sum(:amount)
     end
 
     def tax_rates
-      product.tax_category.andand.tax_rates || []
+      product.tax_category&.tax_rates || []
     end
 
     def price_with_adjustments
@@ -190,9 +180,9 @@ module Spree
       # so line_item.adjustments returns an empty array
       return 0 if quantity.zero?
 
-      line_item_adjustments = OrderAdjustmentsFetcher.new(order).line_item_adjustments(self)
+      fees = adjustments.enterprise_fee.sum(:amount)
 
-      (price + line_item_adjustments.sum(&:amount) / quantity).round(2)
+      (price + fees / quantity).round(2)
     end
 
     def single_display_amount_with_adjustments
@@ -219,6 +209,12 @@ module Spree
       final_weight_volume / quantity
     end
 
+    def unit_price_price_and_unit
+      unit_price = UnitPrice.new(variant)
+      Spree::Money.new(price_with_adjustments / unit_price.denominator).to_html +
+        "&nbsp;/&nbsp;".html_safe + unit_price.unit
+    end
+
     def scoper
       @scoper ||= OpenFoodNetwork::ScopeVariantToHub.new(order.distributor)
     end
@@ -233,11 +229,10 @@ module Spree
     end
 
     def update_order
-      return unless changed? || destroyed?
+      return unless saved_changes.present? || destroyed?
 
       # update the order totals, etc.
       order.create_tax_charge!
-      order.update!
     end
 
     def update_inventory_before_destroy
@@ -256,8 +251,8 @@ module Spree
     def calculate_final_weight_volume
       if final_weight_volume.present? && quantity_was > 0
         self.final_weight_volume = final_weight_volume * quantity / quantity_was
-      elsif variant.andand.unit_value.present?
-        self.final_weight_volume = variant.andand.unit_value * quantity
+      elsif variant&.unit_value.present?
+        self.final_weight_volume = variant&.unit_value * quantity
       end
     end
   end

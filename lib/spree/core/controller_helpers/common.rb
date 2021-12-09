@@ -12,7 +12,7 @@ module Spree
 
           layout :get_layout
 
-          before_filter :set_user_language
+          before_action :set_user_language
 
           protected
 
@@ -42,11 +42,11 @@ module Spree
             respond_to do |type|
               type.html {
                 render status: :not_found,
-                       file: "#{::Rails.root}/public/404",
+                       file: Rails.root.join("public/404.html"),
                        formats: [:html],
                        layout: nil
               }
-              type.all { render status: :not_found, nothing: true }
+              type.all { render status: :not_found, body: nil }
             end
           end
 

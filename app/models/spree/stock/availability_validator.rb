@@ -28,7 +28,7 @@ module Spree
 
       def line_item_shipment(line_item)
         return line_item.target_shipment if line_item.target_shipment
-        return line_item.order.shipments.first if line_item.order.andand.shipments.any?
+        return line_item.order.shipments.first if line_item.order&.shipments.any?
       end
 
       # Overrides Spree v2.0.4 validate method version to:
@@ -46,9 +46,9 @@ module Spree
         variant = line_item.variant
         display_name = variant.name.to_s
         display_name += %{(#{variant.options_text})} if variant.options_text.present?
-        line_item.errors[:quantity] << Spree.t(:out_of_stock,
-                                               scope: :order_populator,
-                                               item: display_name.inspect)
+        line_item.errors.add(:quantity, Spree.t(:out_of_stock,
+                                                scope: :order_populator,
+                                                item: display_name.inspect))
       end
     end
   end

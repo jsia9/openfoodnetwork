@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
   class UsersAndEnterprisesReport
     attr_reader :params
+
     def initialize(params = {}, compile_table = false)
       @params = params
       @compile_table = compile_table
@@ -122,7 +125,7 @@ module OpenFoodNetwork
     end
 
     def to_bool(value)
-      ActiveRecord::ConnectionAdapters::Column.value_to_boolean(value)
+      ActiveRecord::Type::Boolean.new.cast(value)
     end
 
     def to_local_datetime(date)

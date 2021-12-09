@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
-require 'rails/all'
 require 'active_merchant'
 require 'acts_as_list'
 require 'awesome_nested_set'
 require 'cancan'
-require 'kaminari'
+require 'pagy'
 require 'mail'
 require 'paperclip'
 require 'paranoia'
 require 'ransack'
-require 'state_machine'
+require 'state_machines'
 
 module Spree
   mattr_accessor :user_class
@@ -48,8 +47,8 @@ require 'spree/money'
 require 'spree/core/delegate_belongs_to'
 require 'spree/core/permalinks'
 require 'spree/core/token_resource'
-require 'spree/core/calculated_adjustments'
 require 'spree/core/product_duplicator'
+require 'spree/core/gateway_error'
 
 ActiveRecord::Base.class_eval do
   include CollectiveIdea::Acts::NestedSet

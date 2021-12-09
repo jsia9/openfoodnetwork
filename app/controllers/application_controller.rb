@@ -1,21 +1,63 @@
+# frozen_string_literal: true
+
+require "spree/authentication_helpers"
+require "application_responder"
+require 'cancan'
+require 'spree/core/controller_helpers/auth'
+require 'spree/core/controller_helpers/respond_with'
+require 'spree/core/controller_helpers/common'
 require 'open_food_network/referer_parser'
-require_dependency 'spree/authentication_helpers'
 
 class ApplicationController < ActionController::Base
+  include Pagy::Backend
+  include RequestTimeouts
+
+  self.responder = ApplicationResponder
+  respond_to :html
+
+  helper 'spree/base'
+  helper 'spree/orders'
+  helper 'spree/payment_methods'
+  helper 'shared'
+  helper 'tax'
+  helper 'enterprises'
+  helper 'order_cycles'
+  helper 'order'
+  helper 'shop'
+  helper 'injection'
+  helper 'markdown'
+  helper 'footer_links'
+  helper 'discourse'
+  helper 'checkout'
+  helper 'terms_and_conditions'
+
   protect_from_forgery
+
+  include Spree::Core::ControllerHelpers::Auth
+  include Spree::Core::ControllerHelpers::RespondWith
+  include Spree::Core::ControllerHelpers::Common
 
   prepend_before_action :restrict_iframes
   before_action :set_cache_headers # prevent cart emptying via cache when using back button #1213
 
+  include RawParams
   include EnterprisesHelper
   include Spree::AuthenticationHelpers
 
+  # Helper for debugging strong_parameters
+  rescue_from ActiveModel::ForbiddenAttributesError, with: :print_params
+  def print_params
+    raise ActiveModel::ForbiddenAttributesError, params.to_s
+  end
+
+  respond_to :html
+
   def redirect_to(options = {}, response_status = {})
     ::Rails.logger.error("Redirected by #{begin
-                                            caller(1).first
-                                          rescue StandardError
-                                            'unknown'
-                                          end}")
+      caller(1).first
+    rescue StandardError
+      'unknown'
+    end}")
     super(options, response_status)
   end
 
@@ -110,12 +152,13 @@ class ApplicationController < ActionController::Base
   end
 
   def check_order_cycle_expiry
-    if current_order_cycle.andand.closed?
-      session[:expired_order_cycle_id] = current_order_cycle.id
+    if current_order_cycle&.closed?
+      Bugsnag.notify("Notice: order cycle closed during checkout completion", order: current_order)
       current_order.empty!
       current_order.set_order_cycle! nil
       flash[:info] = I18n.t('order_cycle_closed')
-      redirect_to main_app.root_url
+
+      redirect_to main_app.shop_path
     end
   end
 
@@ -138,3 +181,5 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 end
+
+require 'spree/i18n/initializer'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open_food_network/enterprise_injection_data'
 
 class EnterprisesController < BaseController
@@ -5,6 +7,8 @@ class EnterprisesController < BaseController
   helper Spree::ProductsHelper
   include OrderCyclesHelper
   include SerializerHelper
+
+  protect_from_forgery except: :check_permalink
 
   # These prepended filters are in the reverse order of execution
   prepend_before_action :set_order_cycles, :require_distributor_chosen, :reset_order, only: :shop
@@ -27,7 +31,7 @@ class EnterprisesController < BaseController
 
     respond_to do |format|
       format.json do
-        enterprises = @enterprise.andand.relatives.andand.activated
+        enterprises = @enterprise&.relatives&.activated
         render(json: enterprises,
                each_serializer: Api::EnterpriseSerializer,
                data: OpenFoodNetwork::EnterpriseInjectionData.new)
@@ -37,14 +41,14 @@ class EnterprisesController < BaseController
 
   def check_permalink
     if Enterprise.find_by permalink: params[:permalink]
-      render(text: params[:permalink], status: :conflict) && return
+      render(plain: params[:permalink], status: :conflict) && return
     end
 
     begin
       Rails.application.routes.recognize_path( "/#{params[:permalink]}" )
-      render text: params[:permalink], status: :conflict
+      render plain: params[:permalink], status: :conflict
     rescue ActionController::RoutingError
-      render text: params[:permalink], status: :ok
+      render plain: params[:permalink], status: :ok
     end
   end
 

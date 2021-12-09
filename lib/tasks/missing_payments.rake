@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Find gaps in the sequence of payment ids.
 # If there are gaps then see if there is a log entry with a payment result for
 # the now lost payment. If there are some then you probably want to follow up
@@ -10,7 +12,7 @@
 namespace :ofn do
   desc 'Find payments that got lost'
   task :missing_payments, [:days] => :environment do |_task_, args|
-    days = args[:days].andand.to_i || 7
+    days = args[:days]&.to_i || 7
     payments_sequence = Spree::Payment.where("created_at > ?", days.days.ago).order(:id).pluck(:id)
     missing_payment_ids = payments_range(payments_sequence) - payments_sequence
     puts "Gaps in the payments sequence: #{missing_payment_ids.count}"

@@ -1,7 +1,29 @@
 require_relative 'boot'
 
-require 'rails/all'
+require "rails"
+[
+  "active_record/railtie",
+  #"active_storage/engine",
+  "action_controller/railtie",
+  "action_view/railtie",
+  "action_mailer/railtie",
+  "active_job/railtie",
+  "action_cable/engine",
+  #"action_mailbox/engine",
+  #"action_text/engine",
+  "rails/test_unit/railtie",
+  "sprockets/railtie" # Disable this after migrating to Webpacker
+].each do |railtie|
+  begin
+    require railtie
+  rescue LoadError
+  end
+end
+
 require_relative "../lib/open_food_network/i18n_config"
+require_relative '../lib/spree/core/environment'
+require_relative '../lib/spree/core/mail_interceptor'
+require_relative "../lib/session_cookie_upgrader"
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
@@ -12,12 +34,52 @@ end
 
 module Openfoodnetwork
   class Application < Rails::Application
+    config.middleware.insert_before(
+      ActionDispatch::Cookies,
+      SessionCookieUpgrader, {
+        old_key: "_session_id",
+        new_key: "_ofn_session_id",
+        domain: ".#{ENV['SITE_URL'].gsub(/^(www\.)|^(app\.)|^(staging\.)|^(stg\.)/, '')}"
+      }
+    ) if Rails.env.staging? || Rails.env.production?
 
-    config.to_prepare do
-      # Load application's model / class decorators
-      Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
-        Rails.configuration.cache_classes ? require(c) : load(c)
-      end
+    config.after_initialize do
+      # We need this here because the test env file loads before the Spree engine is loaded
+      Spree::Core::Engine.routes.default_url_options[:host] = 'test.host' if Rails.env == 'test'
+    end
+
+    # We reload the routes here
+    #   so that the appended/prepended routes are available to the application.
+    config.after_initialize do
+      Rails.application.routes_reloader.reload!
+    end
+
+    initializer "spree.environment", before: :load_config_initializers do |app|
+      app.config.spree = Spree::Core::Environment.new
+      Spree::Config = app.config.spree.preferences # legacy access
+    end
+
+    initializer "spree.register.payment_methods" do |app|
+      app.config.spree.payment_methods = [
+        Spree::Gateway::Bogus,
+        Spree::Gateway::BogusSimple,
+        Spree::PaymentMethod::Check
+      ]
+    end
+
+    initializer "spree.mail.settings" do |_app|
+      Spree::Core::MailSettings.init
+      Mail.register_interceptor(Spree::Core::MailInterceptor)
+    end
+
+    # filter sensitive information during logging
+    initializer "spree.params.filter" do |app|
+      app.config.filter_parameters += [
+        :password,
+        :password_confirmation,
+        :number,
+        :verification_value
+      ]
     end
 
     # Settings dependent on locale
@@ -33,16 +95,11 @@ module Openfoodnetwork
     initializer 'ofn.spree_locale_settings', before: 'spree.promo.environment' do |app|
       Spree::Config['checkout_zone'] = ENV['CHECKOUT_ZONE']
       Spree::Config['currency'] = ENV['CURRENCY']
-      if Spree::Country.table_exists?
-        country = Spree::Country.find_by(iso: ENV['DEFAULT_COUNTRY_CODE'])
-        Spree::Config['default_country_id'] = country.id if country.present?
-      else
-        Spree::Config['default_country_id'] = 12  # Australia
-      end
     end
 
     # Register Spree calculators
-    initializer 'spree.register.calculators' do |app|
+    Rails.application.reloader.to_prepare do
+      app = Openfoodnetwork::Application
       app.config.spree.calculators.shipping_methods = [
         Calculator::FlatPercentItemTotal,
         Calculator::FlatRate,
@@ -53,7 +110,7 @@ module Openfoodnetwork
       ]
 
       app.config.spree.calculators.add_class('enterprise_fees')
-      config.spree.calculators.enterprise_fees = [
+      app.config.spree.calculators.enterprise_fees = [
         Calculator::FlatPercentPerItem,
         Calculator::FlatRate,
         Calculator::FlexiRate,
@@ -63,7 +120,7 @@ module Openfoodnetwork
       ]
 
       app.config.spree.calculators.add_class('payment_methods')
-      config.spree.calculators.payment_methods = [
+      app.config.spree.calculators.payment_methods = [
         Calculator::FlatPercentItemTotal,
         Calculator::FlatRate,
         Calculator::FlexiRate,
@@ -72,17 +129,16 @@ module Openfoodnetwork
       ]
 
       app.config.spree.calculators.add_class('tax_rates')
-      config.spree.calculators.tax_rates = [
+      app.config.spree.calculators.tax_rates = [
         Calculator::DefaultTax
       ]
     end
 
     # Register Spree payment methods
     initializer "spree.gateway.payment_methods", :after => "spree.register.payment_methods" do |app|
-      app.config.spree.payment_methods << Spree::Gateway::Migs
-      app.config.spree.payment_methods << Spree::Gateway::Pin
       app.config.spree.payment_methods << Spree::Gateway::StripeConnect
       app.config.spree.payment_methods << Spree::Gateway::StripeSCA
+      app.config.spree.payment_methods << Spree::Gateway::PayPalExpress
     end
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -95,6 +151,20 @@ module Openfoodnetwork
       #{config.root}/app/presenters
       #{config.root}/app/jobs
     )
+
+    initializer "ofn.reports" do |app|
+      module ::Reporting; end
+      loader = Zeitwerk::Loader.new
+      loader.push_dir("#{Rails.root}/lib/reporting", namespace: ::Reporting)
+      loader.enable_reloading
+      loader.setup
+      loader.eager_load
+
+      if Rails.env.development?
+        require 'listen'
+        Listen.to("lib/reporting") { loader.reload }.start
+      end
+    end
 
     config.paths["config/routes.rb"] = %w(
       config/routes/api.rb
@@ -153,5 +223,15 @@ module Openfoodnetwork
     config.assets.precompile += ['*.jpg', '*.jpeg', '*.png', '*.gif' '*.svg']
 
     config.active_support.escape_html_entities_in_json = true
+
+    config.active_job.queue_adapter = :sidekiq
+
+    config.action_controller.include_all_helpers = false
+
+    config.generators.template_engine = :haml
+
+    config.autoloader = :zeitwerk
+
+    config.action_view.form_with_generates_ids = true
   end
 end

@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
   class CustomersReport
     attr_reader :params
+
     def initialize(user, params = {}, compile_table = false)
       @params = params
       @user = user
@@ -36,15 +39,15 @@ module OpenFoodNetwork
            order.billing_address.city]
         else
           ba = order.billing_address
-          da = order.distributor.andand.address
+          da = order.distributor&.address
           [ba.firstname,
            ba.lastname,
            [ba.address1, ba.address2, ba.city].join(" "),
            order.email,
            ba.phone,
-           order.distributor.andand.name,
-           [da.andand.address1, da.andand.address2, da.andand.city].join(" "),
-           order.shipping_method.andand.name]
+           order.distributor&.name,
+           [da&.address1, da&.address2, da&.city].join(" "),
+           order.shipping_method&.name]
         end
       end
     end
@@ -60,7 +63,11 @@ module OpenFoodNetwork
     def filter_to_supplier(orders)
       if params[:supplier_id].to_i > 0
         orders.select do |order|
-          order.line_items.includes(:product).where("spree_products.supplier_id = ?", params[:supplier_id].to_i).count > 0
+          order.line_items.includes(:product)
+            .where("spree_products.supplier_id = ?", params[:supplier_id].to_i)
+            .references(:product)
+            .count
+            .positive?
         end
       else
         orders

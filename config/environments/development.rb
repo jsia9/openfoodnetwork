@@ -11,13 +11,19 @@ Openfoodnetwork::Application.configure do
   config.cache_classes = !!ENV["PROFILE"]
 
   # :file_store is used by default when no cache store is specifically configured.
-  config.cache_store = :memory_store if !!ENV["PROFILE"]
+  if !!ENV["PROFILE"] || !!ENV["DEV_CACHING"]
+    config.cache_store = :redis_cache_store, {
+      driver: :hiredis,
+      url: ENV.fetch("OFN_REDIS_URL", "redis://localhost:6379/1"),
+      expires_in: 90.minutes
+    }
+  end
 
   config.eager_load = false
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = !!ENV["PROFILE"]
+  config.action_controller.perform_caching = !!ENV["PROFILE"] || !!ENV["DEV_CACHING"]
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
@@ -54,7 +60,7 @@ Openfoodnetwork::Application.configure do
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
   # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
   #
-  # To override this, set the appropriate locale in application.yml
+  # To override this, set the appropriate locale in .env[.*] file.
   config.time_zone = ENV.fetch("TIMEZONE", "UTC")
 
   config.i18n.fallbacks = [:en]
@@ -63,5 +69,7 @@ Openfoodnetwork::Application.configure do
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.default_url_options = { host: "0.0.0.0:3000" }
 
-  config.log_level = :debug
+  config.log_level = ENV.fetch("DEV_LOG_LEVEL", :debug)
+
+  config.view_component_storybook.stories_path = Rails.root.join("spec/components/stories")
 end

@@ -8,7 +8,9 @@ angular.module("ofn.admin", [
   "admin.dropdown",
   "admin.products",
   "admin.taxons",
-  "infinite-scroll"
-]).config ($httpProvider) ->
-  $httpProvider.defaults.headers.common["X-CSRF-Token"] = $("meta[name=csrf-token]").attr("content")
+  "infinite-scroll",
+  "admin.orders"
+]).config ($httpProvider, $locationProvider, $qProvider) ->
   $httpProvider.defaults.headers.common["Accept"] = "application/json, text/javascript, */*"
+  $locationProvider.hashPrefix('')
+  $qProvider.errorOnUnhandledRejections(false)

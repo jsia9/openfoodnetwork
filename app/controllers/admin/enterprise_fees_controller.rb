@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
+require 'open_food_network/order_cycle_permissions'
+
 module Admin
-  class EnterpriseFeesController < ResourceController
+  class EnterpriseFeesController < Admin::ResourceController
     before_action :load_enterprise_fee_set, only: :index
     before_action :load_data
 
@@ -10,11 +14,15 @@ module Admin
 
       blank_enterprise_fee = EnterpriseFee.new
       blank_enterprise_fee.enterprise = current_enterprise
+
+      @collection = @collection.to_a
       3.times { @collection << blank_enterprise_fee }
 
       respond_to do |format|
         format.html
-        format.json { render_as_json @collection, controller: self, include_calculators: @include_calculators }
+        format.json {
+          render_as_json @collection, controller: self, include_calculators: @include_calculators
+        }
         # format.json { @presented_collection = @collection.each_with_index.map { |ef, i| EnterpriseFeePresenter.new(self, ef, i) } }
       end
     end
@@ -27,7 +35,14 @@ module Admin
     end
 
     def bulk_update
-      @enterprise_fee_set = EnterpriseFeeSet.new(params[:enterprise_fee_set])
+      @flat_percent_value = enterprise_fee_bulk_params.dig('collection_attributes', '0', 'calculator_attributes', 'preferred_flat_percent')
+
+      unless @flat_percent_value.nil? || Float(@flat_percent_value, exception: false)
+        flash[:error] = I18n.t(:calculator_preferred_value_error)
+        return redirect_to redirect_path
+      end
+
+      @enterprise_fee_set = Sets::EnterpriseFeeSet.new(enterprise_fee_bulk_params)
 
       if @enterprise_fee_set.save
         redirect_to redirect_path, notice: I18n.t(:enterprise_fees_update_notice)
@@ -40,7 +55,7 @@ module Admin
     private
 
     def load_enterprise_fee_set
-      @enterprise_fee_set = EnterpriseFeeSet.new collection: collection
+      @enterprise_fee_set = Sets::EnterpriseFeeSet.new collection: collection
     end
 
     def load_data
@@ -54,10 +69,12 @@ module Admin
         order_cycle = OrderCycle.find_by(id: params[:order_cycle_id]) if params[:order_cycle_id]
         coordinator = Enterprise.find_by(id: params[:coordinator_id]) if params[:coordinator_id]
         order_cycle = OrderCycle.new(coordinator: coordinator) if order_cycle.nil? && coordinator.present?
-        enterprises = OpenFoodNetwork::OrderCyclePermissions.new(spree_current_user, order_cycle).visible_enterprises
+        enterprises = OpenFoodNetwork::OrderCyclePermissions.new(spree_current_user,
+                                                                 order_cycle).visible_enterprises
         EnterpriseFee.for_enterprises(enterprises).order('enterprise_id', 'fee_type', 'name')
       else
-        collection = EnterpriseFee.managed_by(spree_current_user).order('enterprise_id', 'fee_type', 'name')
+        collection = EnterpriseFee.managed_by(spree_current_user).order('enterprise_id',
+                                                                        'fee_type', 'name')
         collection = collection.for_enterprise(current_enterprise) if current_enterprise
         collection
       end
@@ -77,6 +94,16 @@ module Admin
       end
 
       main_app.admin_enterprise_fees_path
+    end
+
+    def enterprise_fee_bulk_params
+      params.require(:sets_enterprise_fee_set).permit(
+        collection_attributes: [
+          :id, :enterprise_id, :fee_type, :name, :tax_category_id,
+          :inherits_tax_category, :calculator_type,
+          { calculator_attributes: PermittedAttributes::Calculator.attributes }
+        ]
+      )
     end
   end
 end

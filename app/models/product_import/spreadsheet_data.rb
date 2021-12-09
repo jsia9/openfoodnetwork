@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class encapsulates a number of "indexes" used during product import. These contain hashes
 # of information that need to be accessed at various stages of the import, and are built in order
 # to minimise the number of queries that take place. So for instance, if a spreadsheet has 4000
@@ -35,7 +37,7 @@ module ProductImport
     private
 
     def import_into_inventory?
-      @import_settings[:settings].andand['import_into'] == 'inventories'
+      @import_settings.dig(:settings, 'import_into') == 'inventories'
     end
 
     def create_enterprises_index

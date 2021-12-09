@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Admin
-  class EnterpriseGroupsController < ResourceController
+  class EnterpriseGroupsController < Admin::ResourceController
     before_action :load_data, except: :index
     before_action :load_object_data, only: [:new, :edit, :create, :update]
 
@@ -25,15 +27,12 @@ module Admin
 
     protected
 
-    def build_resource_with_address
-      enterprise_group = build_resource_without_address
+    def build_resource
+      enterprise_group = super
       enterprise_group.address = Spree::Address.new
-      enterprise_group.address.country = Spree::Country.find_by(
-        id: Spree::Config[:default_country_id]
-      )
+      enterprise_group.address.country = DefaultCountry.country
       enterprise_group
     end
-    alias_method_chain :build_resource, :address
 
     # Overriding method on Spree's resource controller,
     # so that resources are found using permalink.
@@ -51,7 +50,7 @@ module Admin
     end
 
     def load_object_data
-      @owner_email = @enterprise_group.andand.owner.andand.email || ""
+      @owner_email = @enterprise_group&.owner&.email || ""
     end
 
     def collection

@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require 'open_food_network/locking'
 require 'open_food_network/permalink_generator'
 require 'spree/core/s3_support'
 
-class EnterpriseGroup < ActiveRecord::Base
+class EnterpriseGroup < ApplicationRecord
   include PermalinkGenerator
   acts_as_list
 
   has_and_belongs_to_many :enterprises, join_table: 'enterprise_groups_enterprises'
-  belongs_to :owner, class_name: 'Spree::User', foreign_key: :owner_id, inverse_of: :owned_groups
+  belongs_to :owner, class_name: 'Spree::User', inverse_of: :owned_groups
   belongs_to :address, class_name: 'Spree::Address'
   accepts_nested_attributes_for :address
   validates :address, presence: true, associated: true
@@ -52,7 +54,7 @@ class EnterpriseGroup < ActiveRecord::Base
   }
 
   def set_unused_address_fields
-    address.firstname = address.lastname = I18n.t(:unused)
+    address.firstname = address.lastname = address.company = I18n.t(:unused)
   end
 
   def set_undefined_address_fields
@@ -66,10 +68,10 @@ class EnterpriseGroup < ActiveRecord::Base
   def unset_undefined_address_fields
     return if address.blank?
 
-    address.phone.sub!(/^#{I18n.t(:undefined)}$/, '')
-    address.address1.sub!(/^#{I18n.t(:undefined)}$/, '')
-    address.city.sub!(/^#{I18n.t(:undefined)}$/, '')
-    address.zipcode.sub!(/^#{I18n.t(:undefined)}$/, '')
+    address.phone = address.phone.sub(/^#{I18n.t(:undefined)}$/, '')
+    address.address1 = address.address1.sub(/^#{I18n.t(:undefined)}$/, '')
+    address.city = address.city.sub(/^#{I18n.t(:undefined)}$/, '')
+    address.zipcode = address.zipcode.sub(/^#{I18n.t(:undefined)}$/, '')
   end
 
   def to_param

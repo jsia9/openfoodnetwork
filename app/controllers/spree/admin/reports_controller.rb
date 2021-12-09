@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 require 'open_food_network/reports/list'
@@ -9,7 +11,6 @@ require 'open_food_network/order_grouper'
 require 'open_food_network/customers_report'
 require 'open_food_network/users_and_enterprises_report'
 require 'open_food_network/order_cycle_management_report'
-require 'open_food_network/packing_report'
 require 'open_food_network/sales_tax_report'
 require 'open_food_network/xero_invoices_report'
 require 'open_food_network/payments_report'
@@ -19,6 +20,7 @@ module Spree
   module Admin
     class ReportsController < Spree::Admin::BaseController
       include Spree::ReportsHelper
+      helper ::ReportsHelper
 
       ORDER_MANAGEMENT_ENGINE_REPORTS = [
         :bulk_coop,
@@ -29,8 +31,8 @@ module Spree
 
       before_action :cache_search_state
       # Fetches user's distributors, suppliers and order_cycles
-      before_action :load_data,
-                    only: [:customers, :products_and_inventory, :order_cycle_management, :packing]
+      before_action :load_basic_data, only: [:customers, :products_and_inventory, :order_cycle_management]
+      before_action :load_associated_data, only: [:orders_and_fulfillment]
 
       respond_to :html
 
@@ -46,19 +48,20 @@ module Spree
       def customers
         @report_types = report_types[:customers]
         @report_type = params[:report_type]
-        @report = OpenFoodNetwork::CustomersReport.new spree_current_user, params, render_content?
+        @report = OpenFoodNetwork::CustomersReport.new spree_current_user, raw_params,
+                                                       render_content?
         render_report(@report.header, @report.table, params[:csv], "customers_#{timestamp}.csv")
       end
 
       def order_cycle_management
-        params[:q] ||= {}
+        raw_params[:q] ||= {}
 
         @report_types = report_types[:order_cycle_management]
         @report_type = params[:report_type]
 
         # -- Build Report with Order Grouper
         @report = OpenFoodNetwork::OrderCycleManagementReport.new spree_current_user,
-                                                                  params,
+                                                                  raw_params,
                                                                   render_content?
         @table = @report.table_items
 
@@ -66,22 +69,9 @@ module Spree
                       "order_cycle_management_#{timestamp}.csv")
       end
 
-      def packing
-        params[:q] ||= {}
-
-        @report_types = report_types[:packing]
-        @report_type = params[:report_type]
-
-        # -- Build Report with Order Grouper
-        @report = OpenFoodNetwork::PackingReport.new spree_current_user, params, render_content?
-        @table = order_grouper_table
-
-        render_report(@report.header, @table, params[:csv], "packing_#{timestamp}.csv")
-      end
-
       def orders_and_distributors
         @report = OpenFoodNetwork::OrderAndDistributorReport.new spree_current_user,
-                                                                 params,
+                                                                 raw_params,
                                                                  render_content?
         @search = @report.search
         csv_file_name = "orders_and_distributors_#{timestamp}.csv"
@@ -91,7 +81,8 @@ module Spree
       def sales_tax
         @distributors = my_distributors
         @report_type = params[:report_type]
-        @report = OpenFoodNetwork::SalesTaxReport.new spree_current_user, params, render_content?
+        @report = OpenFoodNetwork::SalesTaxReport.new spree_current_user, raw_params,
+                                                      render_content?
         render_report(@report.header, @report.table, params[:csv], "sales_tax.csv")
       end
 
@@ -101,7 +92,8 @@ module Spree
         @report_type = params[:report_type]
 
         # -- Build Report with Order Grouper
-        @report = OpenFoodNetwork::PaymentsReport.new spree_current_user, params, render_content?
+        @report = OpenFoodNetwork::PaymentsReport.new spree_current_user, raw_params,
+                                                      render_content?
         @table = order_grouper_table
         csv_file_name = "payments_#{timestamp}.csv"
 
@@ -109,16 +101,7 @@ module Spree
       end
 
       def orders_and_fulfillment
-        params[:q] ||= orders_and_fulfillment_default_filters
-
-        # -- Prepare Form Options
-        permissions = OpenFoodNetwork::Permissions.new(spree_current_user)
-        # My distributors and any distributors distributing products I supply
-        @distributors = permissions.visible_enterprises_for_order_reports.is_distributor
-        # My suppliers and any suppliers supplying products I distribute
-        @suppliers = permissions.visible_enterprises_for_order_reports.is_primary_producer
-
-        @order_cycles = my_order_cycles
+        raw_params[:q] ||= orders_and_fulfillment_default_filters
 
         @report_types = report_types[:orders_and_fulfillment]
         @report_type = params[:report_type]
@@ -127,7 +110,7 @@ module Spree
 
         # -- Build Report with Order Grouper
         @report = OpenFoodNetwork::OrdersAndFulfillmentsReport.new spree_current_user,
-                                                                   params,
+                                                                   raw_params,
                                                                    render_content?
         @table = order_grouper_table
         csv_file_name = "#{params[:report_type]}_#{timestamp}.csv"
@@ -139,11 +122,11 @@ module Spree
         @report_types = report_types[:products_and_inventory]
         @report = if params[:report_type] != 'lettuce_share'
                     OpenFoodNetwork::ProductsAndInventoryReport.new spree_current_user,
-                                                                    params,
+                                                                    raw_params,
                                                                     render_content?
                   else
                     OpenFoodNetwork::LettuceShareReport.new spree_current_user,
-                                                            params,
+                                                            raw_params,
                                                             render_content?
                   end
 
@@ -154,19 +137,19 @@ module Spree
       end
 
       def users_and_enterprises
-        @report = OpenFoodNetwork::UsersAndEnterprisesReport.new params, render_content?
+        @report = OpenFoodNetwork::UsersAndEnterprisesReport.new raw_params, render_content?
         render_report(@report.header, @report.table, params[:csv],
                       "users_and_enterprises_#{timestamp}.csv")
       end
 
       def xero_invoices
-        params[:q] ||= {}
+        raw_params[:q] ||= {}
 
         @distributors = my_distributors
         @order_cycles = my_order_cycles
 
         @report = OpenFoodNetwork::XeroInvoicesReport.new(spree_current_user,
-                                                          params,
+                                                          raw_params,
                                                           render_content?)
         render_report(@report.header, @report.table, params[:csv], "xero_invoices_#{timestamp}.csv")
       end
@@ -198,7 +181,7 @@ module Spree
           :invoice_date,
           :due_date
         ]
-        @searching = search_keys.any? { |key| params.key? key }
+        @searching = search_keys.any? { |key| raw_params.key? key }
       end
 
       # We don't want to render data unless search params are supplied.
@@ -214,6 +197,14 @@ module Spree
         # Rendering HTML is the default.
       end
 
+      def load_associated_data
+        form_options = Reporting::FrontendData.new(spree_current_user)
+
+        @distributors = form_options.distributors
+        @suppliers = form_options.suppliers
+        @order_cycles = form_options.order_cycles
+      end
+
       def csv_report(header, table)
         CSV.generate do |csv|
           csv << header
@@ -221,7 +212,7 @@ module Spree
         end
       end
 
-      def load_data
+      def load_basic_data
         @distributors = my_distributors
         @suppliers = my_suppliers | suppliers_of_products_distributed_by(@distributors)
         @order_cycles = my_order_cycles
@@ -279,14 +270,14 @@ module Spree
       def describe_report(report)
         name = I18n.t(:name, scope: [:admin, :reports, report])
         description = begin
-                        I18n.t!(:description, scope: [:admin, :reports, report])
-                      rescue I18n::MissingTranslationData
-                        render_to_string(
-                          partial: "#{report}_description",
-                          layout: false,
-                          locals: { report_types: report_types[report] }
-                        ).html_safe
-                      end
+          I18n.t!(:description, scope: [:admin, :reports, report])
+        rescue I18n::MissingTranslationData
+          render_to_string(
+            partial: "#{report}_description",
+            layout: false,
+            locals: { report_types: report_types[report] }
+          ).html_safe
+        end
         { name: name, url: url_for_report(report), description: description }
       end
 
@@ -294,10 +285,10 @@ module Spree
         if report_in_order_management_engine?(report)
           main_app.public_send("new_order_management_reports_#{report}_url".to_sym)
         else
-          public_send("#{report}_admin_reports_url".to_sym)
+          spree.public_send("#{report}_admin_reports_url".to_sym)
         end
       rescue NoMethodError
-        url_for([:new, :admin, :reports, report.to_s.singularize])
+        main_app.admin_reports_url(report_type: report)
       end
 
       # List of reports that have been moved to the Order Management engine

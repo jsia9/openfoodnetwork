@@ -1,23 +1,27 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe "spree/admin/payment_methods/index.html.haml" do
   include AuthenticationHelper
+  helper Spree::Admin::NavigationHelper
+  helper Spree::Admin::BaseHelper
+  helper Spree::Core::Engine.routes.url_helpers
 
   before do
-    controller.singleton_class.class_eval do
-      helper_method :new_object_url, :edit_object_url, :object_url
-
+    ActionView::Base.class_eval do
       def new_object_url() "" end
 
-      def edit_object_url(object, options = {}) "" end
+      def edit_object_url(_object, _options = {}) "" end
 
-      def object_url(object = nil, options = {}) "" end
+      def object_url(_object = nil, _options = {}) "" end
     end
 
     assign(:payment_methods, [
-      create(:payment_method),
-      create(:payment_method)
-    ])
+             create(:payment_method),
+             create(:payment_method)
+           ])
+    allow(controller).to receive(:controller_name).and_return("tests")
   end
 
   describe "payment methods index page" do
@@ -29,7 +33,8 @@ describe "spree/admin/payment_methods/index.html.haml" do
       it "shows only the providers of the existing payment methods" do
         render
 
-        expect(rendered).to have_content "Cash/EFT/etc. (payments for which automatic validation is not required)", count: 2
+        expect(rendered).to have_content "Cash/EFT/etc. (payments for which automatic validation is not required)",
+                                         count: 2
       end
 
       it "does not show Enviroment column" do
@@ -53,7 +58,8 @@ describe "spree/admin/payment_methods/index.html.haml" do
       it "shows only the providers of the existing payment methods" do
         render
 
-        expect(rendered).to have_content "Cash/EFT/etc. (payments for which automatic validation is not required)", count: 2
+        expect(rendered).to have_content "Cash/EFT/etc. (payments for which automatic validation is not required)",
+                                         count: 2
       end
 
       it "shows the Enviroment column" do

@@ -1,3 +1,11 @@
+Openfoodnetwork::Application.routes.draw do
+  scope module: 'spree' do
+    resources :orders do
+      put :cancel, on: :member
+    end
+  end
+end
+
 # Overriding Devise routes to use our own controller
 Spree::Core::Engine.routes.draw do
   devise_for :spree_user,
@@ -15,8 +23,6 @@ Spree::Core::Engine.routes.draw do
   devise_scope :spree_user do
     post '/login' => 'user_sessions#create', :as => :create_new_session
     get '/logout' => 'user_sessions#destroy', :as => :logout
-    get '/signup' => 'user_registrations#new', :as => :signup
-    post '/signup' => 'user_registrations#create', :as => :registration
     get '/password/recover' => 'user_passwords#new', :as => :recover_password
     post '/password/recover' => 'user_passwords#create', :as => :reset_password
     get '/password/change' => 'user_passwords#edit', :as => :edit_password
@@ -27,7 +33,6 @@ Spree::Core::Engine.routes.draw do
 
   match '/admin/reports/orders_and_distributors' => 'admin/reports#orders_and_distributors', :as => "orders_and_distributors_admin_reports",  :via  => [:get, :post]
   match '/admin/reports/order_cycle_management' => 'admin/reports#order_cycle_management', :as => "order_cycle_management_admin_reports",  :via  => [:get, :post]
-  match '/admin/reports/packing' => 'admin/reports#packing', :as => "packing_admin_reports",  :via  => [:get, :post]
   match '/admin/reports/group_buys' => 'admin/reports#group_buys', :as => "group_buys_admin_reports",  :via  => [:get, :post]
   match '/admin/reports/bulk_coop' => 'admin/reports#bulk_coop', :as => "bulk_coop_admin_reports",  :via  => [:get, :post]
   match '/admin/reports/payments' => 'admin/reports#payments', :as => "payments_admin_reports",  :via  => [:get, :post]
@@ -107,6 +112,8 @@ Spree::Core::Engine.routes.draw do
       resources :payments do
         member do
           put :fire
+          get 'paypal_refund'
+          post 'paypal_refund'
         end
       end
 
@@ -119,7 +126,7 @@ Spree::Core::Engine.routes.draw do
       end
     end
 
-    resources :reports
+    resources :reports, only: :index
 
     resources :users do
       member do
@@ -159,16 +166,13 @@ Spree::Core::Engine.routes.draw do
     resources :payment_methods
   end
 
-  resources :orders do
-    get :clear, :on => :collection
-    get :order_cycle_expired, :on => :collection
-    put :cancel, on: :member
-  end
-
   resources :products
 
   # Used by spree_paypal_express
-  get '/checkout/:state', :to => 'checkout#edit', :as => :checkout_state
   get '/content/cvv', :to => 'content#cvv', :as => :cvv
   get '/content/*path', :to => 'content#show', :as => :content
+  get '/paypal', :to => "paypal#express", :as => :paypal_express
+  get '/paypal/confirm', :to => "paypal#confirm", :as => :confirm_paypal
+  get '/paypal/cancel', :to => "paypal#cancel", :as => :cancel_paypal
+  get '/paypal/notify', :to => "paypal#notify", :as => :notify_paypal
 end

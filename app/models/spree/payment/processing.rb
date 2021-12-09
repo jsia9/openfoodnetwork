@@ -1,35 +1,38 @@
 # frozen_string_literal: true
 
 module Spree
-  class Payment < ActiveRecord::Base
+  class Payment < ApplicationRecord
     module Processing
       def process!
-        return unless payment_method&.source_required?
+        return unless validate!
 
-        raise Core::GatewayError, Spree.t(:payment_processing_failed) unless source
+        purchase!
+      end
 
-        return if processing?
+      def process_offline!
+        return unless validate!
+        return if requires_authorization?
 
-        unless payment_method.supports?(source)
-          invalidate!
-          raise Core::GatewayError, Spree.t(:payment_method_not_supported)
-        end
-
-        if payment_method.auto_capture?
-          purchase!
+        if preauthorized?
+          capture!
         else
-          authorize!
+          charge_offline!
         end
       end
 
-      def authorize!
+      def authorize!(return_url = nil)
         started_processing!
-        gateway_action(source, :authorize, :pend)
+        gateway_action(source, :authorize, :pend, return_url: return_url)
       end
 
       def purchase!
         started_processing!
         gateway_action(source, :purchase, :complete)
+      end
+
+      def charge_offline!
+        started_processing!
+        gateway_action(source, :charge_offline, :complete)
       end
 
       def capture!
@@ -38,19 +41,7 @@ module Spree
         started_processing!
         protect_from_connection_error do
           check_environment
-
-          response = if payment_method.payment_profiles_supported?
-                       # Gateways supporting payment profiles will need access to credit
-                       # card object because this stores the payment profile information
-                       # so supply the authorization itself as well as the credit card,
-                       # rather than just the authorization code
-                       payment_method.capture(self, source, gateway_options)
-                     else
-                       # Standard ActiveMerchant capture usage
-                       payment_method.capture(money.money.cents,
-                                              response_code,
-                                              gateway_options)
-                     end
+          response = payment_method.capture(money.money.cents, response_code, gateway_options)
 
           handle_response(response, :complete, :failure)
         end
@@ -180,7 +171,7 @@ module Spree
                     order_id: gateway_order_id }
 
         options.merge!(shipping: order.ship_total * 100,
-                       tax: order.tax_total * 100,
+                       tax: order.additional_tax_total * 100,
                        subtotal: order.item_total * 100,
                        discount: 0,
                        currency: currency)
@@ -193,6 +184,24 @@ module Spree
 
       private
 
+      def preauthorized?
+        response_code.presence&.match("pi_")
+      end
+
+      def validate!
+        return false unless payment_method&.source_required?
+
+        raise Core::GatewayError, Spree.t(:payment_processing_failed) unless source
+
+        return false if processing?
+
+        unless payment_method.supports?(source)
+          invalidate!
+          raise Core::GatewayError, Spree.t(:payment_method_not_supported)
+        end
+        true
+      end
+
       def calculate_refund_amount(refund_amount = nil)
         refund_amount ||= if credit_allowed >= order.outstanding_balance.abs
                             order.outstanding_balance.abs
@@ -202,7 +211,7 @@ module Spree
         refund_amount.to_f
       end
 
-      def gateway_action(source, action, success_state)
+      def gateway_action(source, action, success_state, options = {})
         protect_from_connection_error do
           check_environment
 
@@ -210,7 +219,7 @@ module Spree
             action,
             (amount * 100).round,
             source,
-            gateway_options
+            gateway_options.merge(options)
           )
           handle_response(response, success_state, :failure)
         end
@@ -227,6 +236,9 @@ module Spree
             if response.cvv_result
               self.cvv_response_code = response.cvv_result['code']
               self.cvv_response_message = response.cvv_result['message']
+              if cvv_response_message.present?
+                return require_authorization!
+              end
             end
           end
           __send__("#{success_state}!")
@@ -248,7 +260,7 @@ module Spree
 
       def gateway_error(error)
         text = if error.is_a? ActiveMerchant::Billing::Response
-                 error.params['message'] || error.params['response_reason_text'] || error.message
+                 error_text(error)
                elsif error.is_a? ActiveMerchant::ConnectionError
                  Spree.t(:unable_to_connect_to_gateway)
                else
@@ -257,6 +269,14 @@ module Spree
         logger.error(Spree.t(:gateway_error))
         logger.error("  #{error.to_yaml}")
         raise Core::GatewayError, text
+      end
+
+      def error_text(error)
+        if (code = error.params.dig('error', 'code')) && I18n.exists?("stripe.error_code.#{code}")
+          I18n.t("stripe.error_code.#{code}")
+        else
+          error.params['message'] || error.params['response_reason_text'] || error.message
+        end
       end
 
       # Saftey check to make sure we're not accidentally performing operations on a live gateway.

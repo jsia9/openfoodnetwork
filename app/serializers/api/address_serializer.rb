@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::AddressSerializer < ActiveModel::Serializer
   # cached
   # delegate :cache_key, to: :object
@@ -7,10 +9,10 @@ class Api::AddressSerializer < ActiveModel::Serializer
              :zipcode, :country_name
 
   def country_name
-    object.country.andand.name
+    object.country&.name
   end
 
   def state_name
-    object.state.andand.abbr
+    object.state&.abbr
   end
 end

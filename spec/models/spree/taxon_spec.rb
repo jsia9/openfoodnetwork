@@ -7,8 +7,8 @@ module Spree
     let(:taxon) { Spree::Taxon.new(name: "Ruby on Rails") }
 
     let(:e) { create(:supplier_enterprise) }
-    let!(:t1) { create(:taxon) }
-    let!(:t2) { create(:taxon) }
+    let(:t1) { create(:taxon) }
+    let(:t2) { create(:taxon) }
 
     describe "finding all supplied taxons" do
       let!(:p1) { create(:simple_product, supplier: e, taxons: [t1, t2]) }
@@ -19,8 +19,12 @@ module Spree
     end
 
     describe "finding distributed taxons" do
-      let!(:oc_open)   { create(:open_order_cycle, distributors: [e], variants: [p_open.variants.first]) }
-      let!(:oc_closed) { create(:closed_order_cycle, distributors: [e], variants: [p_closed.variants.first]) }
+      let!(:oc_open) {
+        create(:open_order_cycle, distributors: [e], variants: [p_open.variants.first])
+      }
+      let!(:oc_closed) {
+        create(:closed_order_cycle, distributors: [e], variants: [p_closed.variants.first])
+      }
       let!(:p_open) { create(:simple_product, primary_taxon: t1) }
       let!(:p_closed) { create(:simple_product, primary_taxon: t2) }
 
@@ -66,7 +70,7 @@ module Spree
       context "with parent taxon" do
         before do
           allow(taxon).to receive_messages parent_id: 123
-          allow(taxon).to receive_messages parent: build(:taxon, permalink: "brands")
+          allow(taxon).to receive_messages parent: build_stubbed(:taxon, permalink: "brands")
         end
 
         it "should set permalink correctly when taxon has parent" do
@@ -93,7 +97,9 @@ module Spree
       let(:taxonomy) { create(:taxonomy) }
 
       it "does not error out" do
-        expect { taxonomy.root.children.where(name: "Some name").first_or_create }.not_to raise_error
+        expect {
+          taxonomy.root.children.where(name: "Some name").first_or_create
+        }.not_to raise_error
       end
     end
   end

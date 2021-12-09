@@ -1,21 +1,17 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
-  class FeatureToggle
-    def self.enabled?(feature_name)
-      true?(env_variable_value(feature_name))
-    end
-
-    private
-
-    def self.env_variable_value(feature_name)
-      ENV.fetch(env_variable_name(feature_name), nil)
-    end
-
-    def self.env_variable_name(feature_name)
-      "OFN_FEATURE_#{feature_name.to_s.upcase}"
-    end
-
-    def self.true?(value)
-      value.to_s.casecmp("true").zero?
+  # Feature toggles are configured via Flipper.
+  #
+  # We define features in the initializer and then it can be customised via the
+  # web interface on each server.
+  #
+  # - config/initializers/flipper.rb
+  # - http://localhost:3000/admin/feature-toggle/features
+  #
+  module FeatureToggle
+    def self.enabled?(feature_name, user = nil)
+      Flipper.enabled?(feature_name, user)
     end
   end
 end

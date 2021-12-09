@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Spree
   module Admin
-    class CountriesController < ResourceController
+    class CountriesController < ::Admin::ResourceController
       protected
 
       def permitted_resource_params

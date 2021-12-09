@@ -2,22 +2,25 @@
 
 require 'spree/core/s3_support'
 
-class Enterprise < ActiveRecord::Base
+class Enterprise < ApplicationRecord
   SELLS = %w(unspecified none own any).freeze
   ENTERPRISE_SEARCH_RADIUS = 100
+  searchable_attributes :sells, :is_primary_producer
+  searchable_associations :properties
+  searchable_scopes :is_primary_producer, :is_distributor, :is_hub, :activated, :visible,
+                    :ready_for_checkout, :not_ready_for_checkout
 
   preference :shopfront_message, :text, default: ""
   preference :shopfront_closed_message, :text, default: ""
   preference :shopfront_taxon_order, :string, default: ""
+  preference :shopfront_producer_order, :string, default: ""
   preference :shopfront_order_cycle_order, :string, default: "orders_close_at"
-  preference :show_customer_names_to_suppliers, :boolean, default: false
+  preference :shopfront_product_sorting_method, :string, default: "by_category"
 
   # Allow hubs to restrict visible variants to only those in their inventory
   preference :product_selection_from_inventory_only, :boolean, default: false
 
   has_paper_trail only: [:owner_id, :sells], on: [:update]
-
-  self.inheritance_column = nil
 
   has_many :relationships_as_parent, class_name: 'EnterpriseRelationship',
                                      foreign_key: 'parent_id',
@@ -34,11 +37,11 @@ class Enterprise < ActiveRecord::Base
                                dependent: :destroy
   has_many :distributed_orders, class_name: 'Spree::Order', foreign_key: 'distributor_id'
   belongs_to :address, class_name: 'Spree::Address'
+  belongs_to :business_address, class_name: 'Spree::Address', dependent: :destroy
   has_many :enterprise_fees
   has_many :enterprise_roles, dependent: :destroy
   has_many :users, through: :enterprise_roles
   belongs_to :owner, class_name: 'Spree::User',
-                     foreign_key: :owner_id,
                      inverse_of: :owned_enterprises
   has_and_belongs_to_many :payment_methods, join_table: 'distributors_payment_methods',
                                             class_name: 'Spree::PaymentMethod',
@@ -53,6 +56,8 @@ class Enterprise < ActiveRecord::Base
   delegate :latitude, :longitude, :city, :state_name, to: :address
 
   accepts_nested_attributes_for :address
+  accepts_nested_attributes_for :business_address, reject_if: :business_address_empty?,
+                                                   allow_destroy: true
   accepts_nested_attributes_for :producer_properties, allow_destroy: true,
                                                       reject_if: lambda { |pp|
                                                         pp[:property_name].blank?
@@ -96,17 +101,17 @@ class Enterprise < ActiveRecord::Base
   validates :owner, presence: true
   validates :permalink, uniqueness: true, presence: true
   validate :shopfront_taxons
+  validate :shopfront_producers
   validate :enforce_ownership_limit, if: lambda { owner_id_changed? && !owner_id.nil? }
 
   before_validation :initialize_permalink, if: lambda { permalink.nil? }
   before_validation :set_unused_address_fields
-  after_validation :geocode_address
   after_validation :ensure_owner_is_manager, if: lambda { owner_id_changed? && !owner_id.nil? }
 
   after_touch :touch_distributors
   after_create :set_default_contact
   after_create :relate_to_owners_enterprises
-  after_create :send_welcome_email
+  after_create_commit :send_welcome_email
 
   after_rollback :restore_permalink
 
@@ -122,7 +127,7 @@ class Enterprise < ActiveRecord::Base
   scope :not_ready_for_checkout, lambda {
     # When ready_for_checkout is empty, return all rows when there are no enterprises ready for
     # checkout.
-    ready_enterprises = Enterprise.ready_for_checkout.
+    ready_enterprises = Enterprise.default_scoped.ready_for_checkout.
       except(:select).
       select('DISTINCT enterprises.id')
 
@@ -132,7 +137,7 @@ class Enterprise < ActiveRecord::Base
       where(nil)
     end
   }
-  scope :is_primary_producer, -> { where(is_primary_producer: true) }
+  scope :is_primary_producer, -> { where("enterprises.is_primary_producer IS TRUE") }
   scope :is_distributor, -> { where('sells != ?', 'none') }
   scope :is_hub, -> { where(sells: 'any') }
   scope :supplying_variant_in, lambda { |variants|
@@ -204,6 +209,14 @@ class Enterprise < ActiveRecord::Base
     ", one, one, others)
   }
 
+  def business_address_empty?(attributes)
+    attributes_exists = attributes['id'].present?
+    attributes_empty = attributes.slice(:company, :address1, :city, :phone,
+                                        :zipcode).values.all?(&:blank?)
+    attributes.merge!(_destroy: 1) if attributes_exists && attributes_empty
+    !attributes_exists && attributes_empty
+  end
+
   # Force a distinct count to work around relation count issue https://github.com/rails/rails/issues/5554
   def self.distinct_count
     count(distinct: true)
@@ -250,7 +263,7 @@ class Enterprise < ActiveRecord::Base
 
   def plus_relatives_and_oc_producers(order_cycles)
     oc_producer_ids = Exchange.in_order_cycle(order_cycles).incoming.pluck :sender_id
-    Enterprise.relatives_of_one_union_others(id, oc_producer_ids | [id])
+    Enterprise.is_primary_producer.relatives_of_one_union_others(id, oc_producer_ids | [id])
   end
 
   def relatives_including_self
@@ -400,19 +413,16 @@ class Enterprise < ActiveRecord::Base
   end
 
   def send_welcome_email
-    Delayed::Job.enqueue WelcomeEnterpriseJob.new(id)
+    EnterpriseMailer.welcome(self).deliver_later
   end
 
   def strip_url(url)
-    url.andand.sub(%r{(https?://)?}, '')
+    url&.sub(%r{(https?://)?}, '')
   end
 
   def set_unused_address_fields
-    address.firstname = address.lastname = address.phone = 'unused' if address.present?
-  end
-
-  def geocode_address
-    address.geocode if address.andand.changed?
+    address.firstname = address.lastname = address.phone = address.company = 'unused' if address.present?
+    business_address.first_name = business_address.last_name = 'unused' if business_address.present?
   end
 
   def ensure_owner_is_manager
@@ -464,12 +474,20 @@ class Enterprise < ActiveRecord::Base
     end
   end
 
+  def shopfront_producers
+    unless preferred_shopfront_producer_order =~ /\A((\d+,)*\d+)?\z/
+      errors.add(:shopfront_category_ordering, "must contain a list of producers.")
+    end
+  end
+
   def restore_permalink
     # If the permalink has errors, reset it to it's original value, so we can update the form
     self.permalink = permalink_was if permalink_changed? && errors[:permalink].present?
   end
 
   def initialize_permalink
+    return unless name
+
     self.permalink = Enterprise.find_available_permalink(name)
   end
 

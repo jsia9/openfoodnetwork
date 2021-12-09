@@ -1,14 +1,17 @@
+# frozen_string_literal: true
+
 class Api::VariantSerializer < ActiveModel::Serializer
   attributes :id, :is_master, :product_name, :sku,
              :options_text, :unit_value, :unit_description, :unit_to_display,
              :display_as, :display_name, :name_to_display,
              :price, :on_demand, :on_hand, :fees, :price_with_fees,
-             :tag_list, :thumb_url
+             :tag_list, :thumb_url,
+             :unit_price_price, :unit_price_unit
 
   delegate :price, to: :object
 
   def fees
-    options[:enterprise_fee_calculator].andand.indexed_fees_by_type_for(object) ||
+    options[:enterprise_fee_calculator]&.indexed_fees_by_type_for(object) ||
       object.fees_by_type_for(options[:current_distributor], options[:current_order_cycle])
   end
 
@@ -37,5 +40,17 @@ class Api::VariantSerializer < ActiveModel::Serializer
     else
       "/noimage/mini.png"
     end
+  end
+
+  def unit_price_price
+    price_with_fees / (unit_price.denominator || 1)
+  end
+
+  delegate :unit, to: :unit_price, prefix: true
+
+  private
+
+  def unit_price
+    @unit_price ||= UnitPrice.new(object)
   end
 end

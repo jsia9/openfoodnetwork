@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open_food_network/permissions'
 
 module Permissions
@@ -8,7 +10,9 @@ module Permissions
       @search_params = search_params
     end
 
-    # Find orders that the user can see
+    # Find orders that the user can see. This includes any order where the producer has permissions
+    # and has at least *one* of their supplied products in the order. Additional scoping may be
+    # needed for queries showing line items per producer.
     def visible_orders
       orders = Spree::Order.
         with_line_items_variants_and_products_outer.
@@ -44,7 +48,7 @@ module Permissions
     def filtered_orders(orders)
       return orders unless filter_orders?
 
-      orders.complete.not_state(:canceled).search(search_params).result
+      orders.complete.not_state(:canceled).ransack(search_params).result
     end
 
     def filter_orders?
@@ -65,7 +69,7 @@ module Permissions
     def managed_orders_where_values
       Spree::Order.
         where(distributor_id: @permissions.managed_enterprises.select("enterprises.id")).
-        where_values.
+        where_clause.__send__(:predicates).
         reduce(:and)
     end
 
@@ -73,7 +77,7 @@ module Permissions
     def coordinated_orders_where_values
       Spree::Order.
         where(order_cycle_id: @permissions.coordinated_order_cycles.select(:id)).
-        where_values.
+        where_clause.__send__(:predicates).
         reduce(:and)
     end
 
@@ -83,7 +87,7 @@ module Permissions
           distributor_id: granted_distributor_ids,
           spree_products: { supplier_id: enterprises_with_associated_orders }
         ).
-        where_values.
+        where_clause.__send__(:predicates).
         reduce(:and)
     end
 

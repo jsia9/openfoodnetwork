@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProductImport
   class InventoryResetStrategy
     def initialize(excluded_items_ids)
@@ -8,7 +10,7 @@ module ProductImport
       @enterprise_ids = enterprise_ids
 
       if enterprise_ids.present?
-        relation.update_all(count_on_hand: 0)
+        relation.update_all(count_on_hand: 0, on_demand: false)
       else
         0
       end

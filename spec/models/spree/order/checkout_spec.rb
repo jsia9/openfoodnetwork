@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Spree::Order::Checkout do
@@ -59,15 +61,15 @@ describe Spree::Order::Checkout do
 
     it "cannot transition to address without any line items" do
       expect(order.line_items).to be_blank
-      expect(lambda { order.next! }).to raise_error(StateMachine::InvalidTransition,
-                                                /#{Spree.t(:there_are_no_items_for_this_order)}/)
+      expect(lambda { order.next! }).to raise_error(StateMachines::InvalidTransition,
+                                                    /#{Spree.t(:there_are_no_items_for_this_order)}/)
     end
 
     context "from address" do
       before do
         order.state = 'address'
-        allow(order).to receive(:has_available_payment)
         order.shipments << create(:shipment)
+        order.distributor = build(:distributor_enterprise)
         order.email = "user@example.com"
         order.save!
       end
@@ -82,8 +84,8 @@ describe Spree::Order::Checkout do
         context "if there are no shipping rates for any shipment" do
           specify do
             transition = lambda { order.next! }
-            expect(transition).to raise_error(StateMachine::InvalidTransition,
-                                          /#{Spree.t(:items_cannot_be_shipped)}/)
+            expect(transition).to raise_error(StateMachines::InvalidTransition,
+                                              /#{Spree.t(:items_cannot_be_shipped)}/)
           end
         end
       end
@@ -116,38 +118,6 @@ describe Spree::Order::Checkout do
         end
       end
     end
-
-    context "from payment" do
-      before do
-        order.state = 'payment'
-      end
-
-     context "when payment is required" do
-        before do
-          allow(order).to receive_messages confirmation_required?: false
-          allow(order).to receive_messages payment_required?: true
-        end
-
-        it "transitions to complete" do
-          expect(order).to receive(:process_payments!).once.and_return true
-          order.next!
-          expect(order.state).to eq "complete"
-        end
-      end
-
-      # Regression test for Spree #2028
-      context "when payment is not required" do
-        before do
-          allow(order).to receive_messages payment_required?: false
-        end
-
-        it "does not call process payments" do
-          expect(order).to_not receive(:process_payments!)
-          order.next!
-          expect(order.state).to eq "complete"
-        end
-      end
-    end
   end
 
   describe 'event :restart_checkout' do
@@ -167,7 +137,7 @@ describe Spree::Order::Checkout do
       it 'raises' do
         expect { order.restart_checkout! }
           .to raise_error(
-            StateMachine::InvalidTransition,
+            StateMachines::InvalidTransition,
             /Cannot transition state via :restart_checkout/
           )
       end
