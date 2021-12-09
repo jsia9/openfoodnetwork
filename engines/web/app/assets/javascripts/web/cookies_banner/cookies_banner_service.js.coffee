@@ -1,10 +1,10 @@
-Darkswarm.factory "CookiesBannerService", (Navigation, $modal, $location, Redirections, Loading)->
+angular.module('Darkswarm').factory "CookiesBannerService", (Navigation, $modal, $location, Redirections, Loading)->
 
   new class CookiesBannerService
     modalMessage: null
     isEnabled: false
 
-    open: (path, template = 'angular-templates/cookies_banner.html') =>
+    open: (path, template = '/angular-templates/cookies_banner.html') =>
       return unless @isEnabled
       @modalInstance = $modal.open
         templateUrl: template

@@ -112,6 +112,13 @@ module OrderManagement
 
           expect(shipment.shipping_method).to eq shipping_method
         end
+
+        describe "#inpsect" do
+          it "prints the package contents" do
+            subject.add variant, 5
+            expect(subject.inspect).to match("#{variant.name} 5")
+          end
+        end
       end
 
       context "#shipping_methods and #shipping_categories" do
@@ -151,20 +158,23 @@ module OrderManagement
 
         let(:shipping_method1) { create(:shipping_method, distributors: [enterprise]) }
         let(:shipping_method2) { create(:shipping_method, distributors: [other_enterprise]) }
+        let!(:shipping_method3) {
+          create(:shipping_method, distributors: [enterprise], deleted_at: Time.zone.now)
+        }
 
-        describe '#shipping_methods' do
-          it 'does not return shipping methods not used by the package\'s order distributor' do
+        describe "#shipping_methods" do
+          it "does not return shipping methods not used by the package's order distributor" do
             expect(package.shipping_methods).to eq [shipping_method1]
           end
-        end
 
-        describe '#shipping_categories' do
-          it "returns ship categories that are not the ship categories of the order's products" do
-            package
-            other_shipping_category = Spree::ShippingCategory.create(name: "Custom")
+          it "does not return soft-deleted shipping methods" do
+            expect(package.shipping_methods).to_not include shipping_method3
+          end
 
-            expect(package.shipping_categories).to eq [shipping_method1.shipping_categories.first,
-                                                       other_shipping_category]
+          it "returns an empty array if distributor is nil" do
+            allow(order).to receive(:distributor) { nil }
+
+            expect(package.shipping_methods).to eq []
           end
         end
       end

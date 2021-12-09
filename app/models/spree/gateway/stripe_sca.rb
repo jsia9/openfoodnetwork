@@ -4,12 +4,18 @@ require 'stripe/profile_storer'
 require 'stripe/credit_card_cloner'
 require 'stripe/authorize_response_patcher'
 require 'stripe/payment_intent_validator'
-require 'active_merchant/billing/gateways/stripe_payment_intents'
-require 'active_merchant/billing/gateways/stripe_decorator'
+require 'active_merchant/billing/gateways/stripe_payment_intents_decorator'
+require 'active_merchant/billing/gateways/stripe'
 
 module Spree
   class Gateway
     class StripeSCA < Gateway
+      include FullUrlHelper
+
+      VOIDABLE_STATES = [
+        "requires_payment_method", "requires_capture", "requires_confirmation", "requires_action"
+      ].freeze
+
       preference :enterprise_id, :integer
 
       validate :ensure_enterprise_selected
@@ -27,7 +33,7 @@ module Spree
       end
 
       def stripe_account_id
-        StripeAccount.find_by(enterprise_id: preferred_enterprise_id).andand.stripe_user_id
+        StripeAccount.find_by(enterprise_id: preferred_enterprise_id)&.stripe_user_id
       end
 
       # NOTE: the name of this method is determined by Spree::Payment::Processing
@@ -45,11 +51,26 @@ module Spree
         failed_activemerchant_billing_response(e.message)
       end
 
+      def capture(money, payment_intent_id, gateway_options)
+        options = basic_options(gateway_options)
+        provider.capture(money, payment_intent_id, options)
+      end
+
+      # NOTE: the name of this method is determined by Spree::Payment::Processing
+      def charge_offline(money, creditcard, gateway_options)
+        customer, payment_method =
+          Stripe::CreditCardCloner.new(creditcard, stripe_account_id).find_or_clone
+
+        options = basic_options(gateway_options).merge(customer: customer, off_session: true)
+        provider.purchase(money, payment_method, options)
+      rescue Stripe::StripeError => e
+        failed_activemerchant_billing_response(e.message)
+      end
+
       # NOTE: the name of this method is determined by Spree::Payment::Processing
       def authorize(money, creditcard, gateway_options)
-        authorize_response = provider.authorize(*options_for_authorize(money,
-                                                                       creditcard,
-                                                                       gateway_options))
+        authorize_response =
+          provider.authorize(*options_for_authorize(money, creditcard, gateway_options))
         Stripe::AuthorizeResponsePatcher.new(authorize_response).call!
       rescue Stripe::StripeError => e
         failed_activemerchant_billing_response(e.message)
@@ -61,7 +82,14 @@ module Spree
         payment_intent_response = Stripe::PaymentIntent.retrieve(payment_intent_id,
                                                                  stripe_account: stripe_account_id)
         gateway_options[:stripe_account] = stripe_account_id
-        provider.refund(payment_intent_response.amount_received, response_code, gateway_options)
+
+        # If a payment has been confirmed it cannot be voided by Stripe, and must be refunded instead
+        if voidable?(payment_intent_response)
+          provider.void(response_code, gateway_options)
+        else
+          provider.refund(refundable_amount(payment_intent_response), response_code,
+                          gateway_options)
+        end
       end
 
       # NOTE: the name of this method is determined by Spree::Payment::Processing
@@ -79,6 +107,15 @@ module Spree
 
       private
 
+      def voidable?(payment_intent_response)
+        VOIDABLE_STATES.include? payment_intent_response.status
+      end
+
+      def refundable_amount(payment_intent_response)
+        payment_intent_response.amount_received -
+          payment_intent_response.charges.data.map(&:amount_refunded).sum
+      end
+
       # In this gateway, what we call 'secret_key' is the 'login'
       def options
         options = super
@@ -90,15 +127,16 @@ module Spree
         options[:description] = "Spree Order ID: #{gateway_options[:order_id]}"
         options[:currency] = gateway_options[:currency]
         options[:stripe_account] = stripe_account_id
+        options[:execute_threed] = true # Handle 3DS responses
         options
       end
 
       def options_for_authorize(money, creditcard, gateway_options)
         options = basic_options(gateway_options)
-        options[:return_url] = full_checkout_path
+        options[:return_url] = gateway_options[:return_url] || full_checkout_path
 
-        customer_id, payment_method_id = Stripe::CreditCardCloner.new.clone(creditcard,
-                                                                            stripe_account_id)
+        customer_id, payment_method_id =
+          Stripe::CreditCardCloner.new(creditcard, stripe_account_id).find_or_clone
         options[:customer] = customer_id
         [money, payment_method_id, options]
       end
@@ -107,7 +145,18 @@ module Spree
         payment = fetch_payment(creditcard, gateway_options)
         raise Stripe::StripeError, I18n.t(:no_pending_payments) unless payment&.response_code
 
-        Stripe::PaymentIntentValidator.new.call(payment.response_code, stripe_account_id)
+        payment_intent_response = Stripe::PaymentIntentValidator.new(payment).call
+
+        raise_if_not_in_capture_state(payment_intent_response)
+
+        payment.response_code
+      end
+
+      def raise_if_not_in_capture_state(payment_intent_response)
+        state = payment_intent_response.status
+        return if state == 'requires_capture'
+
+        raise Stripe::StripeError, I18n.t(:invalid_payment_state, state: state)
       end
 
       def fetch_payment(creditcard, gateway_options)
@@ -121,19 +170,9 @@ module Spree
       end
 
       def ensure_enterprise_selected
-        return if preferred_enterprise_id.andand.positive?
+        return if preferred_enterprise_id&.positive?
 
         errors.add(:stripe_account_owner, I18n.t(:error_required))
-      end
-
-      def full_checkout_path
-        URI.join(url_helpers.root_url, url_helpers.checkout_path).to_s
-      end
-
-      def url_helpers
-        # This is how we can get the helpers with a usable root_url outside the controllers
-        Rails.application.routes.default_url_options = ActionMailer::Base.default_url_options
-        Rails.application.routes.url_helpers
       end
     end
   end

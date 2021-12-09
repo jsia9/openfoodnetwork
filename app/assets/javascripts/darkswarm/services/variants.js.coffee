@@ -1,4 +1,4 @@
-Darkswarm.factory 'Variants', ->
+angular.module('Darkswarm').factory 'Variants', ->
   new class Variants
     variants: {}
 
@@ -23,5 +23,5 @@ Darkswarm.factory 'Variants', ->
 
     lineItemFor: (variant) ->
       variant: variant
-      quantity: null
-      max_quantity: null
+      quantity: 0
+      max_quantity: 0

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Api::CachedEnterpriseSerializer do
@@ -92,6 +94,28 @@ describe Api::CachedEnterpriseSerializer do
 
         expect(distributed_producer_properties.map(&:presentation))
           .to eq(producer.producer_properties.map(&:property).map(&:presentation))
+      end
+    end
+  end
+
+  describe '#icon' do
+    context "enterpise has a unrecognized category" do
+      before do
+        allow(enterprise).to receive(:category) { "unknown_category" }
+      end
+
+      it "returns the map producer icon" do
+        expect(cached_enterprise_serializer.icon).to eq("/map_icons/map_001-producer-only.svg")
+      end
+    end
+
+    context "enterpise has a nil category" do
+      before do
+        allow(enterprise).to receive(:category) { nil }
+      end
+
+      it "returns the map producer icon" do
+        expect(cached_enterprise_serializer.icon).to eq("/map_icons/map_001-producer-only.svg")
       end
     end
   end

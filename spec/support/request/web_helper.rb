@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebHelper
   def self.included(base)
     base.extend ClassMethods
@@ -20,19 +22,19 @@ module WebHelper
     selector  = "[name='#{name}']"
     selector += "[placeholder='#{opts[:placeholder]}']" if opts.key? :placeholder
 
-    element = page.all(selector).first
+    visible = opts.key?(:visible) ? opts[:visible] : true
+
+    element = page.all(selector, visible: visible).first
     expect(element.value).to eq(opts[:with]) if element && opts.key?(:with)
 
-    have_selector selector
+    have_selector selector, visible: visible
   end
 
   def fill_in_fields(field_values)
     field_values.each do |key, value|
-      begin
-        fill_in key, with: value
-      rescue Capybara::ElementNotFound
-        find_field(key).select(value)
-      end
+      fill_in key, with: value
+    rescue Capybara::ElementNotFound
+      find_field(key).select(value)
     end
   end
 
@@ -111,10 +113,13 @@ module WebHelper
     page.find(:xpath, '//body')
       .find(:css, '.select2-drop-active .select2-result-label', text: options[:select_text] || value)
       .click
+
+    expect(page).to have_select2 options[:from], selected: options[:select_text] || value
   end
 
   def open_select2(selector)
-    page.find(selector).find(:css, '.select2-choice, .select2-search-field').click
+    page.find(selector).scroll_to(page.find(selector)).find(:css,
+                                                            '.select2-choice, .select2-search-field').click
   end
 
   def close_select2
@@ -134,6 +139,13 @@ module WebHelper
     page.evaluate_script("#{angular_scope(controller)}.scope().RequestMonitor.loading == false")
   end
 
+  def fill_in_tag(tag_name, selector = "tags-input .tags input")
+    expect(page).to have_selector selector
+    find(:css, selector).send_keys ""
+    find(:css, selector).set "#{tag_name}\n"
+    expect(page).to have_selector ".tag-list .tag-item span", text: tag_name
+  end
+
   private
 
   # Takes an optional angular controller name eg: "LineItemsCtrl",
@@ -144,6 +156,6 @@ module WebHelper
   end
 
   def wait_for_ajax
-    wait_until { page.evaluate_script("$.active") == 0 }
+    wait_until { page.evaluate_script("$.active").zero? }
   end
 end

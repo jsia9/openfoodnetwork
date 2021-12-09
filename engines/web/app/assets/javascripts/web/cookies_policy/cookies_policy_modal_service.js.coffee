@@ -1,4 +1,4 @@
-Darkswarm.factory "CookiesPolicyModalService", (Navigation, $modal, $location, CookiesBannerService)->
+angular.module('Darkswarm').factory "CookiesPolicyModalService", (Navigation, $modal, $location, CookiesBannerService)->
 
   new class CookiesPolicyModalService
     defaultPath: "/policies/cookies"
@@ -8,7 +8,7 @@ Darkswarm.factory "CookiesPolicyModalService", (Navigation, $modal, $location, C
       if @isEnabled()
         @open ''
 
-    open: (path = false, template = 'angular-templates/cookies_policy.html') =>
+    open: (path = false, template = '/angular-templates/cookies_policy.html') =>
       @modalInstance = $modal.open
         templateUrl: template
         windowClass: "cookies-policy-modal medium"

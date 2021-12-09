@@ -1,13 +1,15 @@
 = admin_inject_currency_config
 = render "layouts/i18n_script"
+= yield :stripe_js
 
 #wrapper{ data: { hook: '' } }
-  - if flash[:error]
-    .flash.error= flash[:error]
-  - if notice
-    .flash.notice= notice
-  - if flash[:success]
-    .flash.success= flash[:success]
+  .flash-container
+    - if flash[:error]
+      .flash.error= flash[:error]
+    - if notice
+      .flash.notice= notice
+    - if flash[:success]
+      .flash.success= flash[:success]
 
   = render partial: "spree/layouts/admin/progress_spinner"
 
@@ -19,9 +21,9 @@
         = render :partial => 'spree/layouts/admin/login_nav'
 
   %nav#admin-menu{ data: { hook: '' }}
-    .container
+    .container.no-gutter
       .sixteen.columns.main-menu-wrapper
-        %ul.inline-menu.fullwidth-menu{"data-hook" => "admin_tabs"}
+        %ul.inline-menu{"data-hook" => "admin_tabs"}
           = render :partial => 'spree/admin/shared/tabs'
 
   - if content_for?(:sub_menu)

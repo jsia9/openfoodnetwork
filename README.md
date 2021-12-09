@@ -1,4 +1,4 @@
-[![Build Status](https://semaphoreci.com/api/v1/openfoodfoundation/openfoodnetwork-2/branches/master/badge.svg)](https://semaphoreci.com/openfoodfoundation/openfoodnetwork-2)
+[![Build](https://github.com/openfoodfoundation/openfoodnetwork/actions/workflows/build.yml/badge.svg)](https://github.com/openfoodfoundation/openfoodnetwork/actions/workflows/build.yml)
 [![Code Climate](https://codeclimate.com/github/openfoodfoundation/openfoodnetwork.png)](https://codeclimate.com/github/openfoodfoundation/openfoodnetwork)
 
 # Open Food Network
@@ -16,7 +16,7 @@ We're part of global movement - get involved!
 
 ## Contributing
 
-If you are interested in contributing to the OFN in any capacity, please introduce yourself [on Slack][slack-invite], and have a look through our [Contributor Guide][contributor-guide].
+If you are interested in contributing to the OFN in any capacity, please introduce yourself [on Slack][slack-invite], and have a look through the [OFN Handbook][ofn-handbook].
 
 Our [GETTING_STARTED](GETTING_STARTED.md) and [CONTRIBUTING](CONTRIBUTING.md) guides are the best place to start for developers looking to set up a development environment and make contributions to the codebase.
 
@@ -33,15 +33,18 @@ We also have a [Super Admin Guide][super-admin-guide] to help with configuration
 
 ## Testing
 
-We use [BrowserStack](https://www.browserstack.com/) as a manual testing tool. BrowserStack provides open source projects with unlimited and free of charge accounts. A big thanks to them!
+If you'd like to help out with testing, please introduce yourself on the #testing channel on [Slack][slack-invite] and download the [ZenHub browser extension][zenhub] to view the development pipeline. Also, do have a look in our [Welcome New QAs board](https://github.com/orgs/openfoodfoundation/projects/1) for some good first issues, both on manual and automated testing (RSpec/Capybara).
+
+We use [BrowserStack](https://www.browserstack.com/) as a manual testing tool. BrowserStack provides open source projects with unlimited and free of charge accounts. A big thanks to them! 
 
 ## Licence
 
-Copyright (c) 2012 - 2020 Open Food Foundation, released under the AGPL licence.
+Copyright (c) 2012 - 2021 Open Food Foundation, released under the AGPL licence.
 
 [survey]: https://docs.google.com/a/eaterprises.com.au/forms/d/1zxR5vSiU9CigJ9cEaC8-eJLgYid8CR8er7PPH9Mc-30/edit#
 [slack-invite]: https://join.slack.com/t/openfoodnetwork/shared_invite/zt-9sjkjdlu-r02kUMP1zbrTgUhZhYPF~A
-[contributor-guide]: https://ofn-user-guide.gitbook.io/ofn-contributor-guide/who-are-we
+[ofn-handbook]: https://ofn-user-guide.gitbook.io/ofn-handbook/
 [ofn-install]: https://github.com/openfoodfoundation/ofn-install
 [super-admin-guide]: https://ofn-user-guide.gitbook.io/ofn-super-admin-guide
-[welcome-dev]: https://github.com/openfoodfoundation/openfoodnetwork/projects/27
+[welcome-dev]: https://github.com/orgs/openfoodfoundation/projects/2
+[zenhub]: https://www.zenhub.com/extension

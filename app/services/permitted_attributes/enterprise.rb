@@ -7,21 +7,22 @@ module PermittedAttributes
     end
 
     def call
-      return @params[:enterprise] if @params[:enterprise].blank?
+      return {} if @params[:enterprise].blank?
 
-      @params.require(:enterprise).permit(
-        basic_permitted_attributes + [
-          group_ids: [], user_ids: [],
-          shipping_method_ids: [], payment_method_ids: [],
-          address_attributes: PermittedAttributes::Address.attributes,
-          producer_properties_attributes: [:id, :property_name, :value, :_destroy]
-        ]
-      )
+      @params.require(:enterprise).permit(self.class.attributes)
     end
 
-    private
+    def self.attributes
+      basic_permitted_attributes + [
+        group_ids: [], user_ids: [],
+        shipping_method_ids: [], payment_method_ids: [],
+        address_attributes: PermittedAttributes::Address.attributes,
+        business_address_attributes: PermittedAttributes::BusinessAddress.attributes,
+        producer_properties_attributes: [:id, :property_name, :value, :_destroy]
+      ]
+    end
 
-    def basic_permitted_attributes
+    def self.basic_permitted_attributes
       [
         :id, :name, :visible, :permalink, :owner_id, :contact_name, :email_address, :phone,
         :is_primary_producer, :sells, :website, :facebook, :instagram, :linkedin, :twitter,
@@ -30,7 +31,8 @@ module PermittedAttributes
         :abn, :acn, :charges_sales_tax, :display_invoice_logo, :invoice_text,
         :preferred_product_selection_from_inventory_only, :preferred_shopfront_message,
         :preferred_shopfront_closed_message, :preferred_shopfront_taxon_order,
-        :preferred_shopfront_order_cycle_order, :preferred_show_customer_names_to_suppliers
+        :preferred_shopfront_producer_order, :preferred_shopfront_order_cycle_order,
+        :show_customer_names_to_suppliers, :preferred_shopfront_product_sorting_method,
       ]
     end
   end

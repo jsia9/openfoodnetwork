@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Spree
-  class Order < ActiveRecord::Base
+  class Order < ApplicationRecord
     module Checkout
       def self.included(klass)
         klass.class_eval do
@@ -34,7 +34,7 @@ module Spree
             klass = self
 
             # To avoid a ton of warnings when the state machine is re-defined
-            StateMachine::Machine.ignore_method_conflicts = true
+            StateMachines::Machine.ignore_method_conflicts = true
             # To avoid multiple occurrences of the same transition being defined
             # On first definition, state_machines will not be defined
             state_machines.clear if respond_to?(:state_machines)
@@ -63,21 +63,25 @@ module Spree
                 transition to: :awaiting_return
               end
 
-              if states[:payment]
-                before_transition to: :complete do |order|
-                  order.process_payments! if order.payment_required?
-                end
+              event :restart_checkout do
+                transition to: :cart, unless: :completed?
+              end
+
+              event :confirm do
+                transition to: :complete, from: :confirmation
               end
 
               before_transition from: :cart, do: :ensure_line_items_present
 
               before_transition to: :delivery, do: :create_proposed_shipments
               before_transition to: :delivery, do: :ensure_available_shipping_rates
+              before_transition to: :payment, do: :create_tax_charge!
+              before_transition to: :confirmation, do: :validate_payment_method!
 
               after_transition to: :complete, do: :finalize!
-              after_transition to: :delivery, do: :create_tax_charge!
               after_transition to: :resumed,  do: :after_resume
               after_transition to: :canceled, do: :after_cancel
+              after_transition to: :payment, do: :set_payment_amount!
             end
           end
 
@@ -126,20 +130,21 @@ module Spree
             steps
           end
 
-          def checkout_step?(step)
-            step.present? ? checkout_steps.include?(step) : false
+          def restart_checkout_flow
+            update_columns(
+              state: checkout_steps.first,
+              updated_at: Time.zone.now,
+            )
           end
 
-          def checkout_step_index(step)
-            checkout_steps.index(step)
-          end
+          private
 
-          def can_go_to_state?(state)
-            return false unless self.state.present? &&
-                                checkout_step?(state) &&
-                                checkout_step?(self.state)
+          def validate_payment_method!
+            return unless checkout_processing
+            return if payments.any?
 
-            checkout_step_index(state) > checkout_step_index(self.state)
+            errors.add :payment_method, I18n.t('split_checkout.errors.select_a_payment_method')
+            throw :halt
           end
         end
       end

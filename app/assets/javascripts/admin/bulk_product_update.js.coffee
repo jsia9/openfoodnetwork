@@ -21,6 +21,7 @@ angular.module("ofn.admin").controller "AdminProductEditCtrl", ($scope, $timeout
     sorting: ""
   }
 
+  $scope.sorting = "name asc"
   $scope.producers = producers
   $scope.taxons = Taxons.all
   $scope.tax_categories = tax_categories
@@ -48,7 +49,7 @@ angular.module("ofn.admin").controller "AdminProductEditCtrl", ($scope, $timeout
       'q[name_cont]': $scope.q.query,
       'q[supplier_id_eq]': $scope.q.producerFilter,
       'q[primary_taxon_id_eq]': $scope.q.categoryFilter,
-      'q[s]': $scope.q.sorting,
+      'q[s]': $scope.sorting,
       import_date: $scope.q.importDateFilter,
       page: $scope.page,
       per_page: $scope.per_page
@@ -104,7 +105,7 @@ angular.module("ofn.admin").controller "AdminProductEditCtrl", ($scope, $timeout
   $scope.$watch 'sortOptions', (sort) ->
     return unless sort && sort.predicate != ""
 
-    $scope.sorting = sort.getSortingExpr()
+    $scope.sorting = sort.getSortingExpr(defaultDirection: "asc")
     $scope.fetchProducts()
   , true
 
@@ -146,8 +147,8 @@ angular.module("ofn.admin").controller "AdminProductEditCtrl", ($scope, $timeout
     if confirm("Are you sure?")
       $http(
         method: "DELETE"
-        url: "/api/products/" + product.id
-      ).success (data) ->
+        url: "/api/v0/products/" + product.id
+      ).then (response) ->
         $scope.products.splice $scope.products.indexOf(product), 1
         DirtyProducts.deleteProduct product.id
         $scope.displayDirtyProducts()
@@ -161,8 +162,8 @@ angular.module("ofn.admin").controller "AdminProductEditCtrl", ($scope, $timeout
         if confirm(t("are_you_sure"))
           $http(
             method: "DELETE"
-            url: "/api/products/" + product.permalink_live + "/variants/" + variant.id
-          ).success (data) ->
+            url: "/api/v0/products/" + product.permalink_live + "/variants/" + variant.id
+          ).then (response) ->
             $scope.removeVariant(product, variant)
     else
       alert(t("delete_product_variant"))
@@ -216,19 +217,20 @@ angular.module("ofn.admin").controller "AdminProductEditCtrl", ($scope, $timeout
           'q[name_cont]': $scope.q.query
           'q[supplier_id_eq]': $scope.q.producerFilter
           'q[primary_taxon_id_eq]': $scope.q.categoryFilter
+          'q[s]': $scope.sorting
           import_date: $scope.q.importDateFilter
         page: $scope.page
         per_page: $scope.per_page
-    ).success((data) ->
+    ).then((response) ->
       DirtyProducts.clear()
-      BulkProducts.updateVariantLists(data.products || [])
+      BulkProducts.updateVariantLists(response.data.products || [])
       $timeout -> $scope.displaySuccess()
-    ).error (data, status) ->
-      if status == 400 && data.errors?
-        errorsString = ErrorsParser.toString(data.errors, status)
+    ).catch (response) ->
+      if response.status == 400 && response.data.errors?
+        errorsString = ErrorsParser.toString(response.data.errors, response.status)
         $scope.displayFailure t("products_update_error") + "\n" + errorsString
       else
-        $scope.displayFailure t("products_update_error_data") + status
+        $scope.displayFailure t("products_update_error_data") + response.status
 
   $scope.cancel = (destination) ->
     $window.location = destination

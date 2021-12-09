@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
   class PaymentsReport
     attr_reader :params
+
     def initialize(user, params = {}, render_table = false)
       @params = params
       @user = user
@@ -34,7 +37,7 @@ module OpenFoodNetwork
     end
 
     def search
-      Spree::Order.complete.not_state(:canceled).managed_by(@user).search(params[:q])
+      Spree::Order.complete.not_state(:canceled).managed_by(@user).ransack(params[:q])
     end
 
     def table_items
@@ -96,19 +99,33 @@ module OpenFoodNetwork
       when "itemised_payment_totals"
         [proc { |orders| orders.first.payment_state },
          proc { |orders| orders.first.distributor.name },
-         proc { |orders| orders.sum(&:item_total) },
+         proc { |orders| orders.to_a.sum(&:item_total) },
          proc { |orders| orders.sum(&:ship_total) },
-         proc { |orders| orders.sum(&:outstanding_balance) },
-         proc { |orders| orders.sum(&:total) }]
+         proc { |orders| orders.sum{ |order| order.outstanding_balance.to_f } },
+         proc { |orders| orders.map(&:total).sum }]
       when "payment_totals"
         [proc { |orders| orders.first.payment_state },
          proc { |orders| orders.first.distributor.name },
-         proc { |orders| orders.sum(&:item_total) },
+         proc { |orders| orders.to_a.sum(&:item_total) },
          proc { |orders| orders.sum(&:ship_total) },
-         proc { |orders| orders.sum(&:total) },
-         proc { |orders| orders.sum { |o| o.payments.select { |payment| payment.completed? && (payment.payment_method.name.to_s.include? "EFT") }.sum(&:amount) } },
-         proc { |orders| orders.sum { |o| o.payments.select { |payment| payment.completed? && (payment.payment_method.name.to_s.include? "PayPal") }.sum(&:amount) } },
-         proc { |orders| orders.sum(&:outstanding_balance) }]
+         proc { |orders| orders.map(&:total).sum },
+         proc { |orders|
+           orders.sum { |o|
+             o.payments.select { |payment|
+               payment.completed? &&
+                 (payment.payment_method.name.to_s.include? "EFT")
+             }.sum(&:amount)
+           }
+         },
+         proc { |orders|
+           orders.sum { |o|
+             o.payments.select { |payment|
+               payment.completed? &&
+                 (payment.payment_method.name.to_s.include? "PayPal")
+             }.sum(&:amount)
+           }
+         },
+         proc { |orders| orders.sum{ |order| order.outstanding_balance.to_f } }]
       else
         [proc { |payments| payments.first.order.payment_state },
          proc { |payments| payments.first.order.distributor.name },

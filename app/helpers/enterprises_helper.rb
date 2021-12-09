@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'open_food_network/available_payment_method_filter'
 
 module EnterprisesHelper
   def current_distributor
-    @current_distributor ||= current_order(false).andand.distributor
+    @current_distributor ||= current_order(false)&.distributor
   end
 
   def current_customer
@@ -16,7 +18,8 @@ module EnterprisesHelper
 
     shipping_methods = current_distributor.shipping_methods.display_on_checkout.to_a
 
-    applicator = OpenFoodNetwork::TagRuleApplicator.new(current_distributor, "FilterShippingMethods", current_customer.andand.tag_list)
+    applicator = OpenFoodNetwork::TagRuleApplicator.new(current_distributor,
+                                                        "FilterShippingMethods", current_customer&.tag_list)
     applicator.filter!(shipping_methods)
 
     shipping_methods.uniq
@@ -25,12 +28,13 @@ module EnterprisesHelper
   def available_payment_methods
     return [] if current_distributor.blank?
 
-    payment_methods = current_distributor.payment_methods.available(:front_end).all
+    payment_methods = current_distributor.payment_methods.available(:front_end).to_a
 
     filter = OpenFoodNetwork::AvailablePaymentMethodFilter.new
     filter.filter!(payment_methods)
 
-    applicator = OpenFoodNetwork::TagRuleApplicator.new(current_distributor, "FilterPaymentMethods", current_customer.andand.tag_list)
+    applicator = OpenFoodNetwork::TagRuleApplicator.new(current_distributor,
+                                                        "FilterPaymentMethods", current_customer&.tag_list)
     applicator.filter!(payment_methods)
 
     payment_methods
@@ -47,7 +51,10 @@ module EnterprisesHelper
   end
 
   def enterprises_options(enterprises)
-    enterprises.map { |enterprise| [enterprise.name + ": " + enterprise.address.address1 + ", " + enterprise.address.city, enterprise.id.to_i] }
+    enterprises.map { |enterprise|
+      [enterprise.name + ": " + enterprise.address.address1 + ", " + enterprise.address.city,
+       enterprise.id.to_i]
+    }
   end
 
   def enterprises_to_names(enterprises)
@@ -64,7 +71,8 @@ module EnterprisesHelper
 
   def enterprise_confirm_delete_message(enterprise)
     if enterprise.supplied_products.present?
-      I18n.t(:enterprise_confirm_delete_message, product: pluralize(enterprise.supplied_products.count, 'product'))
+      I18n.t(:enterprise_confirm_delete_message,
+             product: pluralize(enterprise.supplied_products.count, 'product'))
     else
       t(:are_you_sure)
     end
@@ -82,7 +90,7 @@ module EnterprisesHelper
   end
 
   def order_changes_allowed?
-    current_order.andand.distributor.andand.allow_order_changes?
+    current_order&.distributor&.allow_order_changes?
   end
 
   def show_bought_items?
@@ -91,5 +99,13 @@ module EnterprisesHelper
 
   def subscriptions_enabled?
     spree_current_user.admin? || spree_current_user.enterprises.where(enable_subscriptions: true).any?
+  end
+
+  def enterprise_url_selector(enterprise)
+    if enterprise.is_distributor
+      main_app.enterprise_shop_url(enterprise)
+    else
+      main_app.producers_url
+    end
   end
 end

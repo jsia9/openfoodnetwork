@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module Admin
     class SubscriptionLineItemSerializer < ActiveModel::Serializer
@@ -9,7 +11,7 @@ module Api
       end
 
       def price_estimate
-        object.price_estimate.andand.to_f || "?"
+        object.price_estimate&.to_f || "?"
       end
 
       def in_open_and_upcoming_order_cycles
@@ -21,11 +23,11 @@ module Api
       private
 
       def option_or_assigned_shop
-        @options[:shop] || object.subscription.andand.shop
+        @options[:shop] || object.subscription&.shop
       end
 
       def option_or_assigned_schedule
-        @options[:schedule] || object.subscription.andand.schedule
+        @options[:schedule] || object.subscription&.schedule
       end
     end
   end

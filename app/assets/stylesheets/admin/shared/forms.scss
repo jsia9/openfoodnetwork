@@ -85,6 +85,20 @@ button, .button {
     width: 100%;
     text-align: center;
   }
+
+  &.secondary {
+    background-color: transparent;
+    border: 1px solid $color-btn-bg;
+    color: $color-btn-bg;
+
+    &:hover, &:active, &:focus {
+      background-color: #ebf3fb;
+    }
+
+    &:active:focus {
+      box-shadow: none;
+    }
+  }
 }
 
 span.info {
@@ -185,6 +199,7 @@ fieldset {
     text-transform: uppercase;
     text-align: center;
     padding: 8px 15px;
+    margin: 0 auto;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

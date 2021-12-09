@@ -1,8 +1,12 @@
+require 'sidekiq/web'
+require 'sidekiq-scheduler/web'
+
 Openfoodnetwork::Application.routes.draw do
   namespace :admin do
 
     authenticated :spree_user, -> user { user.admin? } do
-      mount DelayedJobWeb, at: '/delayed_job'
+      mount Flipper::UI.app(Flipper) => '/feature-toggle'
+      mount Sidekiq::Web, at: "/sidekiq"
     end
 
     resources :bulk_line_items
@@ -85,6 +89,8 @@ Openfoodnetwork::Application.routes.draw do
 
     resource :stripe_connect_settings, only: [:edit, :update]
 
+    resource :terms_of_service_files
+
     resource :matomo_settings, only: [:edit, :update]
 
     resources :stripe_accounts, only: [:destroy] do
@@ -108,5 +114,7 @@ Openfoodnetwork::Application.routes.draw do
       put :cancel, on: :member, format: :json
       put :resume, on: :member, format: :json
     end
+
+    match '/reports/:report_type(/:report_subtype)', to: 'reports#show', via: [:get, :post], as: :reports
   end
 end

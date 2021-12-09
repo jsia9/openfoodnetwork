@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Spree
   module Admin
-    class StatesController < ResourceController
+    class StatesController < ::Admin::ResourceController
       belongs_to 'spree/country'
       before_action :load_data
 

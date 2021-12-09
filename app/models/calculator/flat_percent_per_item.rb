@@ -1,4 +1,5 @@
-require_dependency 'spree/calculator'
+# frozen_string_literal: true
+
 require 'spree/localized_number'
 
 class Calculator::FlatPercentPerItem < Spree::Calculator
@@ -18,7 +19,7 @@ class Calculator::FlatPercentPerItem < Spree::Calculator
   end
 
   def compute(object)
-    line_items_for(object).sum do |li|
+    line_items_for(object).to_a.sum do |li|
       unless li.price.present? && li.quantity.present?
         raise ArgumentError, "object must respond to #price and #quantity"
       end

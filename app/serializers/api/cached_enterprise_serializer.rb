@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open_food_network/property_merge'
 
 module Api
@@ -7,7 +9,7 @@ module Api
     cached
 
     def cache_key
-      enterprise.andand.cache_key
+      enterprise&.cache_key
     end
 
     attributes :name, :id, :description, :latitude, :longitude,
@@ -117,19 +119,19 @@ module Api
     end
 
     def active
-      @active ||= data.active_distributor_ids.andand.include? enterprise.id
+      @active ||= data.active_distributor_ids&.include? enterprise.id
     end
 
     # Map svg icons.
     def icon
       icons = {
-        hub: "/assets/map_005-hub.svg",
-        hub_profile: "/assets/map_006-hub-profile.svg",
-        producer_hub: "/assets/map_005-hub.svg",
-        producer_shop: "/assets/map_003-producer-shop.svg",
-        producer: "/assets/map_001-producer-only.svg",
+        hub: "map_005-hub.svg",
+        hub_profile: "map_006-hub-profile.svg",
+        producer_hub: "map_005-hub.svg",
+        producer_shop: "map_003-producer-shop.svg",
+        producer: "map_001-producer-only.svg",
       }
-      icons[enterprise.category]
+      "/map_icons/" + (icons[enterprise.category] || "map_001-producer-only.svg")
     end
 
     # Choose regular icon font for enterprises.
@@ -161,7 +163,11 @@ module Api
     private
 
     def product_properties
-      enterprise.supplied_products.flat_map(&:properties)
+      Spree::Property.joins(:product_properties).where(
+        spree_product_properties: {
+          product_id: enterprise.supplied_product_ids
+        }
+      ).select('DISTINCT spree_properties.*')
     end
 
     def producer_properties

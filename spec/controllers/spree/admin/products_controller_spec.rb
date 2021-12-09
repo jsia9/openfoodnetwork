@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 require 'spec_helper'
 
 describe Spree::Admin::ProductsController, type: :controller do
@@ -40,7 +42,7 @@ describe Spree::Admin::ProductsController, type: :controller do
 
       before { controller_login_as_enterprise_user([producer]) }
 
-      it 'fails' do
+      it 'succeeds' do
         spree_post :bulk_update,
                    "products" => [
                      {
@@ -50,7 +52,7 @@ describe Spree::Admin::ProductsController, type: :controller do
                      }
                    ]
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(302)
       end
 
       it 'does not redirect to bulk_products' do
@@ -63,8 +65,8 @@ describe Spree::Admin::ProductsController, type: :controller do
                      }
                    ]
 
-        expect(response).not_to redirect_to(
-          '/api/products/bulk_products?page=1;per_page=500;'
+        expect(response).to redirect_to(
+          '/api/v0/products/bulk_products'
         )
       end
     end
@@ -179,7 +181,10 @@ describe Spree::Admin::ProductsController, type: :controller do
 
     describe "change product supplier" do
       let(:distributor) { create(:distributor_enterprise) }
-      let!(:order_cycle) { create(:simple_order_cycle, variants: [product.variants.first], coordinator: distributor, distributors: [distributor]) }
+      let!(:order_cycle) {
+        create(:simple_order_cycle, variants: [product.variants.first], coordinator: distributor,
+                                    distributors: [distributor])
+      }
 
       it "should remove product from existing Order Cycles" do
         new_producer = create(:enterprise)

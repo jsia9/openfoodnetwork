@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
   class OrdersAndFulfillmentsReport
     class SupplierTotalsByDistributorReport
-      REPORT_TYPE = "order_cycle_supplier_totals_by_distributor".freeze
+      REPORT_TYPE = "order_cycle_supplier_totals_by_distributor"
 
       attr_reader :context
 
@@ -60,7 +62,7 @@ module OpenFoodNetwork
           proc { |line_items| line_items.first.variant.product.name },
           proc { |line_items| line_items.first.variant.full_name },
           proc { |line_items| line_items.first.order.distributor.name },
-          proc { |line_items| line_items.sum(&:quantity) },
+          proc { |line_items| line_items.to_a.sum(&:quantity) },
           proc { |line_items| line_items.first.price },
           proc { |line_items| line_items.sum(&:amount) },
           proc { |_line_items| I18n.t(:report_header_shipping_method) }

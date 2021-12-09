@@ -59,9 +59,18 @@
 
         // Variant price
         .variant-price {
+          white-space: nowrap;
           @include breakpoint(phablet) {
             padding-left: 1rem;
           }
+        }
+
+        .variant-unit-price {
+          color: $grey-700;
+          font-size: 0.85rem;
+          margin-top: 15px;
+          position: relative;
+          left: -1px;
         }
 
         // Total price

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spree/localized_number'
 
 module Calculator
@@ -32,7 +34,7 @@ module Calculator
     private
 
     def total_weight(line_items)
-      line_items.sum do |line_item|
+      line_items.to_a.sum do |line_item|
         line_item_weight(line_item)
       end
     end
@@ -48,9 +50,9 @@ module Calculator
     def weight_per_variant(line_item)
       if variant_unit(line_item) == 'weight'
         # Convert unit_value to the preferred unit
-        convert_weight(line_item.variant.andand.unit_value)
+        convert_weight(line_item.variant&.unit_value)
       else
-        line_item.variant.andand.weight || 0
+        line_item.variant&.weight || 0
       end
     end
 
@@ -77,7 +79,7 @@ module Calculator
     end
 
     def variant_unit(line_item)
-      line_item.variant.product.andand.variant_unit
+      line_item.variant.product&.variant_unit
     end
 
     def convert_weight(value)

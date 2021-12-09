@@ -10,14 +10,14 @@ module Spree
           base.class_eval do
             helper_method :current_order
             helper_method :current_currency
-            before_filter :set_current_order
+            before_action :set_current_order
           end
         end
 
         def current_order(create_order_if_necessary = false)
           order = spree_current_order(create_order_if_necessary)
 
-          if order
+          if order&.line_items.present?
             scoper = OpenFoodNetwork::ScopeVariantToHub.new(order.distributor)
             order.line_items.each do |li|
               scoper.scope(li.variant)
@@ -52,20 +52,16 @@ module Spree
 
           return unless @current_order
 
-          @current_order.last_ip_address = ip_address
+          @current_order.update_columns(last_ip_address: ip_address)
           session[:order_id] = @current_order.id
           @current_order
         end
 
         def associate_user
           @order ||= current_order
-          if spree_current_user && @order
-            if @order.user.blank? || @order.email.blank?
-              @order.associate_user!(spree_current_user)
-            end
-          end
+          return unless spree_current_user && @order && (@order.user.blank? || @order.email.blank?)
 
-          session[:guest_token] = nil
+          @order.associate_user!(spree_current_user)
         end
 
         # Recover incomplete orders from other sessions after logging in.

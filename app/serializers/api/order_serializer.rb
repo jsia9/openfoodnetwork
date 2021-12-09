@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class OrderSerializer < ActiveModel::Serializer
     attributes :number, :completed_at, :total, :state, :shipment_state, :payment_state,
@@ -7,8 +9,14 @@ module Api
 
     has_many :payments, serializer: Api::PaymentSerializer
 
+    # This method relies on `balance_value` as a computed DB column. See `CompleteOrdersWithBalance`
+    # for reference.
+    def outstanding_balance
+      -object.balance_value
+    end
+
     def payments
-      object.payments.joins(:payment_method).completed
+      object.payments.joins(:payment_method).where('state IN (?)', %w(completed pending))
     end
 
     def shop_id
@@ -26,7 +34,7 @@ module Api
     def changes_allowed_until
       return I18n.t(:not_allowed) unless object.changes_allowed?
 
-      I18n.l(object.order_cycle.andand.orders_close_at, format: "%b %d, %Y %H:%M")
+      I18n.l(object.order_cycle&.orders_close_at, format: "%b %d, %Y %H:%M")
     end
 
     def shipment_state
@@ -42,13 +50,13 @@ module Api
     end
 
     def path
-      Spree::Core::Engine.routes.url_helpers.order_path(object)
+      order_path(object)
     end
 
     def cancel_path
       return nil unless object.changes_allowed?
 
-      Spree::Core::Engine.routes.url_helpers.cancel_order_path(object)
+      cancel_order_path(object)
     end
 
     def changes_allowed

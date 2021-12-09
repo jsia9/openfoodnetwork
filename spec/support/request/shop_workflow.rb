@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ShopWorkflow
   # If a spec uses `within` but we want to check something outside of that
   # scope, we can search from the body element instead.
@@ -32,7 +34,9 @@ module ShopWorkflow
   end
 
   def set_order(order)
-    allow_any_instance_of(ApplicationController).to receive(:session).and_return(order_id: order.id, access_token: order.token)
+    allow_any_instance_of(ApplicationController).to receive(:session).and_return(
+      order_id: order.id, access_token: order.token
+    )
   end
 
   def add_product_to_cart(order, product, quantity: 1)
@@ -40,7 +44,7 @@ module ShopWorkflow
     cart_service.populate(variants: { product.variants.first.id => quantity })
 
     # Recalculate fee totals
-    order.update_distribution_charge!
+    order.recreate_all_fees!
   end
 
   # Add an item to the cart
@@ -71,7 +75,7 @@ module ShopWorkflow
     wait_for_cart
   end
 
-  def click_add_bulk_max_to_cart(variant = nil, quantity = 1)
+  def click_add_bulk_max_to_cart(quantity = 1)
     within(".reveal-modal") do
       quantity.times do
         page.all("button", text: increase_quantity_symbol).last.click
@@ -80,12 +84,10 @@ module ShopWorkflow
     wait_for_cart
   end
 
-  def within_variant(variant = nil)
+  def within_variant(variant = nil, &block)
     selector = variant ? "#variant-#{variant.id}" : ".variants"
     expect(page).to have_selector selector
-    within(selector) do
-      yield
-    end
+    within(selector, &block)
   end
 
   def open_bulk_quantity_modal(variant)

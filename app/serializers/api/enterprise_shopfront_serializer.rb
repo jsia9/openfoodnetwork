@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Represents the properties of an Enterprise when viewing the details of listed shopfronts
 module Api
   class EnterpriseShopfrontSerializer < ActiveModel::Serializer
@@ -14,7 +16,7 @@ module Api
     has_many :distributed_properties, serializer: Api::PropertySerializer
 
     def orders_close_at
-      OrderCycle.with_distributor(enterprise).soonest_closing.first.andand.orders_close_at
+      OrderCycle.with_distributor(enterprise).soonest_closing.first&.orders_close_at
     end
 
     def active

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenFoodNetwork
   class OrderAndDistributorReport
     def initialize(user, params = {}, render_table = false)
@@ -36,7 +38,7 @@ module OpenFoodNetwork
     def search
       @permissions.visible_orders.select("DISTINCT spree_orders.*").
         complete.not_state(:canceled).
-        search(@params[:q])
+        ransack(@params[:q])
     end
 
     def table
@@ -97,8 +99,8 @@ module OpenFoodNetwork
         line_item.max_quantity,
         line_item.price * line_item.quantity,
         line_item.distribution_fee,
-        order.payments.first.andand.payment_method.andand.name,
-        order.distributor.andand.name,
+        order.payments.first&.payment_method&.name,
+        order.distributor&.name,
         order.distributor.address.address1,
         order.distributor.address.city,
         order.distributor.address.zipcode,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe OrderCyclesHelper, type: :helper do
@@ -31,7 +33,8 @@ describe OrderCyclesHelper, type: :helper do
     end
 
     it "asks for a validation option list" do
-      expect(helper).to receive(:validated_enterprise_options).with("enterprise list", shipping_and_payment_methods: true)
+      expect(helper).to receive(:validated_enterprise_options).with("enterprise list",
+                                                                    shipping_and_payment_methods: true)
       helper.permitted_hub_enterprise_options_for(oc)
     end
   end

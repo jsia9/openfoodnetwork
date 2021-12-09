@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'open_food_network/orders_and_fulfillments_report'
 require 'open_food_network/order_grouper'
@@ -59,7 +61,9 @@ describe OpenFoodNetwork::OrdersAndFulfillmentsReport do
             ship_address: create(:address)
           )
         }
-        let(:li2) { build(:line_item_with_shipment, product: create(:simple_product, supplier: s1)) }
+        let(:li2) {
+          build(:line_item_with_shipment, product: create(:simple_product, supplier: s1))
+        }
 
         before do
           o2.line_items << li2
@@ -78,7 +82,7 @@ describe OpenFoodNetwork::OrdersAndFulfillmentsReport do
 
         context "where the distributor allows suppliers to see customer names" do
           before do
-            distributor.preferred_show_customer_names_to_suppliers = true
+            distributor.update_columns show_customer_names_to_suppliers: true
           end
 
           it "shows line items supplied by my producers, with names shown" do
@@ -99,7 +103,9 @@ describe OpenFoodNetwork::OrdersAndFulfillmentsReport do
             ship_address: create(:address)
           )
         }
-        let(:li2) { build(:line_item_with_shipment, product: create(:simple_product, supplier: s1)) }
+        let(:li2) {
+          build(:line_item_with_shipment, product: create(:simple_product, supplier: s1))
+        }
 
         before do
           o2.line_items << li2
@@ -111,7 +117,7 @@ describe OpenFoodNetwork::OrdersAndFulfillmentsReport do
 
         context "where the distributor allows suppliers to see customer names" do
           before do
-            distributor.preferred_show_customer_names_to_suppliers = true
+            distributor.show_customer_names_to_suppliers = true
           end
 
           it "does not show line items supplied by my producers" do
@@ -213,7 +219,8 @@ describe OpenFoodNetwork::OrdersAndFulfillmentsReport do
         # Add a second line item for Fuji variant to the order, to test grouping in this edge case.
         order.line_items << build(:line_item_with_shipment, variant: fuji, price: nil, quantity: 4)
 
-        second_order.line_items << build(:line_item_with_shipment, variant: fuji, price: nil, quantity: 8)
+        second_order.line_items << build(:line_item_with_shipment, variant: fuji, price: nil,
+                                                                   quantity: 8)
       end
 
       it "groups line items by variant and order" do

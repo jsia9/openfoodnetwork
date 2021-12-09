@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 require 'concerns/payment_method_distributors'
-require 'spree/core/calculated_adjustments'
 
 module Spree
-  class PaymentMethod < ActiveRecord::Base
-    include Spree::Core::CalculatedAdjustments
+  class PaymentMethod < ApplicationRecord
+    include CalculatedAdjustments
     include PaymentMethodDistributors
 
     acts_as_taggable
@@ -89,19 +88,11 @@ module Spree
       true
     end
 
-    def auto_capture?
-      Spree::Config[:auto_capture]
-    end
-
     def supports?(_source)
       true
     end
 
     def init
-      unless reflections.key?(:calculator)
-        self.class.include Spree::Core::CalculatedAdjustments
-      end
-
       self.calculator ||= ::Calculator::FlatRate.new(preferred_amount: 0)
     end
 
@@ -110,23 +101,8 @@ module Spree
     end
 
     def self.clean_name
-      case name
-      when "Spree::PaymentMethod::Check"
-        "Cash/EFT/etc. (payments for which automatic validation is not required)"
-      when "Spree::Gateway::Migs"
-        "MasterCard Internet Gateway Service (MIGS)"
-      when "Spree::Gateway::Pin"
-        "Pin Payments"
-      when "Spree::Gateway::StripeConnect"
-        "Stripe"
-      when "Spree::Gateway::StripeSCA"
-        "Stripe SCA"
-      when "Spree::Gateway::PayPalExpress"
-        "PayPal Express"
-      else
-        i = name.rindex('::') + 2
-        name[i..-1]
-      end
+      i18n_key = "spree.admin.payment_methods.providers." + name.demodulize.downcase
+      I18n.t(i18n_key)
     end
 
     private

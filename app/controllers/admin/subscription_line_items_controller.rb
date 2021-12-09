@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'open_food_network/permissions'
 require 'open_food_network/order_cycle_permissions'
 require 'open_food_network/scope_variant_to_hub'
 
 module Admin
-  class SubscriptionLineItemsController < ResourceController
+  class SubscriptionLineItemsController < Admin::ResourceController
     before_action :load_build_context, only: [:build]
     before_action :ensure_shop, only: [:build]
     before_action :ensure_variant, only: [:build]
@@ -26,7 +28,7 @@ module Admin
     def load_build_context
       @shop = Enterprise.managed_by(spree_current_user).find_by(id: params[:shop_id])
       @schedule = permissions.editable_schedules.find_by(id: params[:schedule_id])
-      @order_cycle = @schedule.andand.current_or_next_order_cycle
+      @order_cycle = @schedule&.current_or_next_order_cycle
       @variant = variant_if_eligible(subscription_line_item_params[:variant_id]) if @shop.present?
     end
 

@@ -1,4 +1,4 @@
-Darkswarm.factory "EnterpriseImageService", (FileUploader, spreeApiKey) ->
+angular.module('Darkswarm').factory "EnterpriseImageService", (FileUploader, spreeApiKey) ->
   new class EnterpriseImageService
     imageSrc: null
 
@@ -8,5 +8,5 @@ Darkswarm.factory "EnterpriseImageService", (FileUploader, spreeApiKey) ->
       autoUpload: true
 
     configure: (enterprise) =>
-      @imageUploader.url = "/api/enterprises/#{enterprise.id}/update_image"
+      @imageUploader.url = "/api/v0/enterprises/#{enterprise.id}/update_image"
       @imageUploader.onSuccessItem = (image, response) => @imageSrc = response

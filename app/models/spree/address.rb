@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 module Spree
-  class Address < ActiveRecord::Base
+  class Address < ApplicationRecord
     include AddressDisplay
+
+    searchable_attributes :firstname, :lastname
+    searchable_associations :country, :state
 
     belongs_to :country, class_name: "Spree::Country"
     belongs_to :state, class_name: "Spree::State"
@@ -10,9 +13,10 @@ module Spree
     has_one :enterprise, dependent: :restrict_with_exception
     has_many :shipments
 
-    validates :firstname, :lastname, :address1, :city, :country, presence: true
+    validates :address1, :city, :country, :phone, presence: true
+    validates :company, presence: true, unless: -> { first_name.blank? || last_name.blank? }
+    validates :firstname, :lastname, presence: true, unless: -> { company.present? }
     validates :zipcode, presence: true, if: :require_zipcode?
-    validates :phone, presence: true, if: :require_phone?
 
     validate :state_validate
 
@@ -22,14 +26,12 @@ module Spree
     alias_attribute :last_name, :lastname
     delegate :name, to: :state, prefix: true, allow_nil: true
 
-    geocoded_by :geocode_address
-
     def self.default
       country = begin
-                  Spree::Country.find(Spree::Config[:default_country_id])
-                rescue StandardError
-                  Spree::Country.first
-                end
+        DefaultCountry.country
+      rescue StandardError
+        Spree::Country.first
+      end
       new(country: country)
     end
 
@@ -89,12 +91,8 @@ module Spree
       }
     end
 
-    def geocode_address
-      render_address([address1, address2, zipcode, city, country.andand.name, state.andand.name])
-    end
-
     def full_address
-      render_address([address1, address2, city, zipcode, state.andand.name])
+      render_address([address1, address2, city, zipcode, state&.name])
     end
 
     def address_part1
@@ -102,14 +100,10 @@ module Spree
     end
 
     def address_part2
-      render_address([city, zipcode, state.andand.name])
+      render_address([city, zipcode, state&.name])
     end
 
     private
-
-    def require_phone?
-      true
-    end
 
     def require_zipcode?
       true
@@ -134,16 +128,14 @@ module Spree
 
       # Ensure state_name belongs to country without states,
       #   or that it matches a predefined state name/abbr
-      if state_name.present?
-        if country.states.present?
-          states = country.states.find_all_by_name_or_abbr(state_name)
+      if state_name.present? && country.states.present?
+        states = country.states.find_all_by_name_or_abbr(state_name)
 
-          if states.size == 1
-            self.state = states.first
-            self.state_name = nil
-          else
-            errors.add(:state, :invalid)
-          end
+        if states.size == 1
+          self.state = states.first
+          self.state_name = nil
+        else
+          errors.add(:state, :invalid)
         end
       end
 
@@ -152,7 +144,9 @@ module Spree
     end
 
     def touch_enterprise
-      enterprise.andand.touch
+      return unless enterprise&.persisted?
+
+      enterprise.touch
     end
 
     def render_address(parts)

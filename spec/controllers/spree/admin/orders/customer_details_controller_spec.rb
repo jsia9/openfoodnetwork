@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Spree::Admin::Orders::CustomerDetailsController, type: :controller do
@@ -14,7 +16,6 @@ describe Spree::Admin::Orders::CustomerDetailsController, type: :controller do
           :order_with_totals_and_distribution,
           state: 'cart',
           shipments: [shipment],
-          payments: [create(:payment)],
           distributor: distributor,
           user: nil,
           email: nil,
@@ -45,12 +46,13 @@ describe Spree::Admin::Orders::CustomerDetailsController, type: :controller do
           spree_post :update, order: { email: user.email, bill_address_attributes: address_params,
                                        ship_address_attributes: address_params },
                               order_id: order.number
-        }.to change { order.reload.state }.from("cart").to("complete")
+        }.to change { order.reload.state }.from("cart").to("payment")
       end
 
       context "when adding details of a registered user" do
         it "redirects to shipments on success" do
-          spree_post :update, order: { email: user.email, bill_address_attributes: address_params, ship_address_attributes: address_params }, order_id: order.number
+          spree_post :update,
+                     order: { email: user.email, bill_address_attributes: address_params, ship_address_attributes: address_params }, order_id: order.number
 
           order.reload
 
@@ -60,7 +62,8 @@ describe Spree::Admin::Orders::CustomerDetailsController, type: :controller do
 
       context "when adding details of an unregistered user" do
         it "redirects to shipments on success" do
-          spree_post :update, order: { email: 'unregistered@email.com', bill_address_attributes: address_params, ship_address_attributes: address_params }, order_id: order.number
+          spree_post :update,
+                     order: { email: 'unregistered@email.com', bill_address_attributes: address_params, ship_address_attributes: address_params }, order_id: order.number
 
           order.reload
 

@@ -1,38 +1,62 @@
+# frozen_string_literal: true
+
 module CheckoutHelper
+  def shipping_and_billing_match?(order)
+    order.ship_address == order.bill_address
+  end
+
   def guest_checkout_allowed?
     current_order.distributor.allow_guest_orders?
   end
 
   def checkout_adjustments_for(order, opts = {})
-    adjustments = order.adjustments.eligible
     exclude = opts[:exclude] || {}
 
-    # Remove empty tax adjustments and (optionally) shipping fees
-    adjustments.reject! { |a| a.originator_type == 'Spree::TaxRate' && a.amount == 0 }
-    adjustments.reject! { |a| a.originator_type == 'Spree::ShippingMethod' } if exclude.include? :shipping
-    adjustments.reject! { |a| a.originator_type == 'Spree::PaymentMethod' } if exclude.include? :payment
-    adjustments.reject! { |a| a.source_type == 'Spree::LineItem' } if exclude.include? :line_item
+    adjustments = order.all_adjustments.eligible.to_a
 
-    enterprise_fee_adjustments = adjustments.select { |a| a.originator_type == 'EnterpriseFee' && a.source_type != 'Spree::LineItem' }
-    adjustments.reject! { |a| a.originator_type == 'EnterpriseFee' && a.source_type != 'Spree::LineItem' }
+    # Remove tax adjustments and (optionally) shipping fees
+    adjustments.reject! { |a| a.originator_type == 'Spree::TaxRate' }
+    if exclude.include? :shipping
+      adjustments.reject! { |a|
+        a.originator_type == 'Spree::ShippingMethod'
+      }
+    end
+    if exclude.include? :payment
+      adjustments.reject! { |a|
+        a.originator_type == 'Spree::PaymentMethod'
+      }
+    end
+    if exclude.include? :line_item
+      adjustments.reject! { |a|
+        a.adjustable_type == 'Spree::LineItem'
+      }
+    end
+
+    enterprise_fee_adjustments = adjustments.select { |a|
+      a.originator_type == 'EnterpriseFee' && a.adjustable_type != 'Spree::LineItem'
+    }
+    adjustments.reject! { |a|
+      a.originator_type == 'EnterpriseFee' && a.adjustable_type != 'Spree::LineItem'
+    }
     unless exclude.include? :admin_and_handling
-      adjustments << Spree::Adjustment.new(label: I18n.t(:orders_form_admin), amount: enterprise_fee_adjustments.sum(&:amount))
+      adjustments << Spree::Adjustment.new(
+        label: I18n.t(:orders_form_admin), amount: enterprise_fee_adjustments.sum(&:amount)
+      )
     end
 
     adjustments
   end
 
-  def display_checkout_admin_and_handling_adjustments_total_for(order)
-    adjustments = order.adjustments.eligible.where('originator_type = ? AND source_type != ? ', 'EnterpriseFee', 'Spree::LineItem')
-    Spree::Money.new adjustments.sum(&:amount), currency: order.currency
+  def display_line_item_fees_total_for(order)
+    Spree::Money.new order.adjustments.enterprise_fee.sum(:amount), currency: order.currency
   end
 
-  def checkout_line_item_adjustments(order)
-    order.adjustments.eligible.where(source_type: "Spree::LineItem")
+  def checkout_line_item_fees(order)
+    order.line_item_adjustments.enterprise_fee
   end
 
   def checkout_subtotal(order)
-    order.item_total + checkout_line_item_adjustments(order).sum(&:amount)
+    order.item_total + checkout_line_item_fees(order).sum(:amount)
   end
 
   def display_checkout_subtotal(order)
@@ -90,7 +114,8 @@ module CheckoutHelper
       "ng-class" => "{error: !fieldValid('#{path}')}"
     }.merge args
 
-    render "shared/validated_select", name: name, path: path, options: options, attributes: attributes
+    render "shared/validated_select", name: name, path: path, options: options,
+                                      attributes: attributes
   end
 
   def payment_method_price(method, order)
@@ -100,5 +125,22 @@ module CheckoutHelper
     else
       "{{ #{price} | localizeCurrency }}"
     end
+  end
+
+  def payment_or_shipping_price(method, order)
+    price = method.compute_amount(order)
+    if price.zero?
+      t('checkout_method_free')
+    else
+      Spree::Money.new(price, currency: order.currency)
+    end
+  end
+
+  def checkout_step
+    params[:step]
+  end
+
+  def checkout_step?(step)
+    checkout_step == step.to_s
   end
 end

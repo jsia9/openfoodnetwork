@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module Admin
     class ProxyOrderSerializer < ActiveModel::Serializer
@@ -11,7 +13,7 @@ module Api
       end
 
       def update_issues
-        options[:order_update_issues].andand[object.order_id] || []
+        options[:order_update_issues]&.[](object.order_id) || []
       end
 
       def completed_at

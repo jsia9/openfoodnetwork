@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BaseController, type: :controller do
@@ -5,7 +7,7 @@ describe BaseController, type: :controller do
   let(:order) { instance_double(Spree::Order) }
   controller(BaseController) do
     def index
-      render text: ""
+      render plain: ""
     end
   end
 
@@ -91,19 +93,23 @@ describe BaseController, type: :controller do
       expect(session[:order_id]).to_not eq last_cart.id
       expect(controller.current_order.line_items.count).to eq 0
     end
+
+    it "doesn't load variant overrides without line items" do
+      expect(VariantOverride).to_not receive(:indexed)
+      controller.current_order(true)
+    end
   end
 
-  it "redirects to home with message if order cycle is expired" do
-    expect(controller).to receive(:current_order_cycle).and_return(oc).twice
-    expect(controller).to receive(:current_order).and_return(order).twice
+  it "redirects to shopfront with message if order cycle is expired" do
+    expect(controller).to receive(:current_order_cycle).and_return(oc)
+    expect(controller).to receive(:current_order).and_return(order).at_least(:twice)
     expect(oc).to receive(:closed?).and_return(true)
     expect(order).to receive(:empty!)
     expect(order).to receive(:set_order_cycle!).with(nil)
 
     get :index
 
-    expect(session[:expired_order_cycle_id]).to eq oc.id
-    expect(response).to redirect_to root_url
+    expect(response).to redirect_to shop_url
     expect(flash[:info]).to eq I18n.t('order_cycle_closed')
   end
 end

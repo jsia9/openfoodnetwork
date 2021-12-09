@@ -257,6 +257,10 @@ describe "AdminProductEditCtrl", ->
       $provide.value 'SpreeApiKey', 'API_KEY'
       $provide.value 'columns', []
       null
+    module "admin.products"
+    module ($provide)->
+      $provide.value "availableUnits", "g,kg,T,mL,L,kL"
+      null
 
   beforeEach inject((_$controller_, _$timeout_, $rootScope, _$httpBackend_, _BulkProducts_, _DirtyProducts_, _DisplayProperties_, _ProductFiltersUrl_) ->
     $scope = $rootScope.$new()
@@ -357,6 +361,15 @@ describe "AdminProductEditCtrl", ->
     it "resets dirtyProducts", ->
       expect(DirtyProducts.clear).toHaveBeenCalled()
 
+  describe "sorting products", ->
+    it "sorts products", ->
+      spyOn $scope, "fetchProducts"
+
+      $scope.sortOptions.toggle('name')
+      $scope.$apply()
+
+      expect($scope.sorting).toEqual 'name desc'
+      expect($scope.fetchProducts).toHaveBeenCalled()
 
   describe "updating the product on hand count", ->
     it "updates when product is not available on demand", ->
@@ -807,7 +820,7 @@ describe "AdminProductEditCtrl", ->
         }
       ]
       $scope.dirtyProducts = {}
-      $httpBackend.expectDELETE("/api/products/13").respond 200, "data"
+      $httpBackend.expectDELETE("/api/v0/products/13").respond 200, "data"
       $scope.deleteProduct $scope.products[1]
       $httpBackend.flush()
 
@@ -826,7 +839,7 @@ describe "AdminProductEditCtrl", ->
       DirtyProducts.addProductProperty 9, "someProperty", "something"
       DirtyProducts.addProductProperty 13, "name", "P1"
 
-      $httpBackend.expectDELETE("/api/products/13").respond 200, "data"
+      $httpBackend.expectDELETE("/api/v0/products/13").respond 200, "data"
       $scope.deleteProduct $scope.products[1]
       $httpBackend.flush()
       expect($scope.products).toEqual [
@@ -888,7 +901,7 @@ describe "AdminProductEditCtrl", ->
           }
         ]
         $scope.dirtyProducts = {}
-        $httpBackend.expectDELETE("/api/products/apples/variants/3").respond 200, "data"
+        $httpBackend.expectDELETE("/api/v0/products/apples/variants/3").respond 200, "data"
         $scope.deleteVariant $scope.products[0], $scope.products[0].variants[0]
         $httpBackend.flush()
 
@@ -918,7 +931,7 @@ describe "AdminProductEditCtrl", ->
         DirtyProducts.addVariantProperty 9, 4, "price", 6.0
         DirtyProducts.addProductProperty 13, "name", "P1"
 
-        $httpBackend.expectDELETE("/api/products/apples/variants/3").respond 200, "data"
+        $httpBackend.expectDELETE("/api/v0/products/apples/variants/3").respond 200, "data"
         $scope.deleteVariant $scope.products[0], $scope.products[0].variants[0]
         $httpBackend.flush()
         expect($scope.products[0].variants).toEqual [

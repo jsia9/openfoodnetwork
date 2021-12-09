@@ -10,6 +10,7 @@
 # inherited hook will assign a new hash for the subclass definitions
 # and copy all the definitions allowing the subclass to add
 # additional defintions without affecting the base
+
 module Spree
   module Preferences
     module Preferable
@@ -17,6 +18,8 @@ module Spree
         base.class_eval do
           extend Spree::Preferences::PreferableClassMethods
 
+          # Disabling rubocop rule because the fix to this rubocop warning breaks specs
+          # rubocop:disable Style/SymbolProc
           if respond_to?(:after_create)
             after_create do |obj|
               obj.save_pending_preferences
@@ -28,6 +31,7 @@ module Spree
               obj.clear_preferences
             end
           end
+          # rubocop:enable Style/SymbolProc
         end
       end
 
@@ -112,19 +116,22 @@ module Spree
         when :password
           value.to_s
         when :decimal
+          value = 0 if value.blank?
           BigDecimal(value.to_s).round(2, BigDecimal::ROUND_HALF_UP)
         when :integer
           value.to_i
         when :boolean
+          # rubocop:disable Style/NumericPredicate
           if value.is_a?(FalseClass) ||
              value.nil? ||
              value == 0 ||
-             value =~ /^(f|false|0)$/i ||
+             (value.is_a?(String) && value =~ /^(f|false|0)$/i) ||
              (value.respond_to?(:empty?) && value.empty?)
             false
           else
             true
           end
+          # rubocop:enable Style/NumericPredicate
         else
           value
         end

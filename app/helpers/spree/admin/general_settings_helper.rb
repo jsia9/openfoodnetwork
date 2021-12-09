@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Spree
   module Admin
     module GeneralSettingsHelper
@@ -7,6 +9,10 @@ module Spree
           [iso, "#{details[:name]} (#{iso})"]
         end
         options_from_collection_for_select(currencies, :first, :last, Spree::Config[:currency])
+      end
+
+      def all_units
+        ["g", "oz", "lb", "kg", "T", "mL", "L", "kL"]
       end
     end
   end

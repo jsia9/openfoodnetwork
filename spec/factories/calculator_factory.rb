@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :calculator, class: Calculator::FlatRate do
     after(:create) { |c| c.set_preference(:amount, 10.0) }
@@ -23,4 +25,6 @@ FactoryBot.define do
       c.save!
     }
   end
+
+  factory :default_tax_calculator, class: Calculator::DefaultTax
 end

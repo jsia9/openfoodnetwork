@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module Spree
   module AuthenticationHelpers
     def self.included(receiver)
       receiver.public_send :helper_method, :spree_current_user
       receiver.public_send :helper_method, :spree_login_path
-      receiver.public_send :helper_method, :spree_signup_path
       receiver.public_send :helper_method, :spree_logout_path
     end
 
@@ -14,8 +15,6 @@ module Spree
     def spree_login_path
       main_app.login_path
     end
-
-    delegate :signup_path, to: :spree, prefix: true
 
     delegate :logout_path, to: :spree, prefix: true
   end

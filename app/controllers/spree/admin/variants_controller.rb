@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'open_food_network/scope_variants_for_search'
 
 module Spree
   module Admin
-    class VariantsController < ResourceController
+    class VariantsController < ::Admin::ResourceController
       helper 'spree/products'
-
       belongs_to 'spree/product', find_by: :permalink
-      new_action.before :new_before
+
+      before_action :assign_default_attributes, only: :new
 
       def index
         @url_filters = ::ProductFilters.new.extract(request.query_parameters)
@@ -21,9 +23,11 @@ module Spree
 
         if @object.update(permitted_resource_params)
           flash[:success] = flash_message_for(@object, :successfully_updated)
-          redirect_to admin_product_variants_url(params[:product_id], @url_filters)
+          redirect_to spree.admin_product_variants_url(params[:product_id], @url_filters)
         else
-          redirect_to edit_admin_product_variant_url(params[:product_id], @object, @url_filters)
+          redirect_to spree.edit_admin_product_variant_url(params[:product_id],
+                                                           @object,
+                                                           @url_filters)
         end
       end
 
@@ -40,9 +44,9 @@ module Spree
         @object.attributes = permitted_resource_params
         if @object.save
           flash[:success] = flash_message_for(@object, :successfully_created)
-          redirect_to admin_product_variants_url(params[:product_id], @url_filters)
+          redirect_to spree.admin_product_variants_url(params[:product_id], @url_filters)
         else
-          redirect_to new_admin_product_variant_url(params[:product_id], @url_filters)
+          redirect_to spree.new_admin_product_variant_url(params[:product_id], @url_filters)
         end
 
         return unless @object.present? && @object.valid?
@@ -52,7 +56,7 @@ module Spree
       end
 
       def search
-        scoper = OpenFoodNetwork::ScopeVariantsForSearch.new(params)
+        scoper = OpenFoodNetwork::ScopeVariantsForSearch.new(variant_search_params)
         @variants = scoper.search
         render json: @variants, each_serializer: ::Api::Admin::VariantSerializer
       end
@@ -78,11 +82,11 @@ module Spree
 
       def create_before
         option_values = params[:new_variant]
-        option_values.andand.each_value { |id| @object.option_values << OptionValue.find(id) }
+        option_values&.each_value { |id| @object.option_values << OptionValue.find(id) }
         @object.save
       end
 
-      def new_before
+      def assign_default_attributes
         @object.attributes = @object.product.master.
           attributes.except('id', 'created_at', 'deleted_at', 'sku', 'is_master')
         # Shallow Clone of the default price to populate the price field.
@@ -106,6 +110,12 @@ module Spree
 
       def permitted_resource_params
         variant_params
+      end
+
+      def variant_search_params
+        params.permit(
+          :q, :distributor_id, :order_cycle_id, :schedule_id, :eligible_for_subscriptions
+        ).to_h.with_indifferent_access
       end
     end
   end

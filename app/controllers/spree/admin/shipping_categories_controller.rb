@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Spree
   module Admin
-    class ShippingCategoriesController < ResourceController
+    class ShippingCategoriesController < ::Admin::ResourceController
       protected
 
       def permitted_resource_params

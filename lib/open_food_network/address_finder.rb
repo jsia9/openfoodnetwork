@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Finds an address based on the data provided
 # Can take any combination of an email String, Customer or Spree::User as args
 # The #bill_address and #ship_address methods automatically return matched addresses
@@ -48,27 +50,27 @@ module OpenFoodNetwork
     end
 
     def customer_preferred_bill_address
-      customer.andand.bill_address
+      customer&.bill_address
     end
 
     def customer_preferred_ship_address
-      customer.andand.ship_address
+      customer&.ship_address
     end
 
     def user_preferred_bill_address
-      user.andand.bill_address
+      user&.bill_address
     end
 
     def user_preferred_ship_address
-      user.andand.ship_address
+      user&.ship_address
     end
 
     def fallback_bill_address
-      last_used_bill_address.andand.clone || Spree::Address.default
+      last_used_bill_address&.clone || Spree::Address.default
     end
 
     def fallback_ship_address
-      last_used_ship_address.andand.clone || Spree::Address.default
+      last_used_ship_address&.clone || Spree::Address.default
     end
 
     def last_used_bill_address
@@ -76,7 +78,7 @@ module OpenFoodNetwork
 
       Spree::Order.joins(:bill_address).order('id DESC')
         .complete.where(email: email)
-        .first.andand.bill_address
+        .first&.bill_address
     end
 
     def last_used_ship_address
@@ -84,7 +86,7 @@ module OpenFoodNetwork
 
       Spree::Order.complete.joins(:ship_address, shipments: :shipping_methods).order('id DESC')
         .where(email: email, spree_shipping_methods: { require_ship_address: true })
-        .first.andand.ship_address
+        .first&.ship_address
     end
 
     # Only allow search for address by email if a customer or user with the
@@ -97,7 +99,7 @@ module OpenFoodNetwork
     end
 
     def email_matches_customer_or_user?
-      email == customer.andand.email || email == user.andand.email
+      email == customer&.email || email == user&.email
     end
   end
 end

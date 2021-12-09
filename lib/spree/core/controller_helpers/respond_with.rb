@@ -16,7 +16,7 @@ module ActionController
 
       # Fix spree issues #3531 and #2210 (patch provided by leiyangyou)
       if (defined_response = collector.response) &&
-         !Spree::BaseController.spree_responders[self.class.to_s.to_sym].try(:[],
+         !ApplicationController.spree_responders[self.class.to_s.to_sym].try(:[],
                                                                              action_name.to_sym)
         if action = options.delete(:action)
           render action: action
@@ -28,6 +28,22 @@ module ActionController
         options[:action_name] = action_name.to_sym
         # If responder is not specified then pass in Spree::Responder
         (options.delete(:responder) || Spree::Responder).call(self, resources, options)
+      end
+    end
+
+    private
+
+    def retrieve_collector_from_mimes(mimes = nil, &block)
+      mimes ||= collect_mimes_from_class_level
+      collector = Collector.new(mimes, request.variant)
+      block.call(collector) if block_given?
+      format = collector.negotiate_format(request)
+
+      if format
+        _process_format(format)
+        collector
+      else
+        raise ActionController::UnknownFormat
       end
     end
   end
