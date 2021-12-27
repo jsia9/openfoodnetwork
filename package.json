@@ -14,11 +14,11 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-controls": "^6.4.1",
-    "@storybook/addon-docs": "^6.4.8",
-    "@storybook/server": "^6.4.8",
+    "@storybook/addon-controls": "^6.4.9",
+    "@storybook/addon-docs": "^6.4.9",
+    "@storybook/server": "^6.4.9",
     "jasmine-core": "~2.4.1",
-    "jest": "^27.4.3",
+    "jest": "^27.4.5",
     "karma": "~6.3.9",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coffee-preprocessor": "~1.0.1",
@@ -29,6 +29,7 @@
   "dependencies": {
     "@hotwired/turbo": "^7.1.0",
     "@rails/webpacker": "5.4.3",
+    "babel-loader": "^8.2.3",
     "cable_ready": "^5.0.0-pre2",
     "flatpickr": "^4.6.9",
     "moment": "^2.29.1",
