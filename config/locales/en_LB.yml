@@ -1,7 +1,11 @@
-en_LB:
+en_US:
   language_name: "English"
   activerecord:
     attributes:
+      spree/user:
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        reset_password_token: Reset password token
       enterprise_fee:
         fee_type: Fee Type
       spree/order:
@@ -10,7 +14,7 @@ en_LB:
         completed_at: Completed At
         number: Number
         state: State
-        email: Customer E-Mail
+        email: Customer E-mail
       spree/payment:
         amount: Amount
         state: State
@@ -23,8 +27,12 @@ en_LB:
         variant_unit_name: "Variant Unit Name"
       spree/credit_card:
         base: "Credit Card"
+        number: "Number"
+        month: "Month"
+        verification_value: "Verification Value"
+        year: "Year"
       order_cycle:
-        orders_close_at: Close date
+        orders_close_at: Close Date
       variant_override:
         count_on_hand: "On Hand"
     errors:
@@ -32,9 +40,11 @@ en_LB:
         spree/user:
           attributes:
             email:
-              taken: "There's already an account for this email. Please login or reset your password."
+              taken: "There's already an account registered for this email. Please login or reset your password."
+            reset_password_token:
+              invalid: is invalid
         spree/order:
-          no_card: There are no authorised credit cards available to charge
+          no_card: There are no authorized credit cards available to charge
         spree/credit_card:
           attributes:
             base:
@@ -48,6 +58,20 @@ en_LB:
             using_producer_stock_settings_but_count_on_hand_set: "must be blank because using producer stock settings"
             on_demand_but_count_on_hand_set: "must be blank if on demand"
             limited_stock_but_no_count_on_hand: "must be specified because forcing limited stock"
+  stripe:
+    error_code:
+      incorrect_number: "The card number is incorrect."
+      invalid_number: "The card number is not a valid credit card number."
+      invalid_expiry_month: "The card's expiration month is invalid."
+      invalid_expiry_year: "The card's expiration year is invalid."
+      invalid_cvc: "The card's security code is invalid."
+      expired_card: "The card has expired."
+      incorrect_cvc: "The card's security code is incorrect."
+      incorrect_zip: "The card's zip code failed validation."
+      card_declined: "The card was declined."
+      missing: "There is no card on a customer that is being charged."
+      processing_error: "An error occurred while processing the card."
+      rate_limit: "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
   activemodel:
     attributes:
       order_management/reports/enterprise_fee_summary/parameters:
@@ -56,7 +80,7 @@ en_LB:
         distributor_ids: "Hubs"
         producer_ids: "Producers"
         order_cycle_ids: "Order Cycles"
-        enterprise_fee_ids: "Fees Names"
+        enterprise_fee_ids: "Fee Names"
         shipping_method_ids: "Shipping Methods"
         payment_method_ids: "Payment Methods"
     errors:
@@ -81,10 +105,18 @@ en_LB:
               no_default_card: "^No default card available for this customer"
             shipping_method:
               not_available_to_shop: "is not available to %{shop}"
+  card_details: "Card details"
+  card_type: "Card type"
+  cardholder_name: "Cardholder name"
+  community_forum_url: "Community forum URL"
+  customer_instructions: "Customer instructions"
   devise:
+    passwords:
+      spree_user:
+        cannot_be_blank: "User password cannot be blank. Please enter a password."
     confirmations:
       send_instructions: "You will receive an email with instructions about how to confirm your account in a few minutes."
-      failed_to_send: "An error occurred whilst sending your confirmation email."
+      failed_to_send: "An error occurred while sending your confirmation email."
       resend_confirmation_email: "Resend confirmation email."
       confirmed: "Thanks for confirming your email! You can now log in."
       not_confirmed: "Your email address could not be confirmed. Perhaps you have already completed this step?"
@@ -96,7 +128,7 @@ en_LB:
     user_registrations:
       spree_user:
         signed_up_but_unconfirmed: "A message with a confirmation link has been sent to your email address. Please open the link to activate your account."
-        unknown_error: "Something went wrong while creating your account. Check your email address and try again."
+        unknown_error: "Oops! Something went wrong while creating your account. Please check your email address and try again."
     failure:
       invalid: |
           Invalid email or password.
@@ -110,9 +142,39 @@ en_LB:
         updated_not_active: "Your password has been reset, but your email has not been confirmed yet."
         updated: "Your password was changed successfully. You are now signed in."
         send_instructions: "You will receive an email with instructions about how to confirm your account in a few minutes."
+  home_page_alert_html: "Home page alert HTML"
+  hub_signup_case_studies_html: "Hub signup case studies HTML"
+  hub_signup_detail_html: "Hub signup detail HTML"
+  hub_signup_pricing_table_html: "Hub signup pricing table HTML"
+  group_signup_case_studies_html: "Group signup case studies HTML"
+  group_signup_detail_html: "Group signup detail HTML"
+  group_signup_pricing_table_html: "Group signup pricing table HTML"
+  item_description: "Item description"
+  menu_1_icon_name: "Menu 1 icon name"
+  menu_2_icon_name: "Menu 2 icon name"
+  menu_3_icon_name: "Menu 3 icon name"
+  menu_4_icon_name: "Menu 4 icon name"
+  menu_5_icon_name: "Menu 5 icon name"
+  menu_6_icon_name: "Menu 6 icon name"
+  menu_7_icon_name: "Menu 7 icon name"
   models:
     order_cycle:
       cloned_order_cycle_name: "COPY OF %{order_cycle}"
+    tax_rate:
+      included_in_price: "Included in price"
+  open_street_map_enabled: "Open Street Map enabled"
+  open_street_map_default_latitude: "Open Street Map default latitude"
+  open_street_map_default_longitude: "Open Street Map default longitude"
+  open_street_map_provider_name: "Open Street Map provider name"
+  open_street_map_provider_options: "Open Street Map provider options"
+  producer_signup_case_studies_html: "Producer signup case studies HTML"
+  producer_signup_detail_html: "Producer signup detail HTML"
+  producer_signup_pricing_table_html: "Producer signup pricing table HTML"
+  producers_social: "Producers social"
+  resume_order: "Resume order"
+  sku: "SKU"
+  subtotal: "Subtotal"
+  tax_rate: "Tax rate"
   validators:
     date_time_string_validator:
       not_string_error: "must be a string"
@@ -129,21 +191,22 @@ en_LB:
       email_registered: "is now part of"
       email_userguide_html: "The User Guide with detailed support for setting up your Producer or Hub is here: %{link}"
       userguide: "Maho Food User Guide"
-      email_admin_html: "You can manage your account by logging into the %{link} or by clicking on the cog in the top right hand side of the homepage, and selecting Administration."
+      email_admin_html: "You can manage your account by logging into the %{link} or by clicking on the person shape in the top right hand side of the homepage, and selecting \"Administration\" from the dropdown."
       admin_panel: "Admin Panel"
-      email_community_html: "We also have an online forum for community discussion related to OFN software and the unique challenges of running a food enterprise. You are encouraged to join in. We are constantly evolving and your input into this forum will shape what happens next. %{link}"
+      email_community_html: "We'll leave you to explore the platform and our community for now and will check back in soon with more information and resources!   In the meantime, please make sure emails from addresses at www.ikatrans.com aren't intercepted by your spam filter.   If you have any questions at all, please don't hesitate to contact us at support-usa@www.ikatrans.com.  Once again, welcome to our community, we're glad you are here!"
       join_community: "Join the community"
     invite_manager:
       subject: "%{enterprise} has invited you to be a manager"
   producer_mailer:
     order_cycle:
       subject: "Order cycle report for %{producer}"
+  provider_settings: "Provider settings"
   shipment_mailer:
     shipped_email:
       dear_customer: "Dear Customer,"
-      instructions: "Your order has been shipped"
+      instructions: "Your order has been delivered!"
       shipment_summary: "Shipment Summary"
-      subject: "Shipment Notification"
+      subject: "Shipment/Pick Up Notification"
       thanks: "Thank you for your business."
       track_information: "Tracking Information: %{tracking}"
       track_link: "Tracking Link: %{url}"
@@ -182,25 +245,26 @@ en_LB:
       other:
         title: Other Failure (%{count} orders)
         explainer: Automatic processing of these orders failed for an unknown reason. This should not occur, please contact us if you are seeing this.
-  home: "MF"
+  home: "OFN"
   title: "Maho Food"
   welcome_to: "Welcome to"
-  site_meta_description: "We begin from the ground up. With farmers and growers ready to tell their stories proudly and truly. With distributors ready to connect people with products fairly and honestly. With buyers who believe that better weekly shopping decisions can…"
-  search_by_name: Search by name or suburb...
-  producers_join: Producers are now welcome to join the Maho Food.
-  charges_sales_tax: Charges GST?
-  print_invoice: "Print Invoice"
-  print_ticket: "Print Ticket"
-  select_ticket_printer: "Select printer for tickets"
-  send_invoice: "Send Invoice"
-  resend_confirmation: "Resend Confirmation"
+  site_meta_description: "We begin from the ground up. With farmers and growers ready to tell their stories proudly and truly. With distributors ready to connect people with products fairly and honestly. With buyers who believe that better weekly shopping decisions can seriously change the world."
+  search_by_name: Search by name or city...
+  producers_join: US producers are now welcome to join the Maho Food.
+  charges_sales_tax: Charges Sales Tax?
+  business_address: "Business Address"
+  print_invoice: "Invoice"
+  print_ticket: "Print invoice"
+  select_ticket_printer: "Select printer for invoices"
+  send_invoice: "Invoice"
+  resend_confirmation: "Order Confirmation"
   view_order: "View Order"
   edit_order: "Edit Order"
   ship_order: "Ship Order"
   cancel_order: "Cancel Order"
   confirm_send_invoice: "An invoice for this order will be sent to the customer. Are you sure you want to continue?"
   confirm_resend_order_confirmation: "Are you sure you want to resend the order confirmation email?"
-  must_have_valid_business_number: "%{enterprise_name} must have a valid ABN before invoices can be sent."
+  must_have_valid_business_number: " %{enterprise_name}must have a business identifier, Tax ID or W9  before invoices can be sent."
   invoice: "Invoice"
   more: "More"
   say_no: "No"
@@ -208,8 +272,8 @@ en_LB:
   ongoing: Ongoing
   bill_address: Billing Address
   ship_address: Shipping Address
-  sort_order_cycles_on_shopfront_by: "Sort Order Cycles On Shopfront By"
-  required_fields: Required fields are denoted with an asterisk
+  sort_order_cycles_on_shopfront_by: "Sort Order Cycles On Storefront By"
+  required_fields: Required fields are marked with an asterisk
   select_continue: Select and Continue
   remove: Remove
   or: or
@@ -218,7 +282,7 @@ en_LB:
   loading: Loading...
   show_more: Show more
   show_all: Show all
-  show_all_with_more: "Show All (%{num}  More)"
+  show_all_with_more: "Show all (%{num} more)"
   cancel: Cancel
   edit: Edit
   clone: Clone
@@ -227,6 +291,7 @@ en_LB:
   enterprises: Enterprises
   enterprise_groups: Groups
   reports: Reports
+  listing_reports: Listing Reports
   variant_overrides: Inventory
   import: Import
   spree_products: Spree Products
@@ -257,8 +322,9 @@ en_LB:
   error: Error
   processing_payment: "Processing payment..."
   no_pending_payments: "No pending payments"
-  invalid_payment_state: "Invalid payment state"
+  invalid_payment_state: "Invalid payment state: %{state}"
   filter_results: Filter Results
+  clear_filters: Clear filters
   quantity: Quantity
   pick_up: Pick up
   copy: Copy
@@ -268,7 +334,7 @@ en_LB:
   reset_password_token: Reset password token
   expired: has expired, please request a new one
   back_to_payments_list: "Back to Payments List"
-  maestro_or_solo_cards: "Maestro/Solo cards"
+  maestro_or_solo_cards: "Debit cards"
   backordered: "Backordered"
   on hand: "On Hand"
   ship: "Ship"
@@ -276,17 +342,29 @@ en_LB:
   height: "Height"
   width: "Width"
   depth: "Depth"
+  payment_could_not_process: "The payment could not be processed"
+  payment_could_not_complete: "The payment could not be completed"
   actions:
     create_and_add_another: "Create and Add Another"
     create: "Create"
     cancel: "Cancel"
+    resume: "Resume"
     save: "Save"
     edit: "Edit"
     update: "Update"
     delete: "Delete"
+    add: "Add"
+    cut: "Cut"
+    paste: "Paste"
+    destroy: "Destroy"
+    rename: "Rename"
   admin:
+    adjustments:
+      skipped_changing_canceled_order: "You can't change a cancelled order."
     begins_at: Begins At
     begins_on: Begins On
+    bill_address: "Bill address"
+    ship_address: "Ship address"
     customer: Customer
     date: Date
     email: Email
@@ -308,7 +386,7 @@ en_LB:
     schedule: Schedule
     shipping: Shipping
     shipping_method: Shipping Method
-    shop: Shop
+    shop: Store
     sku: SKU
     status_state: State
     tags: Tags
@@ -342,10 +420,22 @@ en_LB:
     has_n_rules: "has %{num} rules"
     unsaved_confirm_leave: "There are unsaved changed on this page. Continue without saving?"
     unsaved_changes: "You have unsaved changes"
+    available_units: "Available Units"
     shopfront_settings:
       embedded_shopfront_settings: "Embedded Shopfront Settings"
       enable_embedded_shopfronts: "Enable Embedded Shopfronts"
       embedded_shopfronts_whitelist: "External Domains Whitelist"
+    terms_of_service_files:
+      create:
+        select_file: "Please select a file first."
+      show:
+        title: "Terms of Service files"
+        no_files: "No terms of services have been uploaded yet."
+        using_default_terms_html: "The site is currently linking to your old %{tos_link}."
+        current_terms_html: "View the current %{tos_link}. Upload time: %{datetime}."
+        terms_of_service: "Terms of Service"
+        delete: "Delete file"
+        confirm_delete: "Are you sure you want to delete the current Terms of Service file?"
     number_localization:
       number_localization_settings: "Number Localization Settings"
       enable_localized_number: "Use the international thousand/decimal separator logic"
@@ -361,7 +451,7 @@ en_LB:
         settings: "Settings"
         stripe_connect_enabled: Enable shops to accept payments using Stripe Connect?
         no_api_key_msg: No Stripe account exists for this enterprise.
-        configuration_explanation_html: For detailed instructions on configuring the Stripe Connect integration, please <a href='https://github.com/jamalsia/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance' target='_blank'>consult this guide</a>.
+        configuration_explanation_html: For detailed instructions on configuring the Stripe Connect integration, please <a href='https://github.com/jsia9/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance' target='_blank'>consult this guide</a>.
         status: Status
         ok: Ok
         instance_secret_key: Instance Secret Key
@@ -370,14 +460,14 @@ en_LB:
         charges_enabled: Charges Enabled
         charges_enabled_warning: "Warning: Charges are not enabled for your account"
         auth_fail_error: The API key you provided is invalid
-        empty_api_key_error_html: No Stripe API key has been provided. To set your API key, please follow <a href="https://github.com/jamalsia/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance" target="_blank">these instructions</a>
+        empty_api_key_error_html: No Stripe API key has been provided. To set your API key, please follow <a href="https://github.com/jsia9/openfoodnetwork/wiki/Setting-up-Stripe-on-an-OFN-instance" target="_blank">these instructions</a>
     matomo_settings:
       edit:
         title: "Matomo Settings"
         matomo_url: "Matomo URL"
         matomo_site_id: "Matomo Site ID"
         matomo_tag_manager_url: "Matomo Tag Manager URL"
-        info_html: "Matomo is a Web and Mobile Analytics application. You can either host Matomo on-premises or use a cloud-hosted service. See <a href='http://matomo.org' target='_blank'>matomo.org</a>for more information."
+        info_html: "Matomo is a Web and Mobile Analytics application. You can either host Matomo on-premises or use a cloud-hosted service. See <a href='http://matomo.org' target='_blank'>matomo.org</a> for more information."
         config_instructions_html: "Here you can configure the OFN Matomo integration. The Matomo URL below should point to the Matomo instance where the user tracking information will be sent to; if it is left empty, Matomo user tracking will be disabled. The Site ID field is not mandatory but useful if you are tracking more than one website on a single Matomo instance; it can be found on the Matomo instance console."
         config_instructions_tag_manager_html: "Setting the Matomo Tag Manager URL enables Matomo Tag Manager. This tool allows you to set up analytics events. The Matomo Tag Manager URL is copied from the Install Code section of Matomo Tag Manager. Ensure you select the right container and environment as these options change the URL."
     customers:
@@ -387,20 +477,23 @@ en_LB:
         duplicate_code: "This code is used already."
         bill_address: "Billing Address"
         ship_address: "Shipping Address"
-        update_address_success: 'Address updated successfully.'
-        update_address_error: 'Sorry! Please input all of the required fields!'
-        edit_bill_address: 'Edit Billing Address'
-        edit_ship_address: 'Edit Shipping Address'
-        required_fileds: 'Required fields are denoted with an asterisk '
-        select_country: 'Select Country'
-        select_state: 'Select State'
-        edit: 'Edit'
-        update_address: 'Update Address'
-        confirm_delete: 'Sure to delete?'
+        balance: "Balance"
+        update_address_success: "Address updated successfully."
+        update_address_error: "Sorry! Please input all of the required fields!"
+        edit_bill_address: "Edit Billing Address"
+        edit_ship_address: "Edit Shipping Address"
+        required_fileds: "Required fields are denoted with an asterisk "
+        select_country: "Select Country"
+        select_state: "Select State"
+        edit: "Edit"
+        update_address: "Update Address"
+        confirm_delete: "Sure to delete?"
         search_by_email: "Search by email/code..."
-        guest_label: 'Guest checkout'
+        guest_label: "Guest checkout"
+        credit_owed: "Credit Owed"
+        balance_due: "Balance Due"
       destroy:
-        has_associated_orders: 'Delete failed: customer has associated orders with his shop'
+        has_associated_orders: "Delete failed: customer has associated orders with his shop"
     contents:
       edit:
         title: Content
@@ -484,7 +577,7 @@ en_LB:
         none_saved: did not save any products successfully
         line_number: "Line %{number}:"
         encoding_error: "Please check the language setting of your source file and ensure it is saved with UTF-8 encoding"
-        unexpected_error: "Product Import encountered an unexpected error whilst opening the file: %{error_message}"
+        unexpected_error: "Product Import encountered an unexpected error when opening the file: %{error_message}"
         malformed_csv: "Product Import encountered a malformed CSV: %{error_message}"
       index:
         notice: "Notice"
@@ -523,7 +616,7 @@ en_LB:
         no_name: No name
         blank_enterprise: some products do not have an enterprise defined
         reset_absent?: Reset absent products
-        reset_absent_tip: Set stock to zero for all exiting products not present in the file
+        reset_absent_tip: Set stock to zero for all existing products not present in the file
         overwrite_all: Overwrite all
         overwrite_empty: Overwrite if empty
         default_stock: Set stock level
@@ -587,6 +680,8 @@ en_LB:
       controls:
         back_to_my_inventory: Back to my inventory
     orders:
+      edit:
+        order_sure_want_to: Are you sure you want to %{event} this order?
       invoice_email_sent: 'Invoice email has been sent'
       order_email_resent: 'Order email has been resent'
       bulk_management:
@@ -596,7 +691,7 @@ en_LB:
         order_date: "Completed at"
         max: "Max"
         product_unit: "Product: Unit"
-        weight_volume: "Weight/Volume"
+        weight_volume: "Weight/Volume (g)"
         ask: "Ask?"
         page_title: "Bulk Order Management"
         actions_delete: "Delete Selected"
@@ -609,6 +704,7 @@ en_LB:
         max_fulfilled_units: "Max Fulfilled Units"
         order_error: "Some errors must be resolved before you can update orders.\nAny fields with red borders contain errors."
         variants_without_unit_value: "WARNING: Some variants do not have a unit value"
+        all: "All"
       select_variant: "Select a variant"
     enterprise:
       select_outgoing_oc_products_from: Select outgoing OC products from
@@ -627,22 +723,34 @@ en_LB:
           desc_long: About Us
           desc_long_placeholder: Tell customers about yourself. This information appears on your public profile.
         business_details:
-          abn: ABN
-          abn_placeholder: eg. 99 123 456 789
-          acn: ACN
-          acn_placeholder: eg. 123 456 789
+          abn: Tax ID, DUNS Number, or other business ID
+          abn_placeholder: eg. 123456789
+          acn: Legal Business Name
+          acn_placeholder: eg. Martin's Produce LLC
           display_invoice_logo: Display logo in invoices
           invoice_text: Add customized text at the end of invoices
+          terms_and_conditions: "Terms and Conditions"
+          remove_terms_and_conditions: "Remove File"
+          uploaded_on: "uploaded on"
+          reset_form: "Reset Form"
+        business_address:
+          company_legal_name: Company Legal Name
+          company_placeholder: Example Inc.
+          address1: Legal address
+          address1_placeholder: 123 High St.
+          address2: Address (contd.)
+          legal_phone_number: Business phone number
+          phone_placeholder: "777 555-1212"
         contact:
           name: Name
-          name_placeholder: eg. Joseph Jenkins Roberts
+          name_placeholder: eg. Justin Jones
           email_address: Public Email Address
-          email_address_placeholder: eg. contact@ikatrans.com
+          email_address_placeholder: eg. inquiries@fresh-food.com
           email_address_tip: "This email address will be displayed in your public profile"
           phone: Phone
-          phone_placeholder: eg. 98 7654 3210
+          phone_placeholder: eg. (123)456-7891
           website: Website
-          website_placeholder: eg. www.ikatrans.com
+          website_placeholder: eg. www.truffles.com
         enterprise_fees:
           name: Name
           fee_type: Fee Type
@@ -655,6 +763,8 @@ en_LB:
           promo_image_note1: 'PLEASE NOTE:'
           promo_image_note2: Any promo image uploaded here will be cropped to 1200 x 260.
           promo_image_note3: The promo image is displayed at the top of an enterprise's profile page and pop-ups.
+          remove_logo: "Remove Image"
+          remove_promo_image: "Remove Image"
         inventory_settings:
           text1: You may opt to manage stock levels and prices in via your
           inventory: inventory
@@ -674,7 +784,7 @@ en_LB:
           create_one_button: Create One Now
         primary_details:
           name: Name
-          name_placeholder: eg. Red Chicken Rice
+          name_placeholder: eg. Jones Biodynamic Truffles
           groups: Groups
           groups_tip: Select any groups or regions that you are a member of. This will help customers find your enterprise.
           groups_placeholder: Start typing to search available groups...
@@ -721,6 +831,10 @@ en_LB:
           enable_subscriptions_tip: "Enable subscriptions functionality?"
           enable_subscriptions_false: "Disabled"
           enable_subscriptions_true: "Enabled"
+          customer_names_in_reports: "Customer Names in Reports"
+          customer_names_tip: "Enable your suppliers to see your customers names in reports"
+          customer_names_false: "Disabled"
+          customer_names_true: "Enabled"
           shopfront_message: "Shopfront Message"
           shopfront_message_placeholder: >
               An optional message to welcome customers and explain how to shop with
@@ -735,11 +849,17 @@ en_LB:
               is displayed on your shop only when you have no active order cycles
               (ie. shop is closed).
           shopfront_category_ordering: "Shopfront Category Ordering"
+          shopfront_category_ordering_note: "(top to bottom)"
           open_date: "Open Date"
           close_date: "Close Date"
+          display_ordering_in_shopfront: "Display ordering in shopfront:"
+          shopfront_sort_by_category: "By category"
+          shopfront_sort_by_producer: "By producer"
+          shopfront_sort_by_category_placeholder: "Category"
+          shopfront_sort_by_producer_placeholder: "Producer"
         social:
-          twitter_placeholder: "eg. @ikatrans1"
-          instagram_placeholder: "eg. ikatrans1"
+          twitter_placeholder: "eg. @the_prof"
+          instagram_placeholder: "eg. the_prof"
           facebook_placeholder: "eg. www.facebook.com/PageNameHere"
           linkedin_placeholder: "eg. www.linkedin.com/in/YourNameHere"
         stripe_connect:
@@ -773,7 +893,7 @@ en_LB:
           owner_tip: The primary user responsible for this enterprise.
           notifications: Notifications
           notifications_tip: Notifications about orders will be send to this email address.
-          notifications_placeholder: eg. jamal.sia@ikatrans.com
+          notifications_placeholder: eg. Justin@truffles.com
           notifications_note: 'Note: A new email address may need to be confirmed prior to use'
           managers: Managers
           managers_tip: The other users with permission to manage this enterprise.
@@ -801,7 +921,7 @@ en_LB:
       change_type_form:
         producer_profile: Producer Profile
         connect_ofn: Connect through OFN
-        always_free: See about section
+        always_free: ALWAYS FREE
         producer_description_text: Add your products to Maho Food, allowing hubs to stock your products in their stores.
         producer_shop: Producer Shop
         sell_your_produce: Sell your own produce
@@ -838,14 +958,6 @@ en_LB:
       new:
         title: New Enterprise
         back_link: Back to enterprises list
-      remove_logo:
-        remove: "Remove Image"
-        removed_successfully: "Logo removed successfully"
-        immediate_removal_warning: "The logo will be removed immediately after you confirm."
-      remove_promo_image:
-        remove: "Remove Image"
-        removed_successfully: "Promo image removed successfully"
-        immediate_removal_warning: "The promo image will be removed immediately after you confirm."
       welcome:
         welcome_title: Welcome to the Maho Food!
         welcome_text: You have successfully created a
@@ -865,7 +977,6 @@ en_LB:
         cancel: "Cancel"
         back_to_list: "Back To List"
       edit:
-        advanced_settings: "Advanced Settings"
         save: "Save"
         save_and_next: "Save and Next"
         next: "Next"
@@ -918,6 +1029,8 @@ en_LB:
         preferred_product_selection_from_coordinator_inventory_only_here: Coordinator's Inventory Only
         preferred_product_selection_from_coordinator_inventory_only_all: All Available Products
         save_reload: Save and Reload Page
+      order_cycle_top_buttons:
+        advanced_settings: "Advanced Settings"
       coordinator_fees:
         add: Add coordinator fee
       filters:
@@ -941,6 +1054,7 @@ en_LB:
         schedule: Schedule
         schedules: Schedules
         new_schedule: New Schedule
+        new_schedule_tooltip: The frequency with which a subscription order is placed
       name_and_timing_form:
         name: Name
         orders_open: Orders open at
@@ -1033,15 +1147,45 @@ en_LB:
       xero_invoices:
         name: Xero Invoices
         description: Invoices for import into Xero
-      packing:
-        name: Packing Reports
       enterprise_fee_summary:
         name: "Enterprise Fee Summary"
         description: "Summary of Enterprise Fees collected"
+      errors:
+        no_report_type: "Please specify a report type"
+        report_not_found: "Report not found"
+        missing_ransack_params: "Please supply Ransack search params in the request"
+      hidden_field: "< Hidden >"
+      summary_row:
+        total: "TOTAL"
+      table:
+        select_and_search: "Select filters and click on %{option} to access your data."
+        headings:
+          hub: "Hub"
+          customer_code: "Code"
+          first_name: "First Name"
+          last_name: "Last Name"
+          supplier: "Supplier"
+          product: "Product"
+          variant: "Variant"
+          quantity: "Quantity"
+          is_temperature_controlled: "TempControlled?"
+          temp_controlled: "TempControlled?"
+      rendering_options:
+        generate_report: "Generate report:"
+        on_screen: "On screen"
+        csv_spreadsheet: "CSV Spreadsheet"
+        excel_spreadsheet: "Excel Spreadsheet"
+        openoffice_spreadsheet: "OpenOffice Spreadsheet"
+        hide_summary_rows: "Hide summary Rows"
+      packing:
+        name: "Packing Reports"
+        customer_report: "Pack By Customer"
+        supplier_report: "Pack By Supplier"
     subscriptions:
       index:
         title: "Subscriptions"
         new: "New Subscription"
+      issue: "Issue"
       new:
         title: "New Subscription"
       edit:
@@ -1100,7 +1244,7 @@ en_LB:
         details: Details
         address: Address
         products: Products
-        no_open_or_upcoming_order_cycle: "No Upcoming Order Cycle"
+        no_open_or_upcoming_order_cycle: "No Upcoming Order Cycles"
       products_panel:
         save: "SAVE"
         saving: "SAVING"
@@ -1123,6 +1267,7 @@ en_LB:
       yes_cancel_them: Cancel them
       no_keep_them: Keep them
       yes_i_am_sure: Yes, I'm sure
+      number: "Number"
       order_update_issues_msg: Some orders could not be automatically updated, this is most likely because they have been manually edited. Please review the issues listed below and make any adjustments to individual orders if required.
       no_results:
         no_subscriptions: No subscriptions yet...
@@ -1143,19 +1288,34 @@ en_LB:
       destroy_attachment_does_not_exist: "Logo does not exist"
     enterprise_promo_image:
       destroy_attachment_does_not_exist: "Promo image does not exist"
+    enterprise_terms_and_conditions:
+      destroy_attachment_does_not_exist: "Terms and Conditions file does not exist"
     orders:
       failed_to_update: "Failed to update order"
   checkout:
     already_ordered:
       cart: "cart"
       message_html: "You have an order for this order cycle already. Check the %{cart} to see the items you ordered before. You can also cancel items as long as the order cycle is open."
+    terms_and_conditions:
+      message_html: "I agree to the seller's %{terms_and_conditions_link}."
+      link_text: "Terms and Conditions"
+    platform_terms_of_service:
+      message_html: "I agree to the platform %{tos_link}."
+    all_terms_and_conditions:
+      message_html: "I agree to the seller's %{terms_and_conditions_link} and the platform %{tos_link}."
+      terms_and_conditions: "Terms and Conditions"
     failed: "The checkout failed. Please let us know so that we can process your order."
+    payment_cancelled_due_to_stock: "Payment cancelled: the checkout could not be completed due to stock issues."
   shops:
     hubs:
       show_closed_shops: "Show closed shops"
       hide_closed_shops: "Hide closed shops"
       show_on_map: "Show all on the map"
   shared:
+    mailers:
+      powered_by:
+        open_food_network: "Maho Food"
+        powered_html: "Your shopping experience is powered by the %{open_food_network}."
     menu:
       cart:
         cart: "Cart"
@@ -1163,16 +1323,16 @@ en_LB:
         checkout: "Checkout"
         edit_cart: "Edit cart"
         items_in_cart_singular: "%{num} item in your cart"
-        items_in_cart_plural: "%{num} item in your cart"
+        items_in_cart_plural: "%{num} items in your cart"
         close: "Close"
         cart_empty: "Your cart is empty"
-        take_me_shopping: "Take me shopping!"
+        take_me_shopping: "Let's go shopping!"
       signed_in:
         profile: "Profile"
       mobile_menu:
         cart: "Cart"
     register_call:
-      selling_on_ofn: "Interested in getting on the Maho Food?"
+      selling_on_ofn: "Interested in selling through the Maho Food?"
       register: "Register here"
     footer:
       footer_secure: "Secure and trusted."
@@ -1184,9 +1344,8 @@ en_LB:
       footer_join_body: "Create a listing, shop or group directory on the Maho Food."
       footer_join_cta: "Tell me more!"
       footer_legal_call: "Read our"
-      footer_legal_tos: "Terms and conditions"
       footer_legal_visit: "Find us on"
-      footer_legal_text_html: "Maho Food is an open source software platform. Our content is licensed with %{content_license} and our code with %{code_license}."
+      footer_legal_text_html: "Maho Food based on a free and open source software platform Open Food Network. Our content is licensed with %{content_license} and our code with %{code_license}."
       footer_data_text_with_privacy_policy_html: "We take good care of your data. See our %{privacy_policy} and %{cookies_policy}"
       footer_data_text_without_privacy_policy_html: "We take good care of your data. See our %{cookies_policy}"
       footer_data_privacy_policy: "privacy policy"
@@ -1199,15 +1358,18 @@ en_LB:
         contact: "contact"
         require_customer_login: "Only approved customers can access this shop."
         require_login_html: "If you're already an approved customer, %{login} or %{signup} to proceed."
-        require_login_2_html: "Want to start shopping here? Please %{contact} and %{enterprise} ask about joining."
+        require_login_2_html: "Want to start shopping here? Please %{contact} %{enterprise} and ask about joining."
         require_customer_html: "If you'd like to start shopping here, please %{contact} %{enterprise} to ask about joining."
       select_oc:
-        select_oc_html: "Please <span class='highlighted'>choose an option</span>, to see what products are available."
+        select_oc_html: "Please <span class='highlighted'>choose when you want your order</span>, to see what products are available."
+    products:
+      summary:
+        bulk: "Bulk"
   card_could_not_be_updated: Card could not be updated
   card_could_not_be_saved: card could not be saved
   spree_gateway_error_flash_for_checkout: "There was a problem with your payment information: %{error}"
   invoice_billing_address: "Billing address:"
-  invoice_column_tax: "GST"
+  invoice_column_tax: "Sales Tax"
   invoice_column_price: "Price"
   invoice_column_item: "Item"
   invoice_column_qty: "Qty"
@@ -1216,13 +1378,13 @@ en_LB:
   invoice_column_price_with_taxes: "Total price (Incl. tax)"
   invoice_column_price_without_taxes: "Total price (Excl. tax)"
   invoice_column_tax_rate: "Tax rate"
-  invoice_tax_total: "GST Total:"
-  tax_invoice: "TAX INVOICE"
+  invoice_tax_total: "Tax total:"
+  tax_invoice: "INVOICE"
   tax_total: "Total tax (%{rate}):"
   total_excl_tax: "Total (Excl. tax):"
   total_incl_tax: "Total (Incl. tax):"
-  abn: "ABN:"
-  acn: "ACN:"
+  abn: "Tax ID, DUNS Number, or other business ID"
+  acn: "Legal Business Name"
   invoice_issued_on: "Invoice issued on:"
   order_number: "Invoice number:"
   date_of_transaction: "Date of transaction:"
@@ -1230,7 +1392,7 @@ en_LB:
   ticket_column_item: "Item"
   ticket_column_unit_price: "Unit Price"
   ticket_column_total_price: "Total Price"
-  menu_1_title: "Shops"
+  menu_1_title: "Stores"
   menu_1_url: "/shops"
   menu_2_title: "Map"
   menu_2_url: "/map"
@@ -1239,11 +1401,11 @@ en_LB:
   menu_4_title: "Groups"
   menu_4_url: "/groups"
   menu_5_title: "About"
-  menu_5_url: "https://www.ikatrans.com/"
-  menu_6_title: "Connect"
-  menu_6_url: "https://www.ikatrans.com/blog/"
-  menu_7_title: "Learn"
-  menu_7_url: "https://www.ikatrans.com/support/"
+  menu_5_url: "https://about.www.ikatrans.com/"
+  menu_6_title: "Donate"
+  menu_6_url: "https://donate.www.ikatrans.com"
+  menu_7_title: "Help"
+  menu_7_url: "https://help.www.ikatrans.com/"
   logo: "Logo (640x130)"
   logo_mobile: "Mobile logo (75x26)"
   logo_mobile_svg: "Mobile logo (SVG)"
@@ -1261,19 +1423,25 @@ en_LB:
   footer_about_url: "About URL"
   user_guide_link: "User Guide Link"
   name: Name
-  first_name: First Name
-  last_name: Last Name
+  first_name: First name
+  last_name: Last name
   email: Email
   phone: Phone
   next: Next
   address: Address
-  address_placeholder: eg. 123 Broad Street
+  address_placeholder: eg. 123 High Street
   address2: Address (contd.)
   city: City
-  city_placeholder: eg. Monrovia
-  postcode: Postcode
-  postcode_placeholder: eg. 3070
-  suburb: Suburb
+  city_placeholder: City or Town
+  latitude: Latitude
+  latitude_placeholder: eg. -37.4713077
+  latitude_longitude_tip: Latitude and longitude are needed to display your enterprise on the map.
+  longitude: Longitude
+  longitude_placeholder: eg. 144.7851531
+  use_geocoder: Calculate latitude and longitude automatically from address?
+  postcode: Zip Code
+  postcode_placeholder: eg. 24091
+  suburb: City
   state: State
   country: Country
   unauthorized: Unauthorized
@@ -1288,14 +1456,12 @@ en_LB:
   days: days
   authorization_failure: "Authorization Failure"
   label_shop: "Shop"
-  label_shops: "Shops"
+  label_shops: "Stores"
   label_map: "Map"
   label_producer: "Producer"
   label_producers: "Producers"
   label_groups: "Groups"
   label_about: "About"
-  label_connect: "Connect"
-  label_learn: "Learn"
   label_blog: "Blog"
   label_support: "Support"
   label_shopping: "Shopping"
@@ -1316,9 +1482,9 @@ en_LB:
   cart_edit: "Edit your cart"
   item: "Item"
   qty: "Qty"
-  card_number: Card Number
-  card_securitycode: "Security Code"
-  card_expiry_date: Expiry Date
+  card_number: Card number
+  card_securitycode: "Security code"
+  card_expiry_date: Expiry date
   card_masked_digit: "X"
   card_expiry_abbreviation: "Exp"
   new_credit_card: "New credit card"
@@ -1354,8 +1520,8 @@ en_LB:
       cookie_openstreemap_desc: "Used by our friendly open source mapping provider (OpenStreetMap) to ensure that it does not receive too many requests during a given time period, to prevent abuse of their services."
       cookie_stripe_desc: "Data collected by our payment processor Stripe for fraud detection https://stripe.com/cookies-policy/legal. Not all shops use Stripe as a payment method but it is a good practice to prevent fraud to apply it to all pages. Stripe probably build a picture of which of our pages usually interact with their API and then flag anything unusual. So setting the Stripe cookie has a broader function than simply the provision of a payment method to a user. Removing it could affect the security of the service itself. You can learn more about Stripe and read its privacy policy at https://stripe.com/privacy."
       statistics_cookies: "Statistics Cookies"
-      statistics_cookies_desc: "The following are not strictly necessary, but help to provide you with the best user experience by allowing us to analyse user behaviour, identify which features you use most, or don’t use, understand user experience issues, etc."
-      statistics_cookies_matomo_desc_html: "To collect and analyse platform usage data, we use <a href='https://matomo.org/' target='_blank'>Matomo</a> (ex Piwik), an open source analytics tool that is GDPR compliant and protects your privacy."
+      statistics_cookies_desc: "The following are not strictly necessary, but help to provide you with the best user experience by allowing us to analyse user behavior, identify which features you use most, or don’t use, understand user experience issues, etc."
+      statistics_cookies_matomo_desc_html: "To collect and analyze platform usage data, we use <a href='https://matomo.org/' target='_blank'>Matomo</a> (ex Piwik), an open source analytics tool that is GDPR compliant and protects your privacy."
       statistics_cookies_matomo_optout: "Do you want to opt-out of Matomo analytics? We don’t collect any personal data, and Matomo helps us to improve our service, but we respect your choice :-)"
       cookie_matomo_basics_desc: "Matomo first party cookies to collect statistics."
       cookie_matomo_heatmap_desc: "Matomo Heatmap & Session Recording cookie."
@@ -1366,7 +1532,7 @@ en_LB:
       disabling_cookies_chrome_link: "https://support.google.com/chrome/answer/95647"
       disabling_cookies_ie_link: "https://support.microsoft.com/en-us/help/17442/windows-internet-explorer-delete-manage-cookies"
       disabling_cookies_safari_link: "https://www.apple.com/legal/privacy/en-ww/cookies/"
-      disabling_cookies_note: "But be aware that if you delete or modify the essential cookies used by Maho Food, the website won’t work, you will not be able to add anything to your cart neither to checkout for instance."
+      disabling_cookies_note: "But be aware that if you delete or modify the essential cookies used by Maho Food, the website won’t work, you will not be able to add anything to your cart or to check out, for instance."
     cookies_banner:
       cookies_usage: "This site uses cookies in order to make your navigation frictionless and secure, and to help us understand how you use it in order to improve the features we offer."
       cookies_definition: "Cookies are very small text files that are stored on your computer when you visit some websites."
@@ -1383,13 +1549,9 @@ en_LB:
   brandstory_part4: "It works everywhere. It changes everything."
   brandstory_part5_strong: "We call it Maho Food."
   brandstory_part6: "We all love food. Now we can love our food system too."
-  learn_body: "Explore models, stories and resources to support you to develop your fair food business or organisation.  Find training, events and other opportunities to learn from peers."
-  learn_cta: "Get Inspired"
-  connect_body: "Search our full directories of producers, hubs and groups to find fair food traders near you.  List your business or organisation on the OFN so buyers can find you.  Join the community to get advice and solve problems together."
-  connect_cta: "Go Exploring"
   system_headline: "Shopping - here's how it works."
   system_step1: "1. Search"
-  system_step1_text: "Search our diverse, independent shops for seasonal local food. Search by neighbourhood and food category, or whether you prefer delivery or pickup."
+  system_step1_text: "Search our diverse, independent shops for seasonal local food. Search by neighborhood and food category, or whether you prefer delivery or pickup."
   system_step2: "2. Shop"
   system_step2_text: "Transform your transactions with affordable local food from diverse producers and hubs. Know the stories behind your food and the people who make it!"
   system_step3: "3. Pick-up / Delivery"
@@ -1413,7 +1575,7 @@ en_LB:
   checkout_default_bill_address: "Save as default billing address"
   checkout_shipping: Shipping info
   checkout_default_ship_address: "Save as default shipping address"
-  checkout_method_free: Voluntary contribution
+  checkout_method_free: Free
   checkout_address_same: Shipping address same as billing address?
   checkout_ready_for: "Ready for:"
   checkout_instructions: "Any comments or special instructions?"
@@ -1423,8 +1585,92 @@ en_LB:
   checkout_cart_total: Cart total
   checkout_shipping_price: Shipping
   checkout_total_price: Total
-  checkout_back_to_cart: "Back to Cart"
+  checkout_back_to_cart: "Back to cart"
   cost_currency: "Cost Currency"
+  split_checkout:
+    your_details_without_number: Your details
+    payment_method_without_number: Payment method
+    order_summary_without_number: Order summary
+    step1:
+      your_details:
+        title: Your details
+        first_name:
+          label: First Name
+          placeholder: e.g. Jane
+        last_name:
+          label: Last Name
+          placeholder: e.g. Doe
+        email:
+          label: Email
+          placeholder: e.g. Janedoe@email.com
+        phone:
+          label: Phone number
+          placeholder: e.g. 07987654321
+      billing_address:
+        title: Billing address
+      address:
+        address1:
+          label: Address (Street + House Number)
+          placeholder: e.g. Flat 1 Elm apartments
+        address2:
+          label: Additional address info (optional)
+          placeholder: e.g. Cavalier avenue
+        city:
+          label: City
+          placeholder: e.g. Cleveland
+        state_id:
+          label: State
+        zipcode:
+          label: Zipcode
+          placeholder: e.g. 92202
+        country_id:
+          label: Country
+      delivery_address:
+        title: Delivery address
+      submit: Next - Payment method
+      cancel: Back to Edit basket
+    step2:
+      payment_method:
+        title: Payment method
+      form:
+        card_number:
+          label: Card number
+        card_month:
+          label: Month
+        card_year:
+          label: Year
+      explaination: You can review and confirm your order in the next step which includes the final costs.
+      submit: Next - Order summary
+      cancel: Back to your details
+    step3:
+      your_details:
+        title: Your details
+        edit: Edit your details
+      billing_address:
+        title: Billing address
+      shipping_address:
+        title: Shipping address
+      delivery_info:
+        title: Delivery info
+      payment_method:
+        title: Payment method
+        edit: Edit payment method
+      order:
+        title: Order total
+      terms_and_conditions:
+        message_html: "I agree to the seller's %{terms_and_conditions_link}."
+        link_text: "Terms and Conditions"
+      agree: By clicking 'Complete order' you agree to your order being processed.
+      submit: Complete order
+      cancel: Back to Payment method
+    errors:
+      global: "Saving failed, please update the highlighted fields."
+      terms_not_accepted: Please accept Terms and Conditions
+      required: Field cannot be blank
+      invalid_number: "Please enter a valid phone number"
+      invalid_email: "Please enter a valid email address"
+      select_a_shipping_method: Select a shipping method
+      select_a_payment_method: Select a payment method
   order_paid: PAID
   order_not_paid: NOT PAID
   order_total: Total order
@@ -1435,12 +1681,12 @@ en_LB:
   order_delivery_time: Delivery time
   order_special_instructions: "Your notes:"
   order_pickup_time: Ready for collection
-  order_pickup_instructions: Collection Instructions
+  order_pickup_instructions: Collection instructions
   order_produce: Produce
   order_total_price: Total
   order_includes_tax: (includes tax)
   order_payment_paypal_successful: Your payment via PayPal has been processed successfully.
-  order_hub_info: Hub Info
+  order_hub_info: Hub info
   order_back_to_store: Back To Store
   order_back_to_cart: Back To Cart
   bom_tip: "Use this page to alter product quantities across multiple orders. Products may also be removed from orders entirely, if required."
@@ -1468,7 +1714,7 @@ en_LB:
   email_confirm_customer_details_html: "Here are your order details from <strong>%{distributor}</strong>:"
   email_confirm_customer_signoff: "Kind regards,"
   email_confirm_shop_greeting: "Hi %{name},"
-  email_confirm_shop_order_html: "Well done! You have a new order for <strong>%{distributor}</strong>!"
+  email_confirm_shop_order_html: "Woo hoo! You have a new order for <strong>%{distributor}</strong>!"
   email_confirm_shop_number_html: "Order confirmation <strong>#%{number}</strong>"
   email_order_summary_item: "Item"
   email_order_summary_quantity: "Qty"
@@ -1479,6 +1725,7 @@ en_LB:
   email_order_summary_includes_tax: "(includes tax):"
   email_payment_paid: PAID
   email_payment_not_paid: NOT PAID
+  email_payment_description: Payment Description at Checkout
   email_payment_summary: Payment summary
   email_payment_method: "Paying via:"
   email_so_placement_intro_html: "You have a new order with <strong>%{distributor}</strong>"
@@ -1519,10 +1766,11 @@ en_LB:
     set_a_password: "You will then be prompted to set a password before you are able to administer the enterprise."
     mistakenly_sent: "Not sure why you have received this email? Please contact %{owner_email} for more information."
   producer_mail_greeting: "Dear"
-  producer_mail_text_before: "We now have all the consumer orders for the next food drop."
+  producer_mail_text_before: "Please find an update below about the order cycle ready for:"
   producer_mail_order_text: "Here is a summary of the orders for your products:"
   producer_mail_delivery_instructions: "Stock pickup/delivery instructions:"
   producer_mail_signoff: "Thanks and best wishes"
+  producer_mail_order_customer_text: "Here is a summary of the orders grouped by customers"
   shopping_oc_closed: Orders are closed
   shopping_oc_closed_description: "Please wait until the next cycle opens (or contact us directly to see if we can accept any late orders)"
   shopping_oc_last_closed: "The last cycle closed %{distance_of_time} ago"
@@ -1531,17 +1779,21 @@ en_LB:
   shopping_tabs_home: "Home"
   shopping_tabs_shop: "Shop"
   shopping_tabs_about: "About"
+  shopping_tabs_producers: "Producers"
   shopping_tabs_contact: "Contact"
+  shopping_tabs_groups: "Groups"
   shopping_contact_address: "Address"
   shopping_contact_web: "Contact"
   shopping_contact_social: "Follow"
   shopping_groups_part_of: "is part of:"
   shopping_producers_of_hub: "%{hub}'s producers:"
   enterprises_next_closing: "Next order closing"
+  enterprises_currently_open: "Orders are currently open"
   enterprises_ready_for: "Ready for"
-  enterprises_choose: "Choose an option:"
+  enterprises_choose: "Choose when you want your order:"
   maps_open: "Open"
   maps_closed: "Closed"
+  map_title: "Map"
   hubs_buy: "Shop for:"
   hubs_shopping_here: "Shopping here"
   hubs_orders_closed: "Orders closed"
@@ -1560,6 +1812,8 @@ en_LB:
   hubs_distance_filter: "Show me shops near %{location}"
   shop_changeable_orders_alert_html:
     one: Your order with <a href='%{path}' target='_blank'>%{shop} / %{order}</a> is open for review. You can make changes until %{oc_close}.
+    few: You have <a href='%{path}' target='_blank'>%{count} orders with %{shop}</a> currently open for review. You can make changes until %{oc_close}.
+    many: You have <a href='%{path}' target='_blank'>%{count} orders with %{shop}</a> currently open for review. You can make changes until %{oc_close}.
     other: You have <a href='%{path}' target='_blank'>%{count} orders with %{shop}</a> currently open for review. You can make changes until %{oc_close}.
   orders_changeable_orders_alert_html: This order has been confirmed, but you can make changes until <strong>%{oc_close}</strong>.
   products_clear: Clear
@@ -1661,13 +1915,13 @@ en_LB:
   sell_hubs: "Hubs"
   sell_groups: "Groups"
   sell_producers_detail: "Set up a profile for your business on the OFN in just minutes.  At any time you can upgrade your profile to an online store and sell your products direct to customers."
-  sell_hubs_detail: "Set up a profile for your food enterprise or organisation on the OFN. At any time you can upgrade your profile to a multi-producer shop."
+  sell_hubs_detail: "Set up a profile for your food enterprise or organization on the OFN. At any time you can upgrade your profile to a multi-producer shop."
   sell_groups_detail: "Set up a tailored directory of enterprises (producers and other food enterprises) for your region or for your organisation."
   sell_user_guide: "Find out more in our user guide."
-  sell_listing_price: "Listing on the OFN is free. Opening and running a shop on OFN is based on a voluntary contribution. You pay as much as you can or want. If you sell large volume you can choose your community contribution between 1% and 2% of sales. For more detail on pricing visit the Software Platform section via the About link in the top menu."
-  sell_embed: "We can also embed an OFN shop in your own customised website or build a customised local food network website for your region."
+  sell_listing_price: "Listing on the OFN is free. When you start selling your products, we invite you to contribute to platform upkeep. For more detail on pricing visit the Software Platform section via the About link in the top menu."
+  sell_embed: "We can also embed an OFN shop in your personal website or build a customized local food network website for your region."
   sell_ask_services: "Ask us about OFN services."
-  shops_title: Shops
+  shops_title: Stores
   shops_headline: Shopping, transformed.
   shops_text: Food grows in cycles, farmers harvest in cycles, and we order food in cycles. If you find an order cycle closed, check back soon.
   shops_signup_title: Sign up as a hub
@@ -1679,37 +1933,40 @@ en_LB:
   shops_signup_help: We're ready to help.
   shops_signup_help_text: You need a better return. You need new buyers and logistics partners. You need your story told across wholesale, retail, and the kitchen table.
   shops_signup_detail: Here's the detail.
-  orders: Orders
-  orders_fees: Fees...
-  orders_edit_title: Shopping Cart
-  orders_edit_headline: Your shopping cart
-  orders_edit_time: Order ready for
-  orders_edit_continue: Continue shopping
-  orders_edit_checkout: Checkout
+  orders: "Orders"
+  orders_fees: "Fees..."
+  orders_edit_title: "Shopping cart"
+  orders_edit_headline: "Your shopping cart"
+  orders_edit_time: "Order ready for"
+  orders_edit_continue: "Continue shopping"
+  orders_edit_checkout: "Checkout"
   orders_form_empty_cart: "Empty cart"
-  orders_form_subtotal: Produce subtotal
-  orders_form_admin: Admin & Handling
-  orders_form_total: Total
-  orders_oc_expired_headline: Orders have closed for this order cycle
+  orders_form_update_cart: "Update"
+  orders_form_subtotal: "Produce subtotal"
+  orders_form_admin: "Admin & Handling"
+  orders_form_total: "Total"
+  orders_oc_expired_headline: "Orders have closed for this order cycle"
   orders_oc_expired_text: "Sorry, orders for this order cycle closed %{time} ago! Please contact your hub directly to see if they can accept late orders."
   orders_oc_expired_text_others_html: "Sorry, orders for this order cycle closed %{time} ago! Please contact your hub directly to see if they can accept late orders <strong>%{link}</strong>."
   orders_oc_expired_text_link: "or see the other order cycles available at this hub"
   orders_oc_expired_email: "Email:"
   orders_oc_expired_phone: "Phone:"
-  orders_show_title: Order Confirmation
-  orders_show_time: Order ready on
+  orders_show_title: "Order Confirmation"
+  orders_show_time: "Order ready on"
   orders_show_order_number: "Order #%{number}"
-  orders_show_cancelled: Cancelled
-  orders_show_confirmed: Confirmed
+  orders_show_cancelled: "Cancelled"
+  orders_show_confirmed: "Confirmed"
   orders_your_order_has_been_cancelled: "Your order has been cancelled"
   orders_could_not_cancel: "Sorry, the order could not be cancelled"
   orders_cannot_remove_the_final_item: "Cannot remove the final item from an order, please cancel the order instead."
   orders_bought_items_notice:
     one: "An additional item is already confirmed for this order cycle"
+    few: "%{count} additional items already confirmed for this order cycle"
+    many: "%{count} additional items already confirmed for this order cycle"
     other: "%{count} additional items already confirmed for this order cycle"
-  orders_bought_edit_button: Edit confirmed items
+  orders_bought_edit_button: "Edit confirmed items"
   orders_bought_already_confirmed: "* already confirmed"
-  orders_confirm_cancel: Are you sure you want to cancel this order?
+  orders_confirm_cancel: "Are you sure you want to cancel this order?"
   order_processed_successfully: "Your order has been processed successfully"
   products_cart_distributor_choice: "Distributor for your order:"
   products_cart_distributor_change: "Your distributor for this order will be changed to %{name} if you add this product to your cart."
@@ -1745,7 +2002,7 @@ en_LB:
   confirm_oc_change: "Are you sure? This will change your selected order cycle and remove any items in your shopping cart."
   location_placeholder: "Type in a location..."
   error_required: "can't be blank"
-  error_number: "must be number"
+  error_number: "must be a number"
   error_email: "must be email address"
   error_not_found_in_database: "%{name} not found in database"
   error_not_primary_producer: "%{name} is not enabled as a producer"
@@ -1771,7 +2028,7 @@ en_LB:
   choose_password: "Choose a password"
   confirm_password: "Confirm password"
   action_signup: "Sign up now"
-  forgot_password: "Forgot Password?"
+  forgot_password: "Forgot password?"
   password_reset_sent: "An email with instructions on resetting your password has been sent!"
   reset_password: "Reset password"
   update_and_recalculate_fees: "Update And Recalculate Fees"
@@ -1782,39 +2039,44 @@ en_LB:
         registration_intro: "You can now create a profile for your Producer or Hub"
         registration_checklist: "What do I need?"
         registration_time: "5-10 minutes"
-        registration_enterprise_address: "Enterprise address"
+        registration_enterprise_address: "Address"
         registration_contact_details: "Primary contact details"
         registration_logo: "Your logo image"
         registration_promo_image: "Landscape image for your profile"
         registration_about_us: "'About Us' text"
         registration_outcome_headline: "What do I get?"
         registration_outcome1_html: "Your profile helps people <strong>find</strong> and <strong>contact</strong> you on the Maho Food."
-        registration_outcome2: "Use this space to tell the story of your enterprise, to help drive connections to your social and online presence."
+        registration_outcome2: "Use this space to tell the story of your enterprise and to help drive connections to your social and online presence."
         registration_outcome3: "It's also the first step towards trading on the Maho Food, or opening an online store."
         registration_action: "Let's get started!"
       details:
         title: "Details"
         headline: "Let's Get Started"
-        enterprise: "Woot! First need to know a little bit about your enterprise:"
-        producer: "Woot! First we need to know a little bit about your farm:"
+        enterprise: "Hooray! First we need to know a little bit about your enterprise:"
+        producer: "Oh Yeah! First we need to know a little bit about your farm:"
         enterprise_name_field: "Enterprise Name:"
         producer_name_field: "Farm Name:"
-        producer_name_field_placeholder: "e.g. Charlie's Nimba Farm"
+        producer_name_field_placeholder: "e.g. Charlie's Awesome Farm"
         producer_name_field_error: "Please choose a unique name for your enterprise"
         address1_field: "Address line 1:"
-        address1_field_placeholder: "e.g. 123 Somalia Drive"
+        address1_field_placeholder: "e.g. 123 Cranberry Drive"
         address1_field_error: "Please enter an address"
         address2_field: "Address line 2:"
-        suburb_field: "Suburb:"
-        suburb_field_placeholder: "e.g. Monrovia"
-        suburb_field_error: "Please enter a suburb"
-        postcode_field: "Postcode:"
-        postcode_field_placeholder: "e.g. 3070"
-        postcode_field_error: "Postcode required"
+        suburb_field: "City:"
+        suburb_field_placeholder: "City or Town"
+        suburb_field_error: "Please enter a city"
+        postcode_field: "Zip code:"
+        postcode_field_placeholder: "e.g. 24908"
+        postcode_field_error: "Zip code required"
         state_field: "State:"
         state_field_error: "State required"
         country_field: "Country:"
         country_field_error: "Please select a country"
+        map_location: "Map Location"
+        locate_address: "Locate address on map"
+        drag_pin: "Drag and drop the pin to the correct location if not accurate."
+        confirm_address: "I confirm that the indicated position of the enterprise on the map is correct."
+        drag_map_marker: "Due to many producers operating in rural areas, the accuracy of maps is always being improved on. Help us to understand where you’re located better by interacting with the map above to move the pin by clicking or tapping to hold the pin and then dragging to the location that is more accurate based on your knowledge."
       contact:
         title: "Contact"
         who_is_managing_enterprise: "Who is responsible for managing %{enterprise}?"
@@ -1822,7 +2084,7 @@ en_LB:
         contact_field_placeholder: "Contact Name"
         contact_field_required: "You need to enter a primary contact."
         phone_field: "Phone number"
-        phone_field_placeholder: "eg. (03) 1234 5678"
+        phone_field_placeholder: "eg. (123)456-7891"
       type:
         title: "Type"
         headline: "Last step to add %{enterprise}!"
@@ -1830,9 +2092,9 @@ en_LB:
         yes_producer: "Yes, I'm a producer"
         no_producer: "No, I'm not a producer"
         producer_field_error: "Please choose one. Are you are producer?"
-        yes_producer_help: "Producers make yummy things to eat and/or drink. You're a producer if you grow it, raise it, brew it, bake it, ferment it, milk it or mould it."
+        yes_producer_help: "Producers make yummy things to eat and/or drink. You're a producer if you grow it, raise it, brew it, bake it, ferment it, milk it or mold it."
         no_producer_help: "If you’re not a producer, you’re probably someone who sells and distributes food. You might be a hub, coop, buying group, retailer, wholesaler or other."
-        create_profile: "Create Profile"
+        create_profile: "Create profile"
       about:
         title: "About"
         headline: "Nice one!"
@@ -1844,10 +2106,10 @@ en_LB:
         enterprise_long_desc: "Long Description"
         enterprise_long_desc_placeholder: "This is your opportunity to tell the story of your enterprise - what makes you different and wonderful? We'd suggest keeping your description to under 600 characters or 150 words."
         enterprise_long_desc_length: "%{num} characters / up to 600 recommended"
-        enterprise_abn: "ABN"
-        enterprise_abn_placeholder: "eg. 99 123 456 789"
-        enterprise_acn: "ACN"
-        enterprise_acn_placeholder: "eg. 123 456 789"
+        enterprise_abn: "Tax ID, DUNS Number, or other business ID"
+        enterprise_abn_placeholder: "eg. 123456789"
+        enterprise_acn: "Legal Business Name"
+        enterprise_acn_placeholder: "eg. Justins Produce LLC"
         enterprise_tax_required: "You need to make a selection."
       images:
         title: "Images"
@@ -1857,19 +2119,19 @@ en_LB:
         continue: "Continue"
         back: "Back"
       logo:
-        select_logo: "Step 1. Select Logo Image"
+        select_logo: "Step 1. Select logo image"
         logo_tip: "Tip: Square images will work best, preferably at least 300×300px"
         logo_label: "Choose a logo image"
         logo_drag: "Drag and drop your logo here"
-        review_logo: "Step 2. Review Your Logo"
-        review_logo_tip: "Tip: for best results, your logo should fill the available space"
+        review_logo: "Step 2. Review your logo"
+        review_logo_tip: "Tip: for the best look, your logo should fill the available space"
         logo_placeholder: "Your logo will appear here for review once uploaded"
       promo:
-        select_promo_image: "Step 3. Select Promo Image"
+        select_promo_image: "Step 3. Select promo image"
         promo_image_tip: "Tip: Shown as a banner, preferred size is 1200×260px"
         promo_image_label: "Choose a promo image"
         promo_image_drag: "Drag and drop your promo here"
-        review_promo_image: "Step 4. Review Your Promo Banner"
+        review_promo_image: "Step 4. Review your promo banner"
         review_promo_image_tip: "Tip: for best results, your promo image should fill the available space"
         promo_image_placeholder: "Your logo will appear here for review once uploaded"
       social:
@@ -1910,7 +2172,6 @@ en_LB:
   shop_for_products_html: "Shop for <span class=\"turquoise\">%{enterprise}</span> products at:"
   change_shop: "Change shop to:"
   shop_at: "Shop now at:"
-  price_breakdown: "Full price breakdown"
   admin_fee: "Admin fee"
   sales_fee: "Sales fee"
   packing_fee: "Packing fee"
@@ -1918,6 +2179,8 @@ en_LB:
   fundraising_fee: "Fundraising fee"
   price_graph: "Price graph"
   included_tax: "Included tax"
+  tax: "Tax"
+  tax_amount_included: "%{amount} (included)"
   balance: "Balance"
   transaction: "Transaction"
   transaction_date: "Date"
@@ -1946,23 +2209,23 @@ en_LB:
   admin_enterprise_groups: "Enterprise Groups"
   admin_enterprise_groups_name: "Name"
   admin_enterprise_groups_owner: "Owner"
-  admin_enterprise_groups_on_front_page: "On front page ?"
+  admin_enterprise_groups_on_front_page: "On front page?"
   admin_enterprise_groups_enterprise: "Enterprises"
   admin_enterprise_groups_data_powertip: "The primary user responsible for this group."
   admin_enterprise_groups_data_powertip_logo: "This is the logo for the group"
   admin_enterprise_groups_data_powertip_promo_image: "This image is displayed at the top of the Group profile"
   admin_enterprise_groups_contact: "Contact"
-  admin_enterprise_groups_contact_phone_placeholder: "eg. 98 7654 3210"
-  admin_enterprise_groups_contact_address1_placeholder: "eg. 123 Broad Street"
-  admin_enterprise_groups_contact_city: "Suburb"
-  admin_enterprise_groups_contact_city_placeholder: "eg. Monrovia"
-  admin_enterprise_groups_contact_zipcode: "Postcode"
-  admin_enterprise_groups_contact_zipcode_placeholder: "eg. 3070"
+  admin_enterprise_groups_contact_phone_placeholder: "eg. (123)435-7891"
+  admin_enterprise_groups_contact_address1_placeholder: "eg. 123 High Street"
+  admin_enterprise_groups_contact_city: "City"
+  admin_enterprise_groups_contact_city_placeholder: "City or Town"
+  admin_enterprise_groups_contact_zipcode: "Zipcode"
+  admin_enterprise_groups_contact_zipcode_placeholder: "eg. 24098"
   admin_enterprise_groups_contact_state_id: "State"
   admin_enterprise_groups_contact_country_id: "Country"
   admin_enterprise_groups_web: "Web Resources"
-  admin_enterprise_groups_web_twitter: "eg. @ikatrans1"
-  admin_enterprise_groups_web_website_placeholder: "eg. www.ikatrans.com"
+  admin_enterprise_groups_web_twitter: "eg. @the_prof"
+  admin_enterprise_groups_web_website_placeholder: "eg. www.truffles.com"
   admin_order_cycles: "Admin Order Cycles"
   open: "Open"
   close: "Close"
@@ -1982,9 +2245,14 @@ en_LB:
   delivery_method: Delivery Method
   fee_type: "Fee Type"
   tax_category: "Tax Category"
+  description: "Description"
+  display: "Display"
+  tags: "Tags"
   calculator: "Calculator"
   calculator_values: "Calculator values"
   calculator_settings_warning: "If you are changing the calculator type, you must save first before you can edit the calculator settings"
+  calculator_preferred_unit_error: "must be kg or lb"
+  calculator_preferred_value_error: "Invalid input. Please use only numbers. For example: 10, 5.5, -20"
   flat_percent_per_item: "Flat Percent (per item)"
   flat_rate_per_item: "Flat Rate (per item)"
   flat_rate_per_order: "Flat Rate (per order)"
@@ -1992,6 +2260,7 @@ en_LB:
   price_sack: "Price Sack"
   new_order_cycles: "New Order Cycles"
   new_order_cycle: "New Order Cycle"
+  new_order_cycle_tooltip: "Open shop for a certain time period"
   select_a_coordinator_for_your_order_cycle: "Select a coordinator for your order cycle"
   notify_producers: 'Notify producers'
   edit_order_cycle: "Edit Order Cycle"
@@ -2042,17 +2311,17 @@ en_LB:
   unit_name: "Unit name"
   change_package: "Change Package"
   spree_admin_single_enterprise_hint: "Hint: To allow people to find you, turn on your visibility under"
-  spree_admin_eg_pickup_from_school: "eg. 'Pick-up from Primary School'"
-  spree_admin_eg_collect_your_order: "eg. 'Please collect your order from 123 Imaginary St, Northcote, 3070'"
+  spree_admin_eg_pickup_from_school: "eg. 'Pick up at Community Center'"
+  spree_admin_eg_collect_your_order: "eg. 'Please collect your order from 123 High Street, Asheville, NC 22806'"
   spree_classification_primary_taxon_error: "Taxon %{taxon} is the primary taxon of %{product} and cannot be deleted"
   spree_order_availability_error: "Distributor or order cycle cannot supply the products in your cart"
   spree_order_populator_error: "That distributor or order cycle can't supply all the products in your cart. Please choose another."
+  spree_order_cycle_error: "Please choose an order cycle for this order."
   spree_order_populator_availability_error: "That product is not available from the chosen distributor or order cycle."
   spree_distributors_error: "At least one hub must be selected"
   spree_user_enterprise_limit_error: "^%{email} is not permitted to own any more enterprises (limit is %{enterprise_limit})."
   spree_variant_product_error: must have at least one variant
   your_profil_live: "Your profile live"
-  on_ofn_map: "on the Maho Food map"
   see: "See"
   live: "live"
   manage: "Manage"
@@ -2073,14 +2342,13 @@ en_LB:
   new_order: "New Order"
   enterprise_tos_link: "Enterprise Terms of Service link"
   enterprise_tos_message: "We want to work with people that share our aims and values. As such we ask new enterprises to agree to our "
-  enterprise_tos_link_text: "Terms of Service."
   enterprise_tos_agree: "I agree to the above Terms of Service"
   tax_settings: "Tax Settings"
   products_require_tax_category: "products require tax category"
   admin_shared_address_1: "Address"
   admin_shared_address_2: "Address (cont.)"
   admin_share_city: "City"
-  admin_share_zipcode: "Postcode"
+  admin_share_zipcode: "Zip Code"
   admin_share_country: "Country"
   admin_share_state: "State"
   hub_sidebar_hubs: "Hubs"
@@ -2095,18 +2363,18 @@ en_LB:
   report_customers_cycle: "Order Cycle"
   report_customers_type: "Report Type"
   report_customers_csv: "Download as csv"
-  report_producers: "Producers: "
-  report_type: "Report Type: "
-  report_hubs: "Hubs: "
-  report_payment: "Payment Methods: "
-  report_distributor: "Distributor: "
+  report_producers: "Producers:"
+  report_type: "Report Type:"
+  report_hubs: "Hubs:"
+  report_payment: "Payment Methods:"
+  report_distributor: "Distributor:"
   report_payment_by: 'Payments By Type'
   report_itemised_payment: 'Itemised Payment Totals'
   report_payment_totals: 'Payment Totals'
   report_all: 'all'
-  report_order_cycle: "Order Cycle: "
-  report_enterprises: "Enterprises: "
-  report_users: "Users: "
+  report_order_cycle: "Order Cycle:"
+  report_enterprises: "Enterprises:"
+  report_users: "Users:"
   report_tax_rates: Tax rates
   report_tax_types: Tax types
   report_header_order_cycle: Order Cycle
@@ -2117,7 +2385,7 @@ en_LB:
   report_header_first_name: First Name
   report_header_last_name: Last Name
   report_header_phone: Phone
-  report_header_suburb: Suburb
+  report_header_suburb: City
   report_header_address: Address
   report_header_billing_address: Billing Address
   report_header_relationship: Relationship
@@ -2134,14 +2402,14 @@ en_LB:
   report_header_ship_street: Ship Street
   report_header_ship_street_2: Ship Street 2
   report_header_ship_city: Ship City
-  report_header_ship_postcode: Ship Postcode
+  report_header_ship_postcode: Ship Zip Code
   report_header_ship_state: Ship State
   report_header_billing_street: Billing Street
   report_header_billing_street_2: Billing Street 2
   report_header_billing_street_3: Billing Street 3
   report_header_billing_street_4: Billing Street 4
   report_header_billing_city: Billing City
-  report_header_billing_postcode: Billing Postcode
+  report_header_billing_postcode: Billing Zip code
   report_header_billing_state: Billing State
   report_header_incoming_transport: Incoming Transport
   report_header_special_instructions: Special Instructions
@@ -2173,7 +2441,7 @@ en_LB:
   report_header_taxons: Taxons
   report_header_supplier: Supplier
   report_header_producer: Producer
-  report_header_producer_suburb: Producer Suburb
+  report_header_producer_suburb: Producer City
   report_header_unit: Unit
   report_header_group_buy_unit_quantity: Group Buy Unit Quantity
   report_header_cost: Cost
@@ -2188,7 +2456,7 @@ en_LB:
   report_header_distributor: Distributor
   report_header_distributor_address: Distributor address
   report_header_distributor_city: Distributor city
-  report_header_distributor_postcode: Distributor postcode
+  report_header_distributor_postcode: Distributor Zip code
   report_header_delivery_address: Delivery Address
   report_header_delivery_postcode: Delivery Postcode
   report_header_bulk_unit_size: Bulk Unit Size
@@ -2233,8 +2501,8 @@ en_LB:
   report_header_temp_controlled: TempControlled?
   report_header_is_producer: Producer?
   report_header_not_confirmed: Not Confirmed
-  report_header_gst_on_income: GST on Income
-  report_header_gst_free_income: GST Free Income
+  report_header_gst_on_income: Tax on Income
+  report_header_gst_free_income: Tax Free Income
   report_header_total_untaxable_produce: Total untaxable produce (no tax)
   report_header_total_taxable_produce: Total taxable produce (tax inclusive)
   report_header_total_untaxable_fees: Total untaxable fees (no tax)
@@ -2245,12 +2513,12 @@ en_LB:
   report_header_total_taxable_admin: Total taxable admin adjustments (tax inclusive)
   initial_invoice_number: "Initial invoice number:"
   invoice_date: "Invoice date:"
-  due_date: "Due date:"
+  due_date: "Invoice date:"
   account_code: "Account code:"
   equals: "Equals"
   contains: "contains"
   discount: "Discount"
-  filter_products: "Filter Products"
+  filter_products: " Filter Products"
   delete_product_variant: "The last variant cannot be deleted!"
   progress: "progress"
   saving: "Saving.."
@@ -2260,7 +2528,7 @@ en_LB:
   one_product_unsaved: "Changes to one product remain unsaved."
   products_unsaved: "Changes to %{n} products remain unsaved."
   is_already_manager: "is already a manager!"
-  no_change_to_save: " No change to save"
+  no_change_to_save: "No change to save"
   user_invited: "%{email} has been invited to manage this enterprise"
   add_manager: "Add an existing user"
   users: "Users"
@@ -2280,9 +2548,11 @@ en_LB:
   payment_processing_failed: "Payment could not be processed, please check the details you entered"
   payment_method_not_supported: "That payment method is unsupported. Please choose another one."
   payment_updated: "Payment Updated"
+  cannot_perform_operation: "Could not update the payment"
+  action_required: "Action required"
   inventory_settings: "Inventory Settings"
   tag_rules: "Tag Rules"
-  shop_preferences: "Shop Preferences"
+  shop_preferences: "Store Preferences"
   enterprise_fee_whole_order: Whole order
   enterprise_fee_by: "%{type} fee by %{role} %{enterprise_name}"
   validation_msg_relationship_already_established: "^That relationship is already established."
@@ -2295,6 +2565,7 @@ en_LB:
   enterprise_name_error: "has already been taken. If this is your enterprise and you would like to claim ownership, or if you would like to trade with this enterprise please contact the current manager of this profile at %{email}."
   enterprise_owner_error: "^%{email} is not permitted to own any more enterprises (limit is %{enterprise_limit})."
   enterprise_role_uniqueness_error: "^That role is already present."
+  enterprise_terms_and_conditions_type_error: "Only PDFs are allowed"
   inventory_item_visibility_error: must be true or false
   product_importer_file_error: "error: no file uploaded"
   product_importer_spreadsheet_error: "could not process file: invalid filetype"
@@ -2326,10 +2597,11 @@ en_LB:
   order_cycles_email_to_producers_notice: 'Emails to be sent to producers have been queued for sending.'
   order_cycles_no_permission_to_coordinate_error: "None of your enterprises have permission to coordinate an order cycle"
   order_cycles_no_permission_to_create_error: "You don't have permission to create an order cycle coordinated by that enterprise"
-  order_cycle_closed: "The order cycle you've selected has just closed. Please try again!"
+  order_cycle_closed: "The order cycle you've selected has just closed. Please try again with a different order cycle!"
   back_to_orders_list: "Back to order list"
   no_orders_found: "No Orders Found"
   order_information: "Order Information"
+  new_payment: "New Payment"
   date_completed: "Date Completed"
   amount: "Amount"
   state_names:
@@ -2339,12 +2611,13 @@ en_LB:
   js:
     saving: 'Saving...'
     changes_saved: 'Changes saved.'
+    authorising: "Authorizing..."
     save_changes_first: Save changes first.
     all_changes_saved: All changes saved
     unsaved_changes: You have unsaved changes
     all_changes_saved_successfully: All changes saved successfully
     oh_no: "Oh no! I was unable to save your changes."
-    unauthorized: "You are unauthorised to access this page."
+    unauthorized: "You are unauthorized to access this page."
     error: Error
     unavailable: Unavailable
     profile: Profile
@@ -2354,15 +2627,18 @@ en_LB:
     resolve_errors: Please resolve the following errors
     more_items: "+ %{count} More"
     default_card_updated: Default Card Updated
+    default_card_voids_auth: Changing your default card will remove shops' existing authorizations to charge it. You can re-authorize shops after updating the default card. Do you wish to change the default card?
     cart:
       add_to_cart_failed: >
           There was a problem adding this product to the cart. Perhaps it has become
           unavailable or the shop is closing.
     admin:
+      unit_price_tooltip: "The unit price increases transparency by allowing your customers to easily compare prices between different products and packaging sizes. Note, that the final unit price displayed in the shopfront might differ if it includes taxes & fees."
       enterprise_limit_reached: "You have reached the standard limit of enterprises per account. Write to %{contact_email} if you need to increase it."
       modals:
-        got_it: Got it
+        got_it: "Got it"
         close: "Close"
+        continue: "Continue"
         invite: "Invite"
         invite_title: "Invite an unregistered user"
         tag_rule_help:
@@ -2375,20 +2651,30 @@ en_LB:
           by_default_rules: "'By Default...' Rules"
           by_default_rules_text: >
               Default rules allow you to hide items so that they are not visible by
-              default. This behaviour can then be overriden by non-default rules for
+              default. This behavior can then be overriden by non-default rules for
               customers with particular tags.
           customer_tagged_rules: "'Customers Tagged...' Rules"
           customer_tagged_rules_text: >
               By creating rules related to a specific customer tag, you can override
-              the default behaviour (whether it be to show or to hide items) for customers
+              the default behavior (whether it be to show or to hide items) for customers
               with the specified tag.
+        terms_and_conditions_info:
+          title: "Uploading Terms and Conditions"
+          message_1: "Terms and Conditions are the contract between you, the seller, and the shopper. If you upload a file here shoppers must accept your Terms and Conditions in order to complete checkout. For the shopper this will appear as a checkbox at checkout that must be checked in order to proceed with checkout. We highly recommend you upload Terms and Conditions in alignment with national legislation."
+          message_2: "Shoppers will only be required to accept Terms and Conditions once. However if you change your Terms and Conditions shoppers will again be required to accept them before they can checkout."
+        terms_and_conditions_warning:
+          title: "Uploading Terms and Conditions"
+          message_1: "All your buyers will have to agree to them once at checkout. If you update the file, all your buyers will have to agree to them again at checkout."
+          message_2: "For buyers with subscriptions, you need to email them the Terms and Conditions (or the changes to them) for now, nothing will notify them about these new Terms and Conditions."
+        business_address_info:
+          message: "Company Legal Name, Legal Address and Legal Phone number are used for businesses that invoice from a legal entity registered with different details to their public trading information. These details will ONLY be used on invoices. If these details are blank your public Name, Address and Phone Number will be used on invoices."
       panels:
         save: SAVE
         saved: SAVED
         saving: SAVING
         enterprise_package:
           hub_profile: Hub Profile
-          hub_profile_cost: "COST: See about section"
+          hub_profile_cost: "COST: ALWAYS FREE"
           hub_profile_text1: >
               People can find and contact you on the Maho Food. Your enterprise
               will be visible on the map, and will be searchable in listings.
@@ -2402,7 +2688,7 @@ en_LB:
               the Maho Food.
           hub_shop_text2: >
               Hubs can take many forms, whether they be a food co-op, a buying group,
-              a veggie-box program, or a local grocery store.
+              a CSA program, or a local grocery store.
           hub_shop_text3: >
               If you also want to sell your own products, you will need to switch
               this enterprise to be a producer.
@@ -2443,9 +2729,9 @@ en_LB:
           producer_hub_text3: >
               The Maho Food aims to support as many hub models as possible,
               so no matter your situation, we want to provide the tools you need to
-              run your organisation or local food business.
+              run your organization or local food business.
           get_listing: Get a listing
-          always_free: See about section
+          always_free: ALWAYS FREE
           sell_produce_others: Sell produce from others
           sell_own_produce: Sell your own produce
           sell_both: Sell produce from self and others
@@ -2453,10 +2739,11 @@ en_LB:
           producer: Producer
           producer_text1: >
               Producers make yummy things to eat or drink. You're a producer if you
-              grow it, raise it, brew it, bake it, ferment it, milk it or mould it.
+              grow it, raise it, brew it, bake it, ferment it, milk it or mold it.
           producer_text2: >
               Producers can also perform other functions, such as aggregating food
-              from other enterprises and selling it through a shop on the Maho Food.
+              from other enterprises and selling it through a shop on the Open Food
+              Network.
           non_producer: Non-producer
           non_producer_text1: >
               Non-producers do not produce any food themselves, meaning that they
@@ -2475,7 +2762,7 @@ en_LB:
           description: Description
           resolve: Resolve
         exchange_products:
-          load_more_variants: "Load All Variants"
+          load_more_variants: "Load More Variants"
           load_all_variants: "Load All Variants"
           select_all_variants: "Select All %{total_number_of_variants} Variants"
           variants_loaded: "%{num_of_variants_loaded} of %{total_number_of_variants} Variants Loaded"
@@ -2501,7 +2788,7 @@ en_LB:
           compiling_invoices: "Compiling Invoices"
           bulk_invoice_created: "Bulk Invoice created"
           bulk_invoice_failed: "Failed to create Bulk Invoice"
-          please_wait: "Please wait until the PDF is ready before closing this modal."
+          please_wait: "Please wait until the PDF is ready before closing this window."
         order_state:
           address: "address"
           adjustments: "adjustments"
@@ -2532,9 +2819,13 @@ en_LB:
           failed: "failed"
           paid: "paid"
           pending: "pending"
+          requires_authorization: "authorization required"
           processing: "processing"
           void: "void"
-          invalid: "invalid"
+          invalid: "Invalid"
+        quantity_adjusted: "Insufficient stock available. Line item updated to maximum available quantity."
+        quantity_unchanged: "Quantity unchanged from previous amount."
+        cannot_remove_last_item: "Sorry, we can't remove last item from order. Please cancel order instead."
       resend_user_email_confirmation:
         resend: "Resend"
         sending: "Resend..."
@@ -2565,6 +2856,15 @@ en_LB:
         error_saving: "Error saving subscription"
         new:
           please_select_a_shop: "Please select a shop"
+      enterprises:
+        form:
+          images:
+            removed_logo_successfully: "Logo removed successfully"
+            immediate_logo_removal_warning: "The logo will be removed immediately after you confirm."
+            removed_promo_image_successfully: "Promo image removed successfully"
+            immediate_promo_image_removal_warning: "The promo image will be removed immediately after you confirm."
+            immediate_terms_and_conditions_removal_warning: "The Terms and Conditions file will be removed immediately after you confirm."
+            removed_terms_and_conditions_successfully: "Terms and Conditions file removed successfully"
     insufficient_stock: "Insufficient stock available, only %{on_hand} remaining"
     out_of_stock:
       reduced_stock_available: Reduced stock available
@@ -2573,6 +2873,16 @@ en_LB:
           in your cart have reduced. Here's what's changed:
       now_out_of_stock: is now out of stock.
       only_n_remainging: "now only has %{num} remaining."
+    shopfront:
+      variant:
+        add_to_cart: "Add"
+        in_cart: "in cart"
+        quantity_in_cart: "%{quantity} in cart"
+      bulk_buy_modal:
+        min_quantity: "Min quantity"
+        max_quantity: "Max quantity"
+      price_breakdown: "Price breakdown"
+      unit_price_tooltip: "This is the unit price of this product. It allows you to compare the price of products independent of packaging sizes & weights."
     variants:
       on_demand:
         'yes': "On demand"
@@ -2590,7 +2900,7 @@ en_LB:
       overrides: overrides
       remain_unsaved: remain unsaved.
       no_changes_to_save: No changes to save.'
-      no_authorisation: "I couldn't get authorisation to save those changes, so they remain unsaved."
+      no_authorisation: "I couldn't get authorization to save those changes, so they remain unsaved."
       some_trouble: "I had some trouble saving: %{errors}"
       changing_on_hand_stock: Changing on hand stock levels...
       stock_reset: Stocks reset to defaults.
@@ -2635,9 +2945,14 @@ en_LB:
         order: "Order"
     registration:
       welcome_to_ofn: "Welcome to the Maho Food!"
-      signup_or_login: "Start By Signing Up (or logging in)"
+      signup_or_login: "Start By signing up (or logging in)"
       have_an_account: "Already have an account?"
       action_login: "Log in now."
+    stripe_elements:
+      unknown_error_from_stripe: |
+          There was a problem setting up your card in our payments gateway.
+          Please refresh the page and try again, if it fails a second time,
+          please contact us at support-usa@www.ikatrans.com for help.
   inflections:
     each:
       one: "each"
@@ -2673,8 +2988,8 @@ en_LB:
       one: "tub"
       other: "tubs"
     punnet:
-      one: "punnet"
-      other: "punnets"
+      one: "baskets"
+      other: "baskets"
     packet:
       one: "packet"
       other: "packets"
@@ -2716,6 +3031,15 @@ en_LB:
       start_free_profile: "Start with a free profile, and expand when you're ready!"
   order_management:
     reports:
+      bulk_coop:
+        filters:
+          bulk_coop_allocation: "Bulk Co-op Allocation"
+          bulk_coop_customer_payments: "Bulk Co-op Customer Payments"
+          bulk_coop_packing_sheets: "Bulk Co-op Packing Sheets"
+          bulk_coop_supplier_report: "Bulk Co-op Supplier Report"
+          date_range: "Date range"
+          generate_report: "Generate Report"
+          report_format_csv: "Report format CSV"
       enterprise_fee_summaries:
         filters:
           date_range: "Date Range"
@@ -2761,6 +3085,8 @@ en_LB:
               tax_category_name: "Tax Category"
               total_amount: "$$ SUM"
         invalid_filter_parameters: "The filters you selected for this report are invalid."
+      report:
+        none: "None"
   order: "Order"
   distribution: "Distribution"
   order_details: "Order Details"
@@ -2768,12 +3094,15 @@ en_LB:
   adjustments: "Adjustments"
   payments: "Payments"
   return_authorizations: "Return Authorizations"
+  credit_owed: "Credit Owed"
+  new_adjustment: "New Adjustment"
   payment: "Payment"
   payment_method: "Payment Method"
   shipment: "Shipment"
-  shipment_inc_vat: "Shipment including VAT"
+  shipment_inc_vat: "Shipment including tax"
   shipping_tax_rate: "Shipping Tax Rate"
   category: "Category"
+  import_date: "Import Date"
   delivery: "Delivery"
   temperature_controlled: "Temperature Controlled"
   new_product: "New Product"
@@ -2791,14 +3120,62 @@ en_LB:
   previous: "Previous"
   last: "Last"
   spree:
+    add_country: "Add country"
+    add_state: "Add state"
+    adjustment: "Adjustment"
+    all: "All"
+    associated_adjustment_closed: "Associated adjustment closed"
+    back_to_adjustments_list: "Back to adjustments"
+    back_to_users_list: "Back to users"
+    back_to_zones_list: "Back to zones"
+    card_code: "Card code"
+    card_number: "Card number"
+    category: "Category"
+    created_successfully: "Created Successfully"
+    credit: "Credit"
+    editing_tax_category: "Editing tax category"
+    editing_tax_rate: "Editing tax rate"
+    editing_zone: "Editing zone"
+    expiration: "Expiration"
+    invalid_payment_provider: "Invalid payment provider"
+    items_cannot_be_shipped: "Items cannot be shipped"
+    gateway_config_unavailable: "Gateway config unavailable"
+    gateway_error: "Payment failed"
     more: "More"
-    your_order_is_empty_add_product: "Your order is empty, please search for and add a product above"
+    new_adjustment: "New adjustment"
+    new_order_completed: "New order completed"
+    new_tax_category: "New Tax Category"
+    new_taxon: "New taxon"
+    new_user: "New user"
+    no_pending_payments: "No pending payments"
+    none: "None"
+    not_found: "Not found"
+    notice_messages:
+      variant_deleted: "Variant deleted"
+    or: "Or"
+    order_processed_successfully: "Order processed successfully"
+    payment_method_not_supported: "Payment method not supported"
+    resend_authorization_email: "Resend authorization email"
+    rma_credit: "RMA credit"
+    refund: "Refund"
+    server_error: "Server error"
+    shipping_method_names:
+      UPS Ground: "UPS Ground"
+    start_date: "Start date"
+    successfully_removed: "Successfully Removed"
+    taxonomy_edit: "Taxonomy edit"
+    taxonomy_tree_error: "Taxonomy tree error"
+    taxonomy_tree_instruction: "Taxonomy tree instruction"
+    tree: "Tree"
+    updating: "Updating"
+    your_order_is_empty_add_product: "Your cart is empty, please search for and add a product above"
     add_product: "Add Product"
     name_or_sku: "Name or SKU (enter at least first 4 characters of product name)"
-    resend: Resend
-    back_to_orders_list: Back To Orders List
-    return_authorizations: Return Authorizations
-    cannot_create_returns: Cannot create returns as this order has no shipped units.
+    resend: "Resend"
+    back_to_orders_list: "Back To Orders List"
+    back_to_payments_list: "Back To Payments List"
+    return_authorizations: "Return Authorizations"
+    cannot_create_returns: "Cannot create returns as this order has no shipped units."
     select_stock: "Select stock"
     location: "Location"
     count_on_hand: "Count On Hand"
@@ -2814,8 +3191,11 @@ en_LB:
     delete: "Delete"
     cannot_set_shipping_method_without_address: "Cannot set shipping method until customer details are provided."
     no_tracking_present: "No tracking details provided."
+    tracking: "Tracking"
+    tracking_number: "Tracking Number"
     order_total: "Order Total"
     customer_details: "Customer Details"
+    customer_details_updated: "Customer Details updated"
     customer_search: "Customer Search"
     choose_a_customer: "Choose a customer"
     account: "Account"
@@ -2835,6 +3215,7 @@ en_LB:
     adjustments: "Adjustments"
     continue: "Continue"
     fill_in_customer_info: "Please fill in customer info"
+    credit_card: "Credit Card"
     new_payment: "New Payment"
     capture: "Capture"
     void: "Void"
@@ -2846,15 +3227,16 @@ en_LB:
     server: "Server"
     test_mode: "Test Mode"
     logourl: "Logourl"
+    are_you_sure_delete: "Are you sure you want to delete this record?"
+    confirm_delete: "Confirm Deletion"
     configurations: "Configurations"
     general_settings: "General Settings"
     site_name: "Site Name"
     site_url: "Site URL"
-    default_seo_title: "Default Seo Title"
+    default_seo_title: "Default SEO Title"
     default_meta_description: "Default Meta Description"
     default_meta_keywords: "Default Meta Keywords"
     security_settings: "Security Settings"
-    allow_ssl_in_development_and_test: "Allow SSL to be used when in development and test modes"
     allow_ssl_in_production: "Allow SSL to be used in production mode"
     allow_ssl_in_staging: "Allow SSL to be used in staging mode"
     currency_decimal_mark: "Currency decimal mark"
@@ -2865,29 +3247,22 @@ en_LB:
     display_currency: "Display currency"
     choose_currency: "Choose Currency"
     mail_method_settings: "Mail Method Settings"
+    mail_settings_notice_html: "Some of the following settings can't be edited and are listed here just for debugging purposes. Changes can be made by updating the instance's secrets and provisioning them using <a href='https://github.com/jsia9/ofn-install'>ofn-install</a>. Reach out to the OFN global team for further details."
     general: "General"
     enable_mail_delivery: "Enable Mail Delivery"
-    send_mails_as: "Send Mails As"
-    smtp_send_all_emails_as_from_following_address: "Send all mails as from the following address."
-    send_copy_of_all_mails_to: "Send Copy of All Mails To"
-    smtp_send_copy_to_this_addresses: "Sends a copy of all outgoing mails to this address. For multiple addresses, separate with commas."
+    send_mails_as: "Send Mail As"
+    smtp_send_all_emails_as_from_following_address: "Send all mail as from the following address."
+    send_copy_of_all_mails_to: "Send Copy of All Mail To"
+    smtp_send_copy_to_this_addresses: "Sends a copy of all outgoing mail to this address. For multiple addresses, separate with commas."
     intercept_email_address: "Intercept Email Address"
     intercept_email_instructions: "Override email recipient and replace with this address."
-    image_settings: "Image Settings"
-    image_settings_warning: "You will need to regenerate thumbnails if you update the paperclip styles. Use rake paperclip:refresh:thumbnails CLASS=Spree::Image to do this."
-    attachment_default_style: Attachments Style
-    attachment_default_url: "Attachments Default URL"
-    attachment_path: "Attachments Path"
-    attachment_styles: "Paperclip Styles"
-    attachment_url: "Attachments URL"
-    add_new_style: "Add New Style"
-    image_settings_updated: "Image Settings successfully updated."
     tax_categories: "Tax Categories"
     listing_tax_categories: "Listing Tax Categories"
     back_to_tax_categories_list: "Back To Tax Categories List"
     tax rate: "Tax Rates"
     new_tax_rate: "New Tax Rate"
     tax_category: "Tax Category"
+    tax_rates: "Tax Rates"
     rate: "Rate"
     tax_rate_amount_explanation: "Tax rates are a decimal amount to aid in calculations, (i.e. if the tax rate is 5% then enter 0.05)"
     included_in_price: "Included in Price"
@@ -2914,6 +3289,10 @@ en_LB:
     new_taxonomy: "New Taxonomy"
     back_to_taxonomies_list: "Back to Taxonomies List"
     shipping_methods: "Shipping Methods"
+    shipping_method: "Shipping Method"
+    shipment: "Shipment"
+    payment: "Payment"
+    status: "Status"
     shipping_categories: "Shipping Categories"
     new_shipping_category: "New Shipping Category"
     back_to_shipping_categories: "Back To Shipping Categories"
@@ -2954,29 +3333,58 @@ en_LB:
     time: "Time"
     inventory_error_flash_for_insufficient_quantity: "An item in your cart has become unavailable."
     inventory: Inventory
-    zipcode: Postcode
-    weight: Weight (per kg)
+    zipcode: Zipcode
+    weight: Weight (per kg or lb)
     error_user_destroy_with_orders: "Users with completed orders may not be deleted"
     cannot_create_payment_without_payment_methods: "You cannot create a payment for an order without any payment methods defined."
     please_define_payment_methods: "Please define some payment methods first."
     options: "Options"
+    has_no_shipped_units: "has no shipped units"
+    successfully_created: '%{resource} has been successfully created!'
+    successfully_updated: '%{resource} has been successfully updated!'
+    payment_method: "Payment Method"
+    payment_processing_failed: "Payment could not be processed, please check the details you entered"
+    not_available: "N/A"
+    sku: "SKU"
+    there_are_no_items_for_this_order: "There are no items for this order."
+    order_populator:
+      out_of_stock: '%{item} is out of stock.'
     actions:
       update: "Update"
+      cancel: "Cancel"
     shared:
       error_messages:
         errors_prohibited_this_record_from_being_saved:
           one: "1 error prohibited this record from being saved:"
+          few: "%{count} errors prohibited this record from being saved:"
+          many: "%{count} errors prohibited this record from being saved:"
           other: "%{count} errors prohibited this record from being saved:"
         there_were_problems_with_the_following_fields: "There were problems with the following fields"
+      payments_list:
+        date_time: "Date/time"
+        amount: "Amount"
+        payment_method: "Payment Method"
+        payment_state: "Payment State"
     errors:
       messages:
+        included_price_validation: "cannot be selected unless you have set a Default Tax Zone"
         blank: "can't be blank"
     layouts:
       admin:
         login_nav:
           header:
             store: Store
+    validation:
+      must_be_int: "must be an integer"
     admin:
+      mail_methods:
+        send_testmail: "Send test email"
+        testmail:
+          delivery_success: "Test email sent."
+          error: "An error occurred trying to send the test email."
+      unit_price_tooltip: "The unit price increases transparency by allowing your customers to easily compare prices between different products and packaging sizes. Note, that the final unit price displayed in the shopfront might differ if it includes taxes & fees."
+      subscriptions:
+        number: "Number"
       tab:
         dashboard: "Dashboard"
         orders: "Orders"
@@ -2999,7 +3407,6 @@ en_LB:
         index:
           inherits_properties_checkbox_hint: "Inherit properties from %{supplier}? (unless overridden above)"
           add_product_properties: "Add Product Properties"
-          select_from_prototype: "Select From Prototype"
       properties:
         index:
           properties: "Properties"
@@ -3010,7 +3417,7 @@ en_LB:
           new_property: "New Property"
         edit:
           editing_property: "Editing Property"
-          back_to_properties_list: "Back  To Properties List"
+          back_to_properties_list: "Back To Properties List"
         form:
           name: "Name"
           presentation: "Presentation"
@@ -3046,6 +3453,8 @@ en_LB:
           received: "Received"
           canceled: "Canceled"
       orders:
+        add_product:
+          cannot_add_item_to_canceled_order: "Cannot add item to canceled order"
         index:
           listing_orders: "Listing Orders"
           new_order: "New Order"
@@ -3069,10 +3478,10 @@ en_LB:
           completed_at: "Completed At"
           number: "Number"
           state: "State"
-          email: "Customer E-Mail"
+          email: "Customer E-mail"
         invoice:
           issued_on: "Issued on"
-          tax_invoice: "TAX INVOICE"
+          tax_invoice: "INVOICE"
           code: "Code"
           from: "From"
           to: "Bill to"
@@ -3087,11 +3496,17 @@ en_LB:
           order_total: "Order Total"
       overview:
         enterprises_header:
-          ofn_with_tip: Enterprises are Producers and/or Hubs and are the basic unit of organisation within the Maho Food.
+          ofn_with_tip: Enterprises are Producers and/or Hubs and are the basic unit of organization within the Maho Food.
+        enterprise_row:
+          has_no_enterprise_fees: "has no enterprise fees"
+          has_no_payment_methods: "has no payment methods"
+          has_no_shipping_methods: "has no shipping methods"
         products:
           active_products:
             zero: "You don't have any active products."
             one: "You have one active product"
+            few: "You have %{count} active products"
+            many: "You have %{count} active products"
             other: "You have %{count} active products"
         order_cycles:
           order_cycles: "Order Cycles"
@@ -3099,6 +3514,8 @@ en_LB:
           you_have_active:
             zero: "You don't have any active order cycles."
             one: "You have one active order cycle."
+            few: "You have %{count} active order cycles."
+            many: "You have %{count} active order cycles."
             other: "You have %{count} active order cycles."
           manage_order_cycles: "MANAGE ORDER CYCLES"
       shipping_methods:
@@ -3122,6 +3539,7 @@ en_LB:
           back_to_shipping_methods_list: "Back To Shipping Methods List"
         form:
           categories: "Categories"
+          tax_category: "Tax Category"
           zones: "Zones"
           both: "Both Checkout and Back office"
           back_end: "Back office only"
@@ -3177,6 +3595,13 @@ en_LB:
           deactivation_warning: "De-activating a payment method can make the payment method disappear from your list. Alternatively, you can hide a payment method from the checkout page by setting the option 'Display' to 'back office only'."
         providers:
           provider: "Provider"
+          check: "Cash/EFT/etc. (payments for which automatic validation is not required)"
+          pin: "Pin Payments"
+          paypalexpress: "PayPal Express"
+          stripeconnect: "retired, please use Stripe SCA"
+          stripesca: "Stripe SCA"
+          bogus: "Bogus"
+          bogussimple: "BogusSimple"
       payments:
         source_forms:
           stripe:
@@ -3186,6 +3611,7 @@ en_LB:
             no_payment_via_admin_backend: Paypal payments cannot be captured in the Backoffice
       products:
         image_upload_error: "The product image was not recognised. Please upload an image in PNG or JPG format."
+        paperclip_image_error: "Paperclip returned errors for file '%{attachment_file_name}' - check ImageMagick installation or image source file."
         new:
           title: "New Product"
           new_product: "New Product"
@@ -3195,6 +3621,8 @@ en_LB:
           value: "Value"
           unit_name: "Unit name"
           price: "Price"
+          unit_price: "Unit Price"
+          unit_price_legend: "Calculated based on the item price"
           on_hand: "On Hand"
           on_demand: "On Demand"
           product_description: "Product Description"
@@ -3237,6 +3665,8 @@ en_LB:
           bulk_coop_allocation: 'Bulk Co-op - Allocation'
           bulk_coop_packing_sheets: 'Bulk Co-op - Packing Sheets'
           bulk_coop_customer_payments: 'Bulk Co-op - Customer Payments'
+        customer_names_message:
+          customer_names_tip: "If customer names are hidden for orders you have supplied, you can contact the distributor and ask if they can update their shop preferences to allow their suppliers to view customer names."
       users:
         index:
           listing_users: "Listing Users"
@@ -3263,7 +3693,6 @@ en_LB:
           price: "Price"
           options: "Options"
           no_results: "No results"
-          to_add_variants_you_must_first_define: "To add variants, you must first define"
           option_types: "Option Types"
           option_values: "Option Values"
           and: "and"
@@ -3273,18 +3702,20 @@ en_LB:
         new:
           new_variant: "New Variant"
         form:
-          cost_price: "Cost Price"
           sku: "SKU"
           price: "Price"
+          unit_price: "Unit Price"
           display_as: "Display As"
           display_name: "Display Name"
-          display_as_placeholder: 'eg. 2 kg'
-          display_name_placeholder: 'eg. Tomatoes'
+          display_as_placeholder: 'For example, 2 kg'
+          display_name_placeholder: 'For example, Tomatoes'
         autocomplete:
           out_of_stock: "Out of Stock"
           producer_name: "Producer"
           unit: "Unit"
       shared:
+        configuration_menu:
+          terms_of_service: "Terms of Service"
         sortable_header:
           name: "Name"
           number: "Number"
@@ -3299,6 +3730,7 @@ en_LB:
           cookies_consent_banner_toggle: "Display cookies consent banner"
           privacy_policy_url: "Privacy Policy URL"
           enterprises_require_tos: "Enterprises must accept Terms of Service"
+          shoppers_require_tos: "Shoppers must accept Terms of Service"
           cookies_policy_matomo_section: "Display Matomo section on cookies policy page"
           footer_tos_url: "Terms of Service URL"
     checkout:
@@ -3316,14 +3748,17 @@ en_LB:
           or_enter_new_card: "Or, enter details for a new card:"
           remember_this_card: Remember this card?
     date_picker:
-      format: '%Y-%m-%d'
-      js_format: 'yy-mm-dd'
+      flatpickr_date_format: "d-m-Y"
+      flatpickr_datetime_format: "d-m-Y H:i"
+      today: "Today"
+      now: "Now"
+      close: "Close"
     orders:
       error_flash_for_unavailable_items: "An item in your cart has become unavailable. Please update the selected quantities."
       edit:
         login_to_view_order: "Please log in to view your order."
       bought:
-        item: "Already ordered in this order cycle"
+        item: "Already ordered in this cycle"
       line_item:
         insufficient_stock: "Insufficient stock available, only %{on_hand} remaining"
         out_of_stock: "Out of Stock"
@@ -3334,6 +3769,7 @@ en_LB:
       pending: pending
       ready: ready
       shipped: shipped
+      canceled: canceled
     payment_states:
       balance_due: balance due
       completed: completed
@@ -3343,19 +3779,26 @@ en_LB:
       paid: paid
       pending: pending
       processing: processing
+      requires_authorization: "authorization required"
       void: void
-      invalid: invalid
+      invalid: Invalid
+      authorise: authorize
     order_mailer:
       cancel_email:
         customer_greeting: "Dear %{name},"
-        instructions_html: "Your order with<strong>%{distributor}</strong> has been CANCELED. Please retain this cancellation information for your records"
+        instructions_html: "Your order with <strong>%{distributor}</strong> has been CANCELED. Please retain this cancellation information for your records."
         dont_cancel: "If you have changed your mind or don't wish to cancel this order please contact %{email}"
-        order_summary_canceled_html: "<strong>Order Summary #%{number}[CANCELED]</strong>"
+        order_summary_canceled_html: "<strong>Order Summary #%{number} [CANCELED]</strong>"
         details: "Here are the details of what you ordered:"
         unpaid_order: "Your order was unpaid so no refund has been made"
         paid_order: "Your order was paid so %{distributor} has refunded the full amount"
         credit_order: "Your order was paid so your account has been credited"
         subject: "Cancellation of Order"
+      cancel_email_for_shop:
+        greeting: "Dear %{name},"
+        subject: "Cancellation of Order"
+        intro: "A customer has cancelled their order #%{number}."
+        view_cancelled_order: "View cancelled order"
       confirm_email:
         subject: "Order Confirmation"
       invoice_email:
@@ -3367,18 +3810,26 @@ en_LB:
             A request to reset your password has been made.
             If you did not make this request, simply ignore this email.
         link_text: >
-            If you did make this request just click the link below:
+            If you did make this request just click the link below.
         issue_text: |
-            If the above URL does not work try copying and pasting it into your browser.
+            If the above URL does nor work, try to copy and paste it into your browser.
             If you continue to have problems please feel free to contact us.
+        subject: "Reset password instructions"
       confirmation_instructions:
         subject: "Please confirm your OFN account"
+    payment_mailer:
+      authorize_payment:
+        subject: "Please authorize your payment to %{distributor} on OFN"
+        instructions: "Your payment of %{amount} to %{distributor} requires additional authentication. Please visit the following URL to authorize your payment:"
+      authorization_required:
+        subject: "A payment requires authorization from the customer"
+        message: "A payment for order %{order_number} requires additional authorization from the customer. The customer has been notified via email and the payment will appear as pending until it is authorized."
     shipment_mailer:
       shipped_email:
         dear_customer: "Dear Customer,"
-        instructions: "Your order has been shipped"
+        instructions: "Your order from %{distributor} is complete! Here's what the order contained:"
         shipment_summary: "Shipment Summary"
-        subject: "Shipment Notification"
+        subject: "Shipment/Pick Up Notification"
         thanks: "Thank you for your business."
         track_information: "Tracking Information: %{tracking}"
         track_link: "Tracking Link: %{url}"
@@ -3393,6 +3844,7 @@ en_LB:
       awaiting_return: awaiting return
       canceled: cancelled
       cart: cart
+      confirmation: "confirmation"
       complete: complete
       confirm: confirm
       delivery: delivery
@@ -3408,6 +3860,24 @@ en_LB:
       ended: ended
       paused: paused
       canceled: cancelled
+    paypal:
+      already_refunded: "This payment has been refunded and no further action can be taken on it."
+      no_payment_via_admin_backend: "You cannot charge PayPal accounts through the admin backend at this time."
+      transaction: "PayPal Transaction"
+      payer_id: "Payer ID"
+      transaction_id: "Transaction ID"
+      token: "Token"
+      refund: "Refund"
+      refund_amount: "Amount"
+      original_amount: "Original amount: %{amount}"
+      refund_successful: "PayPal refund successful"
+      refund_unsuccessful: "PayPal refund unsuccessful"
+      actions:
+        refund: "Refund"
+      flash:
+        cancel: "Don't want to use PayPal? No problem."
+        connection_failed: "Could not connect to PayPal."
+        generic_error: "PayPal failed. %{reasons}"
     users:
       form:
         account_settings: Account Settings
@@ -3423,6 +3893,8 @@ en_LB:
         past_orders: Past Orders
       transactions:
         transaction_history: Transaction History
+        authorisation_required: Authorization Required
+        authorise: Authorize
       open_orders:
         order: Order
         shop: Shop
@@ -3445,12 +3917,12 @@ en_LB:
         default?: Default?
         delete?: Delete?
       cards:
-        authorised_shops: Authorised Shops
-        authorised_shops_popover: This is the list of shops which are permitted to charge your default credit card for any subscriptions (ie. repeating orders) you may have. Your card details will be kept secure and will not be shared with shop owners. You will always be notified when you are charged.
+        authorised_shops: Authorized Shops
+        authorised_shops_agreement: This is the list of shops which are permitted to charge your default credit card for any subscriptions (ie. repeating orders) you may have. Your card details will be kept secure and will not be shared with shop owners. You will always be notified when you are charged. By checking the box for a shop, you are agreeing to authorise that shop to send instructions to the financial institution that issued your card to take payments in accordance with the terms of any subscription you create with that shop.
         saved_cards_popover: This is the list of cards you have opted to save for later use. Your 'default' will be selected automatically when you checkout an order, and can be charged by any shops you have allowed to do so (see right).
       authorised_shops:
         shop_name: "Shop Name"
-        allow_charges?: "Allow Charges?"
+        allow_charges?: "Allow Charges to Default Card?"
     localized_number:
       invalid_format: has an invalid format. Please enter a number.
     api:
@@ -3469,3 +3941,47 @@ en_LB:
       shipment:
         cannot_ready: "Cannot ready shipment."
       invalid_taxonomy_id: "Invalid taxonomy id."
+    activerecord:
+      models:
+        spree/payment:
+          one: Payment
+          other: Payments
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: about 1 hour
+        other: about %{count} hours
+      about_x_months:
+        one: about 1 month
+        other: about %{count} months
+      about_x_years:
+        one: about 1 year
+        other: about %{count} years
+      almost_x_years:
+        one: almost 1 year
+        other: almost %{count} years
+      half_a_minute: half a minute
+      less_than_x_seconds:
+        one: less than 1 second
+        other: less than %{count} seconds
+      less_than_x_minutes:
+        one: less than a minute
+        other: less than %{count} minutes
+      over_x_years:
+        one: over 1 year
+        other: over %{count} years
+      x_seconds:
+        one: "1 second"
+        other: "%{count} seconds"
+      x_minutes:
+        one: "1 minute"
+        other: "%{count} minutes"
+      x_days:
+        one: "1 day"
+        other: "%{count} days"
+      x_months:
+        one: "1 month"
+        other: "%{count} months"
+      x_years:
+        one: "1 year"
+        other: "%{count} years"
