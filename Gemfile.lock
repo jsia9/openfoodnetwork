@@ -1,14 +1,4 @@
 GIT
-  remote: https://github.com/jamalsia/spree_i18n.git
-  revision: 752eb67204e9c5a4e22b62591a8fd55fe2285e43
-  branch: 1-3-stable
-  specs:
-    spree_i18n (1.0.0)
-      i18n (~> 0.5)
-      rails-i18n
-      spree_core (>= 1.1)
-
-GIT
   remote: https://github.com/jeremydurham/custom-err-msg.git
   revision: 3a8ec9dddc7a5b0aab7c69a6060596de300c68f4
   specs:
@@ -149,8 +139,8 @@ GEM
       activerecord (>= 5.0, < 6.2)
     acts_as_list (1.0.4)
       activerecord (>= 4.2)
-    addressable (2.8.0)
-      public_suffix (>= 2.0.2, < 5.0)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     afm (0.2.2)
     angular-rails-templates (1.1.0)
       railties (>= 4.2, < 7)
@@ -220,12 +210,12 @@ GEM
     coffee-script-source (1.12.2)
     combine_pdf (1.0.21)
       ruby-rc4 (>= 0.1.5)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     connection_pool (2.2.5)
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    css_parser (1.9.0)
+    css_parser (1.12.0)
       addressable
     cuprite (0.13)
       capybara (>= 2.1, < 4)
@@ -260,7 +250,7 @@ GEM
       railties (>= 3.2)
     dry-inflector (0.2.1)
     e2mmap (0.1.0)
-    erubi (1.10.0)
+    erubi (1.11.0)
     et-orbi (1.2.4)
       tzinfo
     excon (0.81.0)
@@ -346,7 +336,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (4.2.1)
       railties (>= 3.2.16)
-    json (2.6.1)
+    json (1.8.6)
     json-schema (2.8.1)
       addressable (>= 2.4)
     json_spec (1.1.5)
@@ -363,7 +353,7 @@ GEM
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.12.0)
+    loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -378,10 +368,10 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.1.2)
-    mini_portile2 (2.6.1)
+    mini_portile2 (2.8.0)
     mini_racer (0.4.0)
       libv8-node (~> 15.14.0.0)
-    minitest (5.14.4)
+    minitest (5.16.3)
     monetize (1.11.0)
       money (~> 6.12)
     money (6.14.1)
@@ -391,8 +381,8 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     nio4r (2.5.8)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.8)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (1.4.7)
       faraday (>= 0.8, < 2.0)
@@ -435,12 +425,12 @@ GEM
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
-    public_suffix (4.0.6)
+    public_suffix (5.0.0)
     puma (5.5.2)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.4)
     rack-mini-profiler (2.3.3)
       rack (>= 1.2.0)
     rack-protection (2.1.0)
@@ -450,8 +440,8 @@ GEM
     rack-rewrite (1.5.1)
     rack-ssl (1.4.1)
       rack
-    rack-test (1.1.0)
-      rack (>= 1.0, < 3)
+    rack-test (2.0.2)
+      rack (>= 1.3)
     rack-timeout (0.6.0)
     rails (6.1.4.1)
       actioncable (= 6.1.4.1)
@@ -475,7 +465,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.4.2)
+    rails-html-sanitizer (1.4.3)
       loofah (~> 2.3)
     rails-i18n (6.0.0)
       i18n (>= 0.7, < 2)
@@ -505,12 +495,12 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.5)
-    roadie (4.0.0)
+    roadie (5.0.1)
       css_parser (~> 1.4)
       nokogiri (~> 1.8)
-    roadie-rails (2.2.0)
-      railties (>= 5.1, < 6.2)
-      roadie (>= 3.1, < 5.0)
+    roadie-rails (3.0.0)
+      railties (>= 5.1, < 7.1)
+      roadie (~> 5.0)
     rodf (1.1.1)
       builder (>= 3.0)
       dry-inflector (~> 0.1)
@@ -634,14 +624,14 @@ GEM
     test-prof (1.0.7)
     test-unit (3.5.0)
       power_assert
-    thor (1.1.0)
+    thor (1.2.1)
     thread-local (1.1.0)
     thwait (0.2.0)
       e2mmap
     tilt (2.0.10)
     timecop (0.9.4)
     ttfunk (1.7.0)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -686,7 +676,7 @@ GEM
     xml-simple (1.1.8)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.5.1)
+    zeitwerk (2.6.1)
 
 PLATFORMS
   ruby
